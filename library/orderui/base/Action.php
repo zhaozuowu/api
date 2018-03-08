@@ -4,7 +4,6 @@
  * @desc Orderui_Base_Action
  * @author lvbochao@iwaimai.baidu.com
  */
-
 abstract class Orderui_Base_Action extends Nscm_Base_Action {
     /**
      * show price switch

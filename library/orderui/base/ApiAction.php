@@ -4,7 +4,6 @@
  * @desc api action基类
  * @author lvbochao@iwaimai.baidu.com
  */
-
 abstract class Orderui_Base_ApiAction extends Order_Base_Action
 {
     /**

@@ -1,10 +1,10 @@
 <?php
 /**
- * @name Order_Define_Ral
- * @desc Order_Define_Ral
- * @author lvbochao@iwaimai.baidu.com
+ * @name Orderui_Define_Ral
+ * @desc Orderui_Define_Ral
+ * @author yu.jin03@ele.me
  */
-class Order_Define_Ral
+class Orderui_Define_Ral
 {
     const NWMS_ORDER_CREATE_RESERVE_ORDER_WRITE = 'createreserveorderwrite';
 }

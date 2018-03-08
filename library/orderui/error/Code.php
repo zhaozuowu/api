@@ -9,7 +9,7 @@
  * APPXXX_Error_Code 业务异常:300000~400000
  * @auth wanggang01@iwaimai.baidu.com
  */
-class Order_Error_Code extends Wm_Error_Code
+class Orderui_Error_Code extends Wm_Error_Code
 {
     /**
      * 正常返回

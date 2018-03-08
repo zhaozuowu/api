@@ -1,10 +1,10 @@
 <?php
 /**
- * @name Order_Base_Page
- * @desc Order_Base_Page
+ * @name Orderui_Base_Page
+ * @desc Orderui_Base_Page
  * @author lvbochao@iwaimai.baidu.com
  */
-interface Order_Base_Page {
+interface Orderui_Base_Page {
 
     /**
      * function execute

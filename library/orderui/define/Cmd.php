@@ -1,10 +1,10 @@
 <?php
 /**
- * @name Order_Define_Cmd
- * @desc Order_Define_Cmd
+ * @name Orderui_Define_Cmd
+ * @desc Orderui_Define_Cmd
  * @author jinyu02@iwaimai.baidu.com
  */
-class Order_Define_Cmd 
+class Orderui_Define_Cmd
 {
     /**
      * 默认topic名称
