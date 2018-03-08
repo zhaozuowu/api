@@ -5,8 +5,7 @@
  * Date: 2017/11/17
  * Time: 18:01
  */
-
-class  Order_Define_Const
+class  Orderui_Define_Const
 {
     /**
      * 未删除

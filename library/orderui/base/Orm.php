@@ -1,10 +1,9 @@
 <?php
 /**
- * @name Model_Orm_OrderBase
- * @desc Model_Orm_OrderBase
+ * @name Orderui_Base_Orm
+ * @desc Orderui_Base_Orm
  * @author lvbochao@iwaimai.baidu.com
  */
-
 Class Orderui_Base_Orm extends Wm_Orm_ActiveRecord{
 
     /**

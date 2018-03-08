@@ -4,8 +4,7 @@
  * @desc Action_Sample
  * @author lvbochao@iwaimai.baidu.com
  */
-
-class Action_Sample extends Order_Base_Action
+class Action_Sample extends Orderui_Base_Action
 {
     /**
      * input params
@@ -20,7 +19,7 @@ class Action_Sample extends Order_Base_Action
      * method
      * @var int
      */
-    protected $intMethod = Order_Define_Const::METHOD_POST;
+    protected $intMethod = Orderui_Define_Const::METHOD_POST;
 
     /**
      * init object
