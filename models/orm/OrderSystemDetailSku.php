@@ -34,5 +34,5 @@ class Model_Orm_OrderSystemDetailSku extends Wm_Orm_ActiveRecord
 
     public static $tableName = 'order_system_detail_sku';
     public static $dbName = 'oms_order';
-    public static $clusterName = 'oms_ordermis_cluster';
+    public static $clusterName = 'oms_orderui_cluster';
 }

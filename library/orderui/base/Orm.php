@@ -25,7 +25,7 @@ Class Orderui_Base_Orm extends Wm_Orm_ActiveRecord{
     {
         $intTime = time();
         if (!isset($row['is_delete'])) {
-            $row['is_delete'] = Order_Define_Const::NOT_DELETE;
+            $row['is_delete'] = Orderui_Define_Const::NOT_DELETE;
         }
         if (!isset($row['create_time'])) {
             $row['create_time'] = $intTime;
@@ -52,7 +52,7 @@ Class Orderui_Base_Orm extends Wm_Orm_ActiveRecord{
         $intTime = time();
         foreach ($rows as $row) {
             if (!isset($row['is_delete'])) {
-                $row['is_delete'] = Order_Define_Const::NOT_DELETE;
+                $row['is_delete'] = Orderui_Define_Const::NOT_DELETE;
             }
             if (!isset($row['create_time'])) {
                 $row['create_time'] = $intTime;

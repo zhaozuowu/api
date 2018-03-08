@@ -39,4 +39,9 @@ class  Orderui_Define_Const
      * 空数据默认显示为格式
      */
     const DEFAULT_EMPTY_RESULT_STR = '--';
+
+    /**
+     * oms订单下发系统类型nwms
+     */
+    const ORDER_SYS_NWMS = 1;
 }

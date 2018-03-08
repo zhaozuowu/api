@@ -16,4 +16,6 @@ class Orderui_Error_Code extends Wm_Error_Code
      * @var integer
      */
     const SUCCESS = 0;
+
+    const BUSINESS_ORDER_IS_SPLIT = 400001;
 }

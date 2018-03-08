@@ -18,7 +18,7 @@ abstract class Orderui_Base_Action extends Nscm_Base_Action {
     abstract function myConstruct();
 
     /**
-     * @var Order_Base_Page
+     * @var Orderui_Base_Page
      */
     protected $objPage;
 
@@ -32,7 +32,7 @@ abstract class Orderui_Base_Action extends Nscm_Base_Action {
     }
 
     /**
-     * define it Order_Define_Const::METHOD_GET or Order_Define_Const::METHOD_POST
+     * define it Orderui_Define_Const::METHOD_GET or Order_Define_Const::METHOD_POST
      * @var int $intMethod
      */
     protected $intMethod;
@@ -99,9 +99,9 @@ abstract class Orderui_Base_Action extends Nscm_Base_Action {
     public function beforeMyExecute()
     {
         parent::beforeMyExecute();
-        if ($this->intMethod == Order_Define_Const::METHOD_GET) {
+        if ($this->intMethod == Orderui_Define_Const::METHOD_GET) {
             $arrInput = $this->arrReqGet;
-        } else if ($this->intMethod == Order_Define_Const::METHOD_POST) {
+        } else if ($this->intMethod == Orderui_Define_Const::METHOD_POST) {
             $arrInput = $this->arrReqPost;
         } else {
             trigger_error('must rewrite intMethod in class Action', E_ERROR );
@@ -148,7 +148,7 @@ abstract class Orderui_Base_Action extends Nscm_Base_Action {
      */
     protected function filterPrice($row) {
         if ($this->boolHidePrice) {
-            $row = array_merge($row, array_fill_keys($this->arrPriceFields, Order_Define_Const::DEFAULT_EMPTY_RESULT_STR));
+            $row = array_merge($row, array_fill_keys($this->arrPriceFields, Orderui_Define_Const::DEFAULT_EMPTY_RESULT_STR));
         }
         return $row;
     }
