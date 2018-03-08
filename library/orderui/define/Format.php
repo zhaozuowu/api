@@ -1,11 +1,10 @@
 <?php
 /**
- * @name Order_Define_Format
+ * @name Orderui_Define_Format
  * @desc
- * @author jinyu02@iwaimai.baidu.com
+ * @author yu.jin03@ele.me
  */
-
-class Order_Define_Format
+class Orderui_Define_Format
 {
     /**
      * 格式化设备信息数据

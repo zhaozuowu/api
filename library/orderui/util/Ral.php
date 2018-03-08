@@ -128,8 +128,8 @@ class Order_Util_Ral
                 'inputdata' => Nscm_Lib_Util::jsonEncode($input),
                 'timecost'  => $this->timer->getTotalTime(),
             );
-            throw new Order_Error(
-                Order_Error_Code::RAL_ERROR,
+            throw new Orderui_Error(
+                Orderui_Error_Code::RAL_ERROR,
                 '',
                 $arrLog
             );
@@ -186,8 +186,8 @@ class Order_Util_Ral
                 'header'   => Nscm_Lib_Util::jsonEncode($header),
                 'timecost' => $this->timer->getTotalTime(),
             );
-            throw new Order_Error(
-                Order_Error_Code::RAL_ERROR,
+            throw new Orderui_Error(
+                Orderui_Error_Code::RAL_ERROR,
                 '',
                 $arrLog
             );
@@ -206,8 +206,8 @@ class Order_Util_Ral
     public function multiRequest()
     {
         if (empty($this->arrRequest)) {
-            throw new Order_Error(
-                Order_Error_Code::PARAMS_ERROR,
+            throw new Orderui_Error(
+                Orderui_Error_Code::PARAMS_ERROR,
                 '',
                 array('arrRequest' => $this->arrRequest)
             );
@@ -227,8 +227,8 @@ class Order_Util_Ral
                 //'header'   => Nscm_Lib_Util::jsonEncode($header),
                 'timecost' => $this->timer->getTotalTime(),
             );
-            throw new Order_Error(
-                Order_Error_Code::RAL_ERROR,
+            throw new Orderui_Error(
+                Orderui_Error_Code::RAL_ERROR,
                 '',
                 $arrLog
             );
