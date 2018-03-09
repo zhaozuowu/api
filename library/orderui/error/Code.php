@@ -17,5 +17,15 @@ class Orderui_Error_Code extends Wm_Error_Code
      */
     const SUCCESS = 0;
 
+    /**
+     * ral异常
+     * @var integer
+     */
+    const RAL_ERROR = 200000;
+
+    /**
+     * 业态订单拆分失败
+     * @var integer
+     */
     const BUSINESS_ORDER_IS_SPLIT = 400001;
 }

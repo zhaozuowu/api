@@ -8,7 +8,7 @@
 class Service_Page_SplitBusinessOrder implements Orderui_Base_Page
 {
     /**
-     * @var Service_Data_SplitBusinessOrder
+     * @var Service_Data_BusinessOrder
      */
     protected $objData;
 
@@ -31,7 +31,7 @@ class Service_Page_SplitBusinessOrder implements Orderui_Base_Page
         //拆分业态订单
         $arrOrderList = $this->objData->splitBusinessOrder($arrInput['business_order_id']);
         //转发拆分完毕业态订单
-
-        return $arrOrderList;
+        $res = $this->objData->distributeOrder($arrOrderList);
+        return $res;
     }
 }
