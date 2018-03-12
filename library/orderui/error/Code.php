@@ -28,4 +28,22 @@ class Orderui_Error_Code extends Wm_Error_Code
      * @var integer
      */
     const BUSINESS_ORDER_IS_SPLIT = 400001;
+
+    /**
+     * oms订单不存在
+     * @var integer
+     */
+    const OMS_ORDER_IS_NOT_EXITED = 400002;
+
+    /**
+     * oms订单详情类型不合法
+     * @var integer
+     */
+    const OMS_ORDER_DETAIL_TYPE_INVALID = 400003;
+
+    /**
+     * oms订单系统类型不合法
+     * @var integer
+     */
+    const OMS_ORDER_SYS_TYPE_INVALID = 400004;
 }
