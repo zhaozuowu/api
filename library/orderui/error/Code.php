@@ -18,6 +18,48 @@ class Orderui_Error_Code extends Wm_Error_Code
     const SUCCESS = 0;
 
     /**
+     * 业态订单类型错误
+     * @var integer
+     */
+    const NWMS_BUSINESS_FORM_ORDER_TYPE_ERROR = 340003;
+
+    /**
+     * 业态订单补货类型错误
+     * @var integer
+     */
+    const NWMS_BUSINESS_FORM_ORDER_SUPPLY_TYPE_ERROR = 340004;
+
+    /**
+     * 预计送达时间不合法
+     * @var integer
+     */
+    const NWMS_ORDER_STOCKOUT_EXPECT_ARRIVE_TIME_ERROR = 340019;/**
+
+   /**
+    * 纬度错误
+    * @var integer
+    */
+    const NWMS_ORDER_STOCKOUT_LATITUDE_ERROR = 340021;
+
+    /**
+     * 经度错误
+     * @var integer
+     */
+    const NWMS_ORDER_STOCKOUT_LONGITUDE_ERROR = 340022;
+
+    /**
+     * 坐标来源标识错误
+     * @var integer
+     */
+    const NWMS_ORDER_CUSTOMER_LOCATION_SOURCE_ERROR = 340023;
+
+    /**
+     * 无人货架信息错误
+     * @var integer
+     */
+    const NWMS_ORDER_STOCKOUT_SHELF_ERROR = 340024;
+
+    /**
      * ral异常
      * @var integer
      */

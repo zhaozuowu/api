@@ -8,6 +8,17 @@
 class Orderui_Error_Message extends Wm_Error_Message
 {
     protected $_disp_app_err_msg = [
+        Order_Error_Code::SUCCESS => '',
+        Order_Error_Code::RAL_ERROR => 'X',
+        Orderui_Error_Code::SUCCESS => '',
+        Orderui_Error_Code::RAL_ERROR => 'X',
+        Orderui_Error_Code::NWMS_BUSINESS_FORM_ORDER_SUPPLY_TYPE_ERROR => '业态订单补货类型错误',
+        Orderui_Error_Code::NWMS_BUSINESS_FORM_ORDER_TYPE_ERROR => '业态订单类型错误',
+        Orderui_Error_Code::NWMS_ORDER_CUSTOMER_LOCATION_SOURCE_ERROR => '经纬度坐标来源错误',
+        Orderui_Error_Code::NWMS_ORDER_STOCKOUT_EXPECT_ARRIVE_TIME_ERROR => '预计送达时间不能为过去时间',
+        Orderui_Error_Code::NWMS_ORDER_STOCKOUT_LATITUDE_ERROR => '纬度超出范围',
+        Orderui_Error_Code::NWMS_ORDER_STOCKOUT_LONGITUDE_ERROR => '经度超出范围',
+        Orderui_Error_Code::NWMS_ORDER_STOCKOUT_SHELF_ERROR => '无人货架信息错误',
         Orderui_Error_Code::SUCCESS => '',
         Orderui_Error_Code::RAL_ERROR => 'X',
         Orderui_Error_Code::BUSINESS_ORDER_IS_SPLIT => '业态订单拆分失败',

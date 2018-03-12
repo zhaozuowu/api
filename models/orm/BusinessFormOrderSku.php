@@ -35,4 +35,23 @@ class Model_Orm_BusinessFormOrderSku extends Wm_Orm_ActiveRecord
     public static $tableName = 'business_form_order_sku';
     public static $dbName = 'oms_order';
     public static $clusterName = 'oms_orderui_cluster';
+<<<<<<< HEAD
+
+    /**
+     * 获取业态订单sku信息
+     * @param $arrConditions
+     * @param array $arrColumns
+     * @param null $intOffset
+     * @param null $intLimit
+     * @return array
+     */
+    public static function getBusSkuListByConditions($arrConditions, $arrColumns = [], $intOffset = null, $intLimit = null)
+    {
+        if (empty($arrColumns)) {
+            $arrColumns = self::getAllColumns();
+        }
+        return self::findRows($arrColumns, $arrConditions, ['create_time' => 'desc'], $intOffset, $intLimit);
+    }
+=======
+>>>>>>> b3b84bd31b3b031e559645a50afee857b07b2449
 }
