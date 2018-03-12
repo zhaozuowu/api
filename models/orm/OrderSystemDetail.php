@@ -43,13 +43,15 @@ class Model_Orm_OrderSystemDetail extends Orderui_Base_Orm
      * 通过oms订单号获取Oms订单信息
      * @param  integer $intOrderType
      * @param  integer $intOrderId
+     * @param  integer $intOrderSysId
      * @return array
      */
-    public static function getOrderInfoByOrderId($intOrderId, $intOrderType)
+    public static function getOrderInfo($intOrderId, $intOrderType, $intOrderSysId)
     {
         $arrCondition = [
             'order_type' => $intOrderType,
             'order_id' => $intOrderId,
+            'order_system_id' => $intOrderSysId,
             'is_delete' => Orderui_Define_Const::NOT_DELETE,
         ];
         return self::findRow(self::getAllColumns(), $arrCondition);

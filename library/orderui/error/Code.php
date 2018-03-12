@@ -46,4 +46,10 @@ class Orderui_Error_Code extends Wm_Error_Code
      * @var integer
      */
     const OMS_ORDER_SYS_TYPE_INVALID = 400004;
+
+    /**
+     * order system detail订单已经存在
+     * @var integer
+     */
+    const ORDER_SYS_DETAIL_IS_EXITED = 400005;
 }

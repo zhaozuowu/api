@@ -39,11 +39,14 @@ class Service_Data_OmsOrder
         Model_Orm_OrderSystem::updateAll($arrFields, $arrCondition);
     }
 
-    public function getBusinessOrderIdByOrderSysId($intOrderSysId)
+    /**
+     * 通过order system id 获取订单信息
+     * @param  integer $intOrderSysId
+     * @return array
+     */
+    public function getOrderInfoByOrderSysId($intOrderSysId)
     {
-        $arrOrderSysInfo = Model_Orm_OrderSystem::getOrderInfoByOmsOrderId($intOrderSysId);
-
-        return $arrOrderSysInfo['business_form_order_id'];
+         return Model_Orm_OrderSystem::getOrderInfoByOmsOrderId($intOrderSysId);
     }
     /**
      * @param  integer $intOmsOrderId
@@ -69,18 +72,6 @@ class Service_Data_OmsOrder
             if (empty($value)) {
                 Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR, "{$strKey} param is invalid");
             }
-        }
-    }
-
-    /**
-     * 验证oms订单详情类型是否合法
-     * @param  integer $intOrderSysType
-     * @throws Orderui_BusinessError
-     */
-    public function validateOrderSysType($intOrderSysType)
-    {
-        if (!in_array($intOrderSysType, Orderui_Define_Const::ORDER_SYS_TYPE)) {
-            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_ORDER_SYS_TYPE_INVALID);
         }
     }
 }

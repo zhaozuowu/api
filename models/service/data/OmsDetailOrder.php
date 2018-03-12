@@ -22,10 +22,9 @@ class Service_Data_OmsDetailOrder
      * @throws Exception
      */
     public function insertOmsSysDetail($intOrderType, $intParentOrderId,
-                                        $intOrderId, $arrSkuList, $intOrderSysType,
-                                       $intChildrenOrderId = 0, $strOrderException = '')
+                                        $intOrderId, $arrSkuList, $intOrderSysType, $intBusinessFormOrderId,
+                                       $intOrderSysId, $intChildrenOrderId = 0, $strOrderException = '')
     {
-        $arrOrderInfo = $this->getOrderInfoByParentOrderId($intParentOrderId, $intOrderType, $intOrderSysType);
         $arrValidateParams = [
             'order_type' => $intOrderType,
             'parent_order_id' => $intParentOrderId,
@@ -39,8 +38,10 @@ class Service_Data_OmsDetailOrder
             && empty($intChildrenOrderId)) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR, 'children order id is invalid');
         }
-        $intOrderSysId = $arrOrderInfo['order_system_id'];
-        $intBusinessFormOrderId = $arrOrderInfo['business_form_order_id'];
+        //验证订单是否已经存在
+        if ($this->validateOrderIsExisted($intOrderId, $intOrderSysId, $intOrderType)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::ORDER_SYS_DETAIL_IS_EXITED);
+        }
         Model_Orm_OrderSystemDetail::getConnection()->transaction(function () use ($intOrderSysId, $intOrderType,
             $intBusinessFormOrderId, $intOrderId, $intParentOrderId, $intChildrenOrderId, $strOrderException, $arrSkuList){
             $intOrderSysDetailOrderId = Model_Orm_OrderSystemDetail::insertOrderSysDetail($intOrderSysId, $intOrderType,
@@ -50,28 +51,19 @@ class Service_Data_OmsDetailOrder
     }
 
     /**
-     * @param  integer $intParentOrderId
+     * 验证订单是否已经存在
+     * @param  integer $intOrderId
+     * @param  integer $intOrderSysId
      * @param  integer $intOrderType
-     * @param  integer $intOrderSysType
-     * @return array   $intOrderSysType
+     * @return bool
      */
-    public function getOrderInfoByParentOrderId($intParentOrderId, $intOrderType, $intOrderSysType)
+    public function validateOrderIsExisted($intOrderId, $intOrderSysId, $intOrderType)
     {
-        if ($intParentOrderType = Orderui_Define_Const::ORDER_PARENT_ORDER_TYPE[$intOrderSysType][$intOrderType]) {
-            $arrOrderSysDetailInfo = Model_Orm_OrderSystemDetail::getOrderInfoByOrderId($intParentOrderId, $intParentOrderType);
-
-            $arrOrderInfo = [
-                'business_form_order_id' => $arrOrderSysDetailInfo['business_form_order_id'],
-                'order_system_id' => $arrOrderSysDetailInfo['order_system_id'],
-            ];
-        } else {
-            $arrOrderSysInfo = Model_Orm_OrderSystem::getOrderInfoByOmsOrderId($intParentOrderId);
-            $arrOrderInfo = [
-                'business_form_order_id' => $arrOrderSysInfo['business_form_order_id'],
-                'order_system_id' => $arrOrderSysInfo['order_system_id'],
-            ];
+        $arrOrderSysInfo = Model_Orm_OrderSystemDetail::getOrderInfo($intOrderId, $intOrderType, $intOrderSysId);
+        if (!empty($arrOrderSysInfo)) {
+            return true;
         }
-        return $arrOrderInfo;
+        return false;
     }
 
     /**

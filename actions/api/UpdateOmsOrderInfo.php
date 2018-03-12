@@ -16,7 +16,7 @@ class Action_UpdateOmsOrderInfo extends Orderui_Base_ApiAction
         'order_id'             => 'int|required',
         'children_order_id'             => 'int',
         'order_type'             => 'int|required',
-        'order_sys_type'             => 'int|required',
+        'order_sys_id'             => 'int|required',
         'order_exception'             => 'str',
         'skus' => [
             'validate' => 'json|decode|required',
