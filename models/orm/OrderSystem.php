@@ -27,12 +27,18 @@
  * @method static yieldColumnFromRdview($column, $cond, $orderBy = [], $offset = 0, $limit = null)
 */
 
+<<<<<<< HEAD
+class Model_Orm_OrderSystem extends Wm_Orm_ActiveRecord
+=======
 class Model_Orm_OrderSystem extends Orderui_Base_Orm
+>>>>>>> b3b84bd31b3b031e559645a50afee857b07b2449
 {
 
     public static $tableName = 'order_system';
     public static $dbName = 'oms_order';
     public static $clusterName = 'oms_orderui_cluster';
+<<<<<<< HEAD
+=======
 
     /**
      * 通过业态订单号获取Oms订单信息
@@ -61,4 +67,5 @@ class Model_Orm_OrderSystem extends Orderui_Base_Orm
         ];
         return self::findRow(self::getAllColumns(), $arrCondition);
     }
+>>>>>>> b3b84bd31b3b031e559645a50afee857b07b2449
 }

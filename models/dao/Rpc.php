@@ -65,7 +65,7 @@ class Dao_Rpc
             ];
         }
         try {
-            $ralObj =  new Order_Util_Ral();
+            $ralObj =  new Orderui_Util_Ral();
             $apiRes = $ralObj->ralMulti($req);
         } catch (Exception $e) {
             return [];
@@ -84,7 +84,7 @@ class Dao_Rpc
                 $apiRes[$key] = $this->defaultFormat($apiRes[$key], $value);
             }
             $res[$value] =  $apiRes[$key];
-            Order_Debug::breakPoint($value, [
+            Orderui_Debug::breakPoint($value, [
                 'req' => $data[$value],
                 'res' => $res[$value],
             ]);
