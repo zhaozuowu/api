@@ -4,7 +4,7 @@
  * @desc api action基类
  * @author lvbochao@iwaimai.baidu.com
  */
-abstract class Orderui_Base_ApiAction extends Order_Base_Action
+abstract class Orderui_Base_ApiAction extends Orderui_Base_Action
 {
     /**
      * 是否验证登陆

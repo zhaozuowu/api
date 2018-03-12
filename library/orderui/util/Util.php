@@ -1,55 +1,20 @@
 <?php
 /**
- * @name Order_Util_Util
- * @desc Order_Util_Util
+ * @name Orderui_Util_Util
+ * @desc Orderui_Util_Util
  * @author lvbochao@iwaimai.baidu.com
  */
-class Order_Util_Util
+class Orderui_Util_Util
 {
 
     /**
-     * generate reserve order code
+     * generate oms order code
      * @return int
+     * @throws Wm_Error
      */
-    public static function generateReserveOrderCode()
+    public static function generateOmsOrderCode()
     {
         return Nscm_Lib_IdGenerator::sequenceDateNumber();
-    }
-
-    /**
-     * generate stockin order code
-     * @return int
-     */
-    public static function generateStockinOrderCode()
-    {
-        return Nscm_Lib_IdGenerator::sequenceDateNumber();
-    }
-
-    /**
-     * generate stockout order id
-     * @return void
-     */
-    public static function generateStockoutOrderId() 
-    {
-        return Nscm_Lib_IdGenerator::sequenceDateNumber();
-    }
-
-    /**
-     * generate stock adjust order id
-     * @return int
-     */
-    public static function generateStockAdjustOrderId()
-    {
-        return Nscm_Lib_IdGenerator::sequenceDateNumber();
-    }
-
-    /**
-     * geenerate business form order id
-     * @return void
-     */
-    public static function generateBusinessFormOrderId() 
-    {
-        return NScm_Lib_IdGenerator::sequenceDateNumber();
     }
 
     /**

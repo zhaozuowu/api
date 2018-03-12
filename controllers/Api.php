@@ -6,6 +6,6 @@
  */
 class Controller_Api extends Ap_Controller_Abstract {
     public $actions = array(
-        'sample' => 'actions/Sample.php',
+        'updateomsorderinfo' => 'actions/api/UpdateOmsOrderInfo.php' #增量更新子单信息#@skipped#
     );
 }

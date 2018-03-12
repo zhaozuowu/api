@@ -52,7 +52,7 @@ class Order_Util
     public static function getFormatDateTime($unixTime)
     {
         if(0 == $unixTime){
-            return Order_Define_Const::DEFAULT_EMPTY_RESULT_STR;
+            return Orderui_Define_Const::DEFAULT_EMPTY_RESULT_STR;
         }
 
         return date('Y-m-d H:i:s', intval($unixTime));

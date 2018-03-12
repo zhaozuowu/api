@@ -43,5 +43,5 @@ class Model_Orm_BusinessFormOrder extends Wm_Orm_ActiveRecord
 
     public static $tableName = 'business_form_order';
     public static $dbName = 'oms_order';
-    public static $clusterName = 'oms_ordermis_cluster';
+    public static $clusterName = 'oms_orderui_cluster';
 }

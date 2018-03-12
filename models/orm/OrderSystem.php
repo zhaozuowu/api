@@ -27,10 +27,38 @@
  * @method static yieldColumnFromRdview($column, $cond, $orderBy = [], $offset = 0, $limit = null)
 */
 
-class Model_Orm_OrderSystem extends Wm_Orm_ActiveRecord
+class Model_Orm_OrderSystem extends Orderui_Base_Orm
 {
 
     public static $tableName = 'order_system';
     public static $dbName = 'oms_order';
-    public static $clusterName = 'oms_ordermis_cluster';
+    public static $clusterName = 'oms_orderui_cluster';
+
+    /**
+     * 通过业态订单号获取Oms订单信息
+     * @param  int $intBusinessOrderId
+     * @return mixed
+     */
+    public static function getOrderInfoByBusinessOrderId($intBusinessOrderId)
+    {
+        $arrCondition = [
+            'business_form_order_id' => $intBusinessOrderId,
+            'is_delete' => Orderui_Define_Const::NOT_DELETE,
+        ];
+        return self::findRow(self::getAllColumns(), $arrCondition);
+    }
+
+    /**
+     * 通过oms订单号获取Oms订单信息
+     * @param  integer $intOmsOrderId
+     * @return array
+     */
+    public static function getOrderInfoByOmsOrderId($intOmsOrderId)
+    {
+        $arrCondition = [
+            'order_system_id' => $intOmsOrderId,
+            'is_delete' => Orderui_Define_Const::NOT_DELETE,
+        ];
+        return self::findRow(self::getAllColumns(), $arrCondition);
+    }
 }
