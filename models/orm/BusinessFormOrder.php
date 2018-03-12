@@ -38,13 +38,12 @@
  * @method static yieldColumnFromRdview($column, $cond, $orderBy = [], $offset = 0, $limit = null)
 */
 
-class Model_Orm_BusinessFormOrder extends Wm_Orm_ActiveRecord
+class Model_Orm_BusinessFormOrder extends Orderui_Base_Orm
 {
 
     public static $tableName = 'business_form_order';
     public static $dbName = 'oms_order';
     public static $clusterName = 'oms_orderui_cluster';
-<<<<<<< HEAD
 
     /**
      * 获取业态订单信息
@@ -86,6 +85,4 @@ class Model_Orm_BusinessFormOrder extends Wm_Orm_ActiveRecord
 
 
     }
-=======
->>>>>>> b3b84bd31b3b031e559645a50afee857b07b2449
 }

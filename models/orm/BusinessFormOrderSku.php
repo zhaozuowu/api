@@ -29,13 +29,12 @@
  * @method static yieldColumnFromRdview($column, $cond, $orderBy = [], $offset = 0, $limit = null)
 */
 
-class Model_Orm_BusinessFormOrderSku extends Wm_Orm_ActiveRecord
+class Model_Orm_BusinessFormOrderSku extends Orderui_Base_Orm
 {
 
     public static $tableName = 'business_form_order_sku';
     public static $dbName = 'oms_order';
     public static $clusterName = 'oms_orderui_cluster';
-<<<<<<< HEAD
 
     /**
      * 获取业态订单sku信息
@@ -52,6 +51,4 @@ class Model_Orm_BusinessFormOrderSku extends Wm_Orm_ActiveRecord
         }
         return self::findRows($arrColumns, $arrConditions, ['create_time' => 'desc'], $intOffset, $intLimit);
     }
-=======
->>>>>>> b3b84bd31b3b031e559645a50afee857b07b2449
 }

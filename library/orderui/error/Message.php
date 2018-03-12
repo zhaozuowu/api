@@ -8,8 +8,8 @@
 class Orderui_Error_Message extends Wm_Error_Message
 {
     protected $_disp_app_err_msg = [
-        Order_Error_Code::SUCCESS => '',
-        Order_Error_Code::RAL_ERROR => 'X',
+        Orderui_Error_Code::SUCCESS => '',
+        Orderui_Error_Code::RAL_ERROR => 'X',
         Orderui_Error_Code::SUCCESS => '',
         Orderui_Error_Code::RAL_ERROR => 'X',
         Orderui_Error_Code::NWMS_BUSINESS_FORM_ORDER_SUPPLY_TYPE_ERROR => '业态订单补货类型错误',

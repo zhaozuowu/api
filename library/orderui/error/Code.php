@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @name Order_Error_Code
+ * @name Orderui_Error_Code
  * @desc Error Code
  * 占位说明：
  * Wm_Error_Code:100000~200000
