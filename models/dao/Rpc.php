@@ -1,11 +1,16 @@
 <?php
 /**
- * @name Dao_Data
+ * @name Dao_Rpc
  * @desc 策略榜单
  * @auth wanggang01@iwaimai.baidu.com
  */
 class Dao_Rpc
 {
+    /**
+     * @param $data
+     * @return array
+     * @throws Orderui_Error
+     */
     public function getData($data)
     {
         $api = Bd_Conf::getAppConf('api');
@@ -22,8 +27,8 @@ class Dao_Rpc
             }
             $service = $api[$key];
             if (empty($service)) {
-                throw new Order_Error(
-                    Order_Error_Code::RAL_ERROR,
+                throw new Orderui_Error(
+                    Orderui_Error_Code::RAL_ERROR,
                     '',
                     "$key ral conf is not exists."
                 );
