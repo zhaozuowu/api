@@ -1,6 +1,6 @@
 <?php
 /**
- * @name Order_Util_Utility
+ * @name Orderui_Util_Utility
  * @desc Order_Util_Utility
  * @author yu.jin03@ele.me
  */

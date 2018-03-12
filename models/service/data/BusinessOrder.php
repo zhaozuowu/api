@@ -26,7 +26,7 @@ class Service_Data_BusinessOrder
             Orderui_BusinessError::throwException(Orderui_Error_Code::BUSINESS_ORDER_IS_SPLIT, 'business_order_id is already split');
         }
 
-        $intOrderSystemId = Orderui_Util_Util::generateOmsOrderCode();
+        $intOrderSystemId = Orderui_Util_Utility::generateOmsOrderCode();
 
         $arrOrderSysList = [
             [
