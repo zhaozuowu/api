@@ -9,7 +9,6 @@ class Action_SplitBusinessOrder extends Orderui_Base_Action
 {
     protected $arrInputParams = [
         'business_form_order_id' => 'int|required',
-        'logistics_order_id' => 'str|required',
         'business_form_order_type' => 'int|required',
         'shelf_info' => 'json|decode|required',
         'business_form_order_remark' => 'str|max[128]',

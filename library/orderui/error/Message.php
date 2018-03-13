@@ -26,6 +26,7 @@ class Orderui_Error_Message extends Wm_Error_Message
         Orderui_Error_Code::OMS_ORDER_DETAIL_TYPE_INVALID => 'oms订单详情类型不合法',
         Orderui_Error_Code::OMS_ORDER_SYS_TYPE_INVALID => 'oms订单系统类型不合法',
         Orderui_Error_Code::ORDER_SYS_DETAIL_IS_EXITED => '订单已经存在',
+        Orderui_Error_Code::NWMS_ORDER_CREATE_ERROR => '创建nwms订单失败',
     ];
 
 }

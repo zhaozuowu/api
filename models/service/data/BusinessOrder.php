@@ -44,10 +44,14 @@ class Service_Data_BusinessOrder
                 'request_info' => $arrBusinessOrderInfo,
             ],
         ];
-
-        //存储数据？
+        //转发
+        $res = $this->distributeOrder($arrOrderSysDetailList);
+        if (empty($res)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_CREATE_ERROR);
+        }
+        //存储数据
         Model_Orm_OrderSystem::batchInsert($arrOrderSysList);
-        return $arrOrderSysDetailList;
+        return $res;
     }
 
     /**
@@ -78,7 +82,11 @@ class Service_Data_BusinessOrder
         foreach ($arrOrderList as $arrOrderInfo) {
             $intOrderSysType = $arrOrderInfo['order_system_type'];
             if (Orderui_Define_Const::ORDER_SYS_NWMS == $intOrderSysType) {
-                $ret[] = $objNwmsOrder->createNWmsOrder($arrOrderInfo['request_info']);
+                $ret[] = [
+                    'result' => $objNwmsOrder->createNWmsOrder($arrOrderInfo['request_info']),
+                    'order_system_id' => $arrOrderInfo['order_system_id'],
+                    'order_system_type' => $arrOrderInfo['order_system_type'],
+                ];
             }
         }
         return $ret;

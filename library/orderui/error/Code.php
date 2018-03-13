@@ -60,6 +60,12 @@ class Orderui_Error_Code extends Wm_Error_Code
     const NWMS_ORDER_STOCKOUT_SHELF_ERROR = 340024;
 
     /**
+     * 创建nwms订单失败
+     * @var integer
+     */
+    const NWMS_ORDER_CREATE_ERROR = 350025;
+
+    /**
      * ral异常
      * @var integer
      */
@@ -69,29 +75,29 @@ class Orderui_Error_Code extends Wm_Error_Code
      * 业态订单拆分失败
      * @var integer
      */
-    const BUSINESS_ORDER_IS_SPLIT = 400001;
+    const BUSINESS_ORDER_IS_SPLIT = 350030;
 
     /**
      * oms订单不存在
      * @var integer
      */
-    const OMS_ORDER_IS_NOT_EXITED = 400002;
+    const OMS_ORDER_IS_NOT_EXITED = 350031;
 
     /**
      * oms订单详情类型不合法
      * @var integer
      */
-    const OMS_ORDER_DETAIL_TYPE_INVALID = 400003;
+    const OMS_ORDER_DETAIL_TYPE_INVALID = 350032;
 
     /**
      * oms订单系统类型不合法
      * @var integer
      */
-    const OMS_ORDER_SYS_TYPE_INVALID = 400004;
+    const OMS_ORDER_SYS_TYPE_INVALID = 350033;
 
     /**
      * order system detail订单已经存在
      * @var integer
      */
-    const ORDER_SYS_DETAIL_IS_EXITED = 400005;
+    const ORDER_SYS_DETAIL_IS_EXITED = 350034;
 }

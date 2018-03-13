@@ -36,7 +36,9 @@ class Dao_Ral_NWmsOrder
     public function createNWmsOrder($arrBusinessOrderInfo)
     {
         $req[self::API_RALER_CREATE_NWMS_ORDER] = $arrBusinessOrderInfo;
+        Bd_Log::trace(sprintf("create nwms order request params %s", json_encode($req)));
         $ret = $this->objApiRal->getData($req);
+        Bd_Log::trace(sprintf("create nwms order response %s", json_encode($ret)));
         $ret = !empty($ret[self::API_RALER_CREATE_NWMS_ORDER]) ? $ret[self::API_RALER_CREATE_NWMS_ORDER] : [];
         return $ret;
     }
