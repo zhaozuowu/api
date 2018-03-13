@@ -100,4 +100,10 @@ class Orderui_Error_Code extends Wm_Error_Code
      * @var integer
      */
     const ORDER_SYS_DETAIL_IS_EXITED = 350034;
+
+    /**
+     * oms权限校验失败
+     * @var integer
+     */
+    const OMS_CHECK_AUTHORITY_ERROR = 350001;
 }

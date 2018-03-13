@@ -18,6 +18,14 @@ class Dao_Ral_Sku
     const API_RALER_GET_SKU_INFOS = 'getskuinfos';
 
     /**
+     * init object
+     */
+    public function __construct()
+    {
+        $this->objApiRal = new Orderui_ApiRaler();
+    }
+
+    /**
      * get sku infos
      * @param int[] $arrSkuIds
      * @return array

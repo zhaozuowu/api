@@ -19,14 +19,13 @@ class Orderui_Error_Message extends Wm_Error_Message
         Orderui_Error_Code::NWMS_ORDER_STOCKOUT_LATITUDE_ERROR => '纬度超出范围',
         Orderui_Error_Code::NWMS_ORDER_STOCKOUT_LONGITUDE_ERROR => '经度超出范围',
         Orderui_Error_Code::NWMS_ORDER_STOCKOUT_SHELF_ERROR => '无人货架信息错误',
-        Orderui_Error_Code::SUCCESS => '',
-        Orderui_Error_Code::RAL_ERROR => 'X',
         Orderui_Error_Code::BUSINESS_ORDER_IS_SPLIT => '业态订单拆分失败',
         Orderui_Error_Code::OMS_ORDER_IS_NOT_EXITED => 'oms订单不存在',
         Orderui_Error_Code::OMS_ORDER_DETAIL_TYPE_INVALID => 'oms订单详情类型不合法',
         Orderui_Error_Code::OMS_ORDER_SYS_TYPE_INVALID => 'oms订单系统类型不合法',
         Orderui_Error_Code::ORDER_SYS_DETAIL_IS_EXITED => '订单已经存在',
         Orderui_Error_Code::NWMS_ORDER_CREATE_ERROR => '创建nwms订单失败',
+        Orderui_Error_Code::OMS_CHECK_AUTHORITY_ERROR => 'oms权限校验失败',
     ];
 
 }

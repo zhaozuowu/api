@@ -1,11 +1,11 @@
 <?php
 /**
  * @name Controller_BusinessService
- * @desc Controller_BusinessService
- * @author yu.jin03@ele.me
+ * @desc 创建业态订单
+ * @author  jinyu02@iwaimai.baidu.com
  */
-class Controller_BusinessService extends Orderui_Base_ServiceController
-{
+class Controller_BusinessService extends Orderui_Base_ServiceController {
+
     /**
      * 地址映射
      * @var array
