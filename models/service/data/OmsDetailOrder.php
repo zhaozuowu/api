@@ -21,7 +21,7 @@ class Service_Data_OmsDetailOrder
      * @throws Orderui_BusinessError
      * @throws Exception
      */
-    public function insertOmsSysDetail($intOrderType, $intParentOrderId,
+    public function addOmsSysDetail($intOrderType, $intParentOrderId,
                                         $intOrderId, $arrSkuList, $intOrderSysType, $intBusinessFormOrderId,
                                        $intOrderSysId, $intChildrenOrderId = 0, $strOrderException = '')
     {

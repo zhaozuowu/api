@@ -61,4 +61,20 @@ class Model_Orm_OrderSystem extends Orderui_Base_Orm
         ];
         return self::findRow(self::getAllColumns(), $arrCondition);
     }
+
+    /**
+     * 通过下游系统订单号和订单类型获取订单信息
+     * @param  integer $intOrderId
+     * @param  integer $intOrderType
+     * @return array
+     */
+    public static function getOrderInfoByOrderIdAndType($intOrderId, $intOrderType)
+    {
+        $arrCondition = [
+            'order_id' => $intOrderId,
+            'order_type' => $intOrderType,
+            'is_delete' => Orderui_Define_Const::NOT_DELETE,
+        ];
+        return self::findRow(self::getAllColumns(), $arrCondition);
+    }
 }

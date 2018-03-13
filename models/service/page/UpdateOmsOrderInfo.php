@@ -33,8 +33,8 @@ class Service_Page_UpdateOmsOrderInfo
      */
     public function execute($arrInput)
     {
-        $arrOrderSysInfo = $this->objDataOrderSys->getOrderInfoByOrderSysId($arrInput['order_sys_id']);
-        $this->objDataOrderSysDetail->insertOmsSysDetail($arrInput['order_type'], $arrInput['parent_order_id'],
+        $arrOrderSysInfo = $this->objDataOrderSys->getOrderInfoByOrderIdAndType($arrInput['parent_order_id']);
+        $this->objDataOrderSysDetail->addOmsSysDetail($arrInput['order_type'], $arrInput['parent_order_id'],
             $arrInput['order_id'], $arrInput['skus'], $arrOrderSysInfo['order_system_type'],
             $arrOrderSysInfo['business_form_order_id'], $arrOrderSysInfo['order_system_id'],
             $arrInput['children_order_id'], $arrInput['order_exception']

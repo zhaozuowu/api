@@ -74,4 +74,15 @@ class Service_Data_OmsOrder
             }
         }
     }
+
+    /**
+     * 通过下游系统订单号和订单类型获取订单信息
+     * @param  integer $intOrderId
+     * @param  integer $intOrderType
+     * @return array
+     */
+    public function getOrderInfoByOrderIdAndType($intOrderId, $intOrderType)
+    {
+        return Model_Orm_OrderSystem::getOrderInfoByOrderIdAndType($intOrderId, $intOrderType);
+    }
 }

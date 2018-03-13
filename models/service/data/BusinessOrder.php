@@ -36,7 +36,6 @@ class Service_Data_BusinessOrder
             ],
         ];
 
-        $arrBusinessOrderInfo['logistics_order_id'] = $intOrderSystemId;
         $arrOrderSysDetailList = [
             [
                 'order_system_id' => $intOrderSystemId,

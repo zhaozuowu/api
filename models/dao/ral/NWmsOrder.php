@@ -9,7 +9,7 @@ class Dao_Ral_NWmsOrder
 {
     /**
      * api raler
-     * @var Orderui_ApiRaler
+     * @var Orderui_Ral_Api_Ral
      */
     protected $objApiRal;
 
@@ -24,7 +24,7 @@ class Dao_Ral_NWmsOrder
      */
     public function __construct()
     {
-        $this->objApiRal = new Orderui_ApiRaler();
+        $this->objApiRal = new Orderui_Ral_Api_Ral();
     }
 
     /**
