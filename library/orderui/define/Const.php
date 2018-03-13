@@ -85,9 +85,7 @@ class  Orderui_Define_Const
     const TMS_ORDER_TYPE_SHIPMENT = 5;
 
     const ORDER_PARENT_ORDER_TYPE = [
-        self::ORDER_SYS_NWMS => [
-            self::NWMS_ORDER_TYPE_STOCK_OUT => self::NWMS_ORDER_TYPE_ORDER,
-        ],
+        self::NWMS_ORDER_TYPE_STOCK_OUT => self::NWMS_ORDER_TYPE_ORDER,
     ];
 
     /**

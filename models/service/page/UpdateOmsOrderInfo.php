@@ -8,7 +8,7 @@
 class Service_Page_UpdateOmsOrderInfo
 {
     /**
-     * @var Service_Data_OmsOrder
+     * @var Service_Data_OmsDetailOrder
      */
     protected $objData;
     /**

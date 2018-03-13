@@ -161,6 +161,6 @@ class Service_Data_OmsDetailOrder
      */
     public function getOrderInfoByOrderIdAndType($intOrderId, $intOrderType)
     {
-        return Model_Orm_OrderSystem::getOrderInfoByOrderIdAndType($intOrderId, $intOrderType);
+        return Model_Orm_OrderSystemDetail::getOrderInfoByOrderIdAndType($intOrderId, $intOrderType);
     }
 }
