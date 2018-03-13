@@ -4,7 +4,7 @@
  * @desc Error
  * @auth wanggang01@iwaimai.baidu.com
  */
-class Orderui_Error extends Wm_Error
+class Orderui_Error extends Nscm_Exception_Error
 {
     /**
      * @param integer $intErrorCode

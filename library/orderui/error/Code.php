@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @name Orderui_Error_Code
  * @desc Error Code
@@ -33,7 +32,7 @@ class Orderui_Error_Code extends Wm_Error_Code
      * 预计送达时间不合法
      * @var integer
      */
-    const NWMS_ORDER_STOCKOUT_EXPECT_ARRIVE_TIME_ERROR = 340019;/**
+    const NWMS_ORDER_STOCKOUT_EXPECT_ARRIVE_TIME_ERROR = 340019;
 
    /**
     * 纬度错误
@@ -94,4 +93,10 @@ class Orderui_Error_Code extends Wm_Error_Code
      * @var integer
      */
     const ORDER_SYS_DETAIL_IS_EXITED = 400005;
+
+    /**
+     * oms权限校验失败
+     * @var integer
+     */
+    const OMS_CHECK_AUTHORITY_ERROR = 350001;
 }

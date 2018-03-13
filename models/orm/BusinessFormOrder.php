@@ -82,7 +82,5 @@ class Model_Orm_BusinessFormOrder extends Orderui_Base_Orm
         $arrList = $arrList->toArray();
         Bd_Log::debug(__METHOD__ . ' return: ' . json_encode($arrList));
         return $arrList;
-
-
     }
 }

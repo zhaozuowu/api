@@ -20,11 +20,29 @@ class Service_Data_BusinessFormOrder
     }
 
     /**
+     * 授权介入校验
+     * @param $strBusinessFormKey
+     * @param $strBusinessFormToken
+     * @return void
+     * @throws Orderui_Error
+     */
+    public function checkAuthority($strBusinessFormKey, $strBusinessFormToken) {
+        $strGenKey = md5(md5($strBusinessFormKey) . md5(Orderui_Define_BusinessFormOrder::SALT_VAL));
+        if ($strGenKey != $strBusinessFormToken) {
+            Orderui_Error::throwException(Orderui_Error_Code::OMS_CHECK_AUTHORITY_ERROR);
+        }
+    }
+
+    /**
      * 创建业态订单
      * @param $arrInput
      * @return void
+     * @throws Nscm_Exception_Error
+     * @throws Orderui_Error
+     * @throws Wm_Error
      */
     public function createBusinessFormOrder($arrInput) {
+        //$this->checkAuthority($arrInput['business_form_key'], $arrInput['business_form_token']);
         $arrCreateParams = $this->getCreateParams($arrInput);
         $arrBatchSkuParams = $this->getBatchSkuParams($arrCreateParams['business_form_order_id'], $arrInput['skus']);
         Model_Orm_BusinessFormOrder::getConnection()->transaction(function ()
@@ -96,13 +114,17 @@ class Service_Data_BusinessFormOrder
      * 拼接业态订单创建参数
      * @param $arrInput
      * @return array
+     * @throws Wm_Error
      */
     protected function getCreateParams($arrInput) {
         $arrCreateParams = [];
         if (empty($arrInput)) {
             return $arrCreateParams;
         }
-        $arrCreateParams['business_form_order_id'] = Orderui_Util_Utility::generateBusinessFormOrderId();
+        $arrCreateParams['business_form_order_id'] = empty($arrInput['business_form_order_id']) ?
+                                                        Orderui_Util_Utility::generateBusinessFormOrderId() : $arrInput['business_form_order_id'];
+        $arrCreateParams['source_order_id'] = empty($arrInput['logistics_order_id']) ?
+                                                        0 : intval($arrInput['logistics_order_id']);
         $arrCreateParams['business_form_order_type'] = empty($arrInput['business_form_order_type']) ?
                                                         0 : intval($arrInput['business_form_order_type']);
         $arrCreateParams['customer_city_id'] = empty($arrInput['customer_city_id']) ?
@@ -190,5 +212,82 @@ class Service_Data_BusinessFormOrder
             $arrSkus[$intKey]['sku_name'] = $arrMapSkus[$intSkuId]['sku_name'];
         }
         return $arrSkus;
+    }
+
+    /**
+     * 拆分业态订单
+     * @param  array $arrBusinessOrderInfo
+     * @return array $arrOrderSysDetailList
+     * @throws Orderui_BusinessError
+     * @throws Wm_Error
+     */
+    public function splitBusinessOrder($arrBusinessOrderInfo)
+    {
+        $intBusinessOrderId = $arrBusinessOrderInfo['business_form_order_id'];
+
+        if (empty($intBusinessOrderId)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR, 'business_order_id invalid');
+        }
+        //check business order has been split
+        if (!$this->checkBusinessOrderWhetherSplit($intBusinessOrderId)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::BUSINESS_ORDER_IS_SPLIT, 'business_order_id is already split');
+        }
+
+        $intOrderSystemId = Orderui_Util_Utility::generateOmsOrderCode();
+
+        $arrOrderSysList = [
+            [
+                'order_system_id' => $intOrderSystemId,
+                'order_system_type' => Orderui_Define_Const::ORDER_SYS_NWMS,
+                'business_form_order_id' => $intBusinessOrderId,
+            ],
+        ];
+
+        $arrBusinessOrderInfo['logistics_order_id'] = Nscm_Define_OrderPrefix::OMS . $intOrderSystemId;
+        $arrOrderSysDetailList = [
+            [
+                'order_system_id' => $intOrderSystemId,
+                'order_system_type' => Orderui_Define_Const::ORDER_SYS_NWMS,
+                'request_info' => $arrBusinessOrderInfo,
+            ],
+        ];
+
+        //存储数据？
+        Model_Orm_OrderSystem::batchInsert($arrOrderSysList);
+        return $arrOrderSysDetailList;
+    }
+
+    /**
+     * 验证业态订单是否已经被拆分
+     * @param int $intBusinessOrderId
+     * @return bool
+     */
+    public function checkBusinessOrderWhetherSplit($intBusinessOrderId)
+    {
+        //从DB获取
+        $arrOrderInfoInDB = Model_Orm_OrderSystem::getOrderInfoByBusinessOrderId($intBusinessOrderId);
+        if (!empty($arrOrderInfoInDB)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 按订单系统类型分发订单
+     * @param  array $arrOrderList
+     * @return array
+     * @throws Nscm_Exception_Error
+     */
+    public function distributeOrder($arrOrderList)
+    {
+        $ret = [];
+        $objNwmsOrder = new Service_Data_NWmsOrder();
+        foreach ($arrOrderList as $arrOrderInfo) {
+            $intOrderSysType = $arrOrderInfo['order_system_type'];
+            if (Orderui_Define_Const::ORDER_SYS_NWMS == $intOrderSysType) {
+                $ret[] = $objNwmsOrder->createNWmsOrder($arrOrderInfo['request_info']);
+            }
+        }
+        return $ret;
     }
 }

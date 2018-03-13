@@ -5,8 +5,14 @@
  * @author  zhaozuowu@iwaimai.baidu.com
  */
 
-class Order_Define_BusinessFormOrder
+class Orderui_Define_BusinessFormOrder
 {
+    /**
+     * 用户授权介入校验
+     * @var string
+     */
+    const SALT_VAL = 'AFJK348F';
+
     /**
      * 业态订单创建成功
      * @var integer
