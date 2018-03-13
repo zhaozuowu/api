@@ -18,7 +18,7 @@ class Action_Service_CreateBusinessFormOrder extends Orderui_Base_ServiceAction
         'customer_id' => 'str|required|len[32]',
         'customer_name' => 'str|required|len[32]',
         'customer_contactor' => 'str|required|len[32]',
-        'customer_contact' => 'str|mlen[25]',
+        'customer_contact' => 'str|len[25]',
         'customer_address' => 'str|required|len[255]',
         'customer_location' => 'str|required|len[128]',
         'customer_location_source' => 'int|required',
