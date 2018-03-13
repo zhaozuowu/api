@@ -12,18 +12,25 @@ class Action_UpdateOmsOrderInfo extends Orderui_Base_ApiAction
      * @var array
      */
     protected $arrInputParams = [
-        'parent_order_id'             => 'int|required',
-        'order_id'             => 'int|required',
-        'order_type'             => 'int|required',
-        'order_exception'             => 'str',
-        'skus' => [
+        'order_info' => [
             'validate' => 'json|decode|required',
             'type' => 'array',
             'params' => [
-                'sku_id' => 'int|required',
-                'sku_amount' => 'int|required|min[1]',
-                'sku_exception' => 'str',
-                'sku_ext' => 'str',
+                'parent_order_id'             => 'int|required',
+                'order_id'             => 'int|required',
+                'order_type'             => 'int|required',
+                'parent_key'             => 'int|required',
+                'order_exception'             => 'str',
+                'skus' => [
+                    'validate' => 'json|decode|required',
+                    'type' => 'array',
+                    'params' => [
+                        'sku_id' => 'int|required',
+                        'sku_amount' => 'int|required|min[1]',
+                        'sku_exception' => 'str',
+                        'sku_ext' => 'str',
+                    ],
+                ],
             ],
         ],
     ];

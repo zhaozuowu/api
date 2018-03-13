@@ -10,34 +10,25 @@ class Service_Page_UpdateOmsOrderInfo
     /**
      * @var Service_Data_OmsOrder
      */
-    protected $objDataOrderSysDetail;
-
-    /**
-     * @var Service_Data_OmsOrder
-     */
-    protected $objDataOrderSys;
-
+    protected $objData;
     /**
      * Service_Page_UpdateOmsOrderInfo constructor.
      */
     public function __construct()
     {
-        $this->objDataOrderSysDetail = new Service_Data_OmsDetailOrder();
-        $this->objDataOrderSys = new Service_Data_OmsOrder();
+        $this->objData = new Service_Data_OmsDetailOrder();
     }
 
     /**
      * @param array $arrInput
      * @throws Orderui_BusinessError
+     * @throws Wm_Error
      * @throws Exception
      */
     public function execute($arrInput)
     {
-        $arrOrderSysInfo = $this->objDataOrderSys->getOrderInfoByOrderIdAndType($arrInput['parent_order_id']);
-        $this->objDataOrderSysDetail->addOmsSysDetail($arrInput['order_type'], $arrInput['parent_order_id'],
-            $arrInput['order_id'], $arrInput['skus'], $arrOrderSysInfo['order_system_type'],
-            $arrOrderSysInfo['business_form_order_id'], $arrOrderSysInfo['order_system_id'],
-            $arrInput['children_order_id'], $arrInput['order_exception']
-        );
+        $arrOrderDetailList = $this->objData->assembleOmsSysDetailInfo($arrInput['order_info']);
+        $arrOrderSkuList = $this->objData->assembleOmsSysDetailSkuInfo($arrOrderDetailList);
+        $this->objData->addOrderSysDetail($arrOrderDetailList, $arrOrderSkuList);
     }
 }

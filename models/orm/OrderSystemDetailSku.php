@@ -40,15 +40,9 @@ class Model_Orm_OrderSystemDetailSku extends Orderui_Base_Orm
     /**
      * 批量创建order system detail sku记录
      * @param array   $arrSkuList
-     * @param integer $intOrderSysDetailOrderId
-     * @param integer $intOrderId
      */
-    public static function batchInsertSkuInfo($arrSkuList, $intOrderSysDetailOrderId, $intOrderId)
+    public static function batchInsertSkuInfo($arrSkuList)
     {
-        foreach ($arrSkuList as &$arrSkuInfo) {
-            $arrSkuInfo['order_system_detail_order_id'] = $intOrderSysDetailOrderId;
-            $arrSkuInfo['order_id'] = $intOrderId;
-        }
         self::batchInsert($arrSkuList);
     }
 }

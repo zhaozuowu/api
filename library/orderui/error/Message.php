@@ -26,6 +26,8 @@ class Orderui_Error_Message extends Wm_Error_Message
         Orderui_Error_Code::ORDER_SYS_DETAIL_IS_EXITED => '订单已经存在',
         Orderui_Error_Code::NWMS_ORDER_CREATE_ERROR => '创建nwms订单失败',
         Orderui_Error_Code::OMS_CHECK_AUTHORITY_ERROR => 'oms权限校验失败',
+        Orderui_Error_Code::OMS_EVENT_CALLBACK_INVALID => '事件回调顺序异常',
+        Orderui_Error_Code::OMS_EVENT_CALLBACK_PARENT_KEY_INVALID => '事件回调指定父节点异常',
     ];
 
 }

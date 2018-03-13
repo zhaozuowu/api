@@ -106,4 +106,13 @@ class Orderui_Error_Code extends Wm_Error_Code
      * @var integer
      */
     const OMS_CHECK_AUTHORITY_ERROR = 350001;
+
+    /**
+     * 事件回调顺序异常
+     */
+    const OMS_EVENT_CALLBACK_INVALID = 350035;
+    /**
+     * 事件回调指定父节点异常
+     */
+    const OMS_EVENT_CALLBACK_PARENT_KEY_INVALID = 350036;
 }

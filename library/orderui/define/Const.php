@@ -78,9 +78,21 @@ class  Orderui_Define_Const
      */
     const NWMS_ORDER_TYPE_STOCK_IN = 4;
 
+    /**
+     * @var integer
+     * TMS 运单类型
+     */
+    const TMS_ORDER_TYPE_SHIPMENT = 5;
+
     const ORDER_PARENT_ORDER_TYPE = [
         self::ORDER_SYS_NWMS => [
             self::NWMS_ORDER_TYPE_STOCK_OUT => self::NWMS_ORDER_TYPE_ORDER,
         ],
     ];
+
+    /**
+     * @var integer
+     * 事件回调无效父节点
+     */
+    const OMS_EVENT_INVALID_PARENT_KEY = -1;
 }
