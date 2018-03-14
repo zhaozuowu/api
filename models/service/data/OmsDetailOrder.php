@@ -179,7 +179,7 @@ class Service_Data_OmsDetailOrder
         foreach ($arrSkuInfoList as $arrSkuInfo) {
             $arrSkuInfoMap[$arrSkuInfo['sku_id']] = $arrSkuInfo['order_amount'];
         }
-        foreach ($arrResponseList as $re) { // TODO: 1.重新封装 2.重新规划流程
+        foreach ($arrResponseList as $re) {
             $strOrderException = '';
             $strOrderExceptionTime = '';
             $intOrderSystemDetailId = Orderui_Util_Utility::generateOmsOrderCode();
