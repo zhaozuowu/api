@@ -22,7 +22,7 @@ class Action_UpdateOmsOrderInfo extends Orderui_Base_ApiAction
                 'parent_key'             => 'int|required',
                 'order_exception'             => 'str',
                 'skus' => [
-                    'validate' => 'json|decode|required',
+                    'validate' => 'arr|required',
                     'type' => 'array',
                     'params' => [
                         'sku_id' => 'int|required',
