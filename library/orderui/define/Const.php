@@ -56,36 +56,17 @@ class  Orderui_Define_Const
      * NWMS ORDER 类型范围
      */
     const NWMS_ORDER_TYPE = [
-        self::NWMS_ORDER_TYPE_ORDER,
-        self::NWMS_ORDER_TYPE_STOCK_OUT,
-        self::NWMS_ORDER_TYPE_RESERVE,
-        self::NWMS_ORDER_TYPE_STOCK_IN,
+        Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_ORDER,
+        Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_STOCK_OUT,
+        Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_RESERVE,
+        Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_STOCK_IN,
     ];
-    /**
-     * NWMS订单类型 订单
-     */
-    const NWMS_ORDER_TYPE_ORDER = 1;
-    /**
-     * NWMS订单类型 出库单
-     */
-    const NWMS_ORDER_TYPE_STOCK_OUT = 2;
-    /**
-     * NWMS订单类型 预约入库单
-     */
-    const NWMS_ORDER_TYPE_RESERVE = 3;
-    /**
-     * NWMS订单类型 入库单
-     */
-    const NWMS_ORDER_TYPE_STOCK_IN = 4;
 
     /**
-     * @var integer
-     * TMS 运单类型
+     * oms子单类型向上追溯关系
      */
-    const TMS_ORDER_TYPE_SHIPMENT = 5;
-
     const ORDER_PARENT_ORDER_TYPE = [
-        self::NWMS_ORDER_TYPE_STOCK_OUT => self::NWMS_ORDER_TYPE_ORDER,
+        Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_STOCK_OUT => Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_ORDER,
     ];
 
     /**

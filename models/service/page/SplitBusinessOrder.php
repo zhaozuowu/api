@@ -25,6 +25,7 @@ class Service_Page_SplitBusinessOrder implements Orderui_Base_Page
      * @return array
      * @throws Orderui_BusinessError
      * @throws Wm_Error
+     * @throws Exception
      */
     public function execute($arrInput)
     {

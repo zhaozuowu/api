@@ -20,17 +20,17 @@ class Service_Page_Business_CreateBusinessFormOrder
 
     /**
      * 业态订单创建并拆分转发
-     * @param $arrInput
-     * @return
+     * @param  array $arrInput
+     * @return array
      * @throws Nscm_Exception_Error
      * @throws Orderui_Error
      * @throws Wm_Error
+     * @throws Exception
      */
     public function execute($arrInput) {
         $arrInput['business_form_order_id'] = Orderui_Util_Utility::generateBusinessFormOrderId();
         $this->objDsBusinessFormOrder->createBusinessFormOrder($arrInput);
-        $arrOrderList = $this->objDsBusinessFormOrder->splitBusinessOrder($arrInput);
-        $res = $this->objDsBusinessFormOrder->distributeOrder($arrOrderList);
+        $res = $this->objDsBusinessFormOrder->splitBusinessOrder($arrInput);
         return $res;
     }
 }
