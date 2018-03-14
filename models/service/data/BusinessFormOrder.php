@@ -342,7 +342,13 @@ class Service_Data_BusinessFormOrder
         foreach ($arrOrderList as $arrOrderInfo) {
             $intOrderSysType = $arrOrderInfo['order_system_type'];
             if (Orderui_Define_Const::ORDER_SYS_NWMS == $intOrderSysType) {
-                $ret[] = $objNwmsOrder->createNWmsOrder($arrOrderInfo['request_info']);
+                $ret[] = [
+                    'result' => $objNwmsOrder->createNWmsOrder($arrOrderInfo['request_info']),
+                    'order_system_id' => $arrOrderInfo['order_system_id'],
+                    'order_system_type' => $arrOrderInfo['order_system_type'],
+                    'business_form_order_id' => $arrOrderInfo['business_form_order_id'],
+                    'order_type' => Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_ORDER,
+                ];
             }
         }
         return $ret;
