@@ -31,6 +31,9 @@ class Service_Page_Business_CreateBusinessFormOrder
         $arrInput['business_form_order_id'] = Orderui_Util_Utility::generateBusinessFormOrderId();
         $this->objDsBusinessFormOrder->createBusinessFormOrder($arrInput);
         $res = $this->objDsBusinessFormOrder->splitBusinessOrder($arrInput);
-        return $res;
+        if (0 != $res['error_no']) {
+            Orderui_Error::throwException($res['error_no'], $res['error_msg']);
+        }
+        return $res[0]['result']['result'];
     }
 }
