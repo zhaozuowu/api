@@ -63,14 +63,13 @@ class Service_Data_BusinessFormOrder
     public function createOrder($intBusinessCreateStatus, $arrOrderSysListDb, $arrOrderSysDetailListDb, $arrBusinessFormOrderDb)
     {
         Model_Orm_BusinessFormOrder::getConnection()->transaction(function () use ($arrOrderSysListDb,
-                                        $arrOrderSysDetailListDb, $arrBusinessFormOrderDb) {
+                                        $arrOrderSysDetailListDb, $arrBusinessFormOrderDb, $intBusinessCreateStatus) {
             Model_Orm_BusinessFormOrder::insert($arrBusinessFormOrderDb['order_info']);
             Model_Orm_BusinessFormOrderSku::batchInsert($arrBusinessFormOrderDb['sku_info']);
-            if (!empty($arrOrderSysListDb)) {
+            if (Orderui_Define_Const::NWMS_ORDER_CREATE_STATUS_SUCCESS == $intBusinessCreateStatus) {
                 Model_Orm_OrderSystem::batchInsert($arrOrderSysListDb);
             }
-            if (!empty($arrOrderSysDetailListDb['detail_list'])
-                && !empty($arrOrderSysDetailListDb['sku_list'])) {
+            if (Orderui_Define_Const::NWMS_ORDER_CREATE_STATUS_SUCCESS == $intBusinessCreateStatus) {
                 Model_Orm_OrderSystemDetail::batchInsert($arrOrderSysDetailListDb['detail_list']);
                 Model_Orm_OrderSystemDetailSku::batchInsert($arrOrderSysDetailListDb['sku_list']);
             }
