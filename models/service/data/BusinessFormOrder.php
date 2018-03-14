@@ -232,6 +232,7 @@ class Service_Data_BusinessFormOrder
                                                     $arrSkuItem['exception_time'] : 0;
             $arrSkuParamsItem['sku_exception'] = isset($arrSkuItem['exception_info']) ?
                                                     $arrSkuItem['exception_info'] : '';
+            $arrSkuParamsItem['sku_exception_status'] = 1;
             if (isset($arrSkuItem['exception_info']) && !empty($arrSkuItem['exception_info'])) {
                 $arrSkuParamsItem['sku_exception_status'] = 2;
             }

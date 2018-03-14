@@ -37,26 +37,27 @@ class Service_Data_NWmsOrder
     public function dealNwmsOrderException($arrResponseList, $arrBusinessOrderInfo)
     {
         foreach ($arrResponseList as $arrResponse) {
+            $arrSkuExceptionMap = [];
+            foreach ($arrResponse['result']['exceptions'] as $arrException) {
+                if (0 == $arrException['sku_id']) {
+                    $strOrderException = $arrException['exception_info'];
+                } else {
+                    $arrSkuExceptionMap[$arrException['sku_id']] = [
+                        'exception_info' => $arrException['exception_info'],
+                        'exception_time' => $arrException['exception_time'],
+                    ];
+                }
+            }
             if (0 != $arrResponse['result']['error_no']) {
                 //存储business_form_order_info
-                $strOrderException = $arrResponse['result']['error_msg'];
-                $arrSkuExceptionMap = [];
-                foreach ($arrResponse['result']['exceptions'] as $arrException) {
-                    if (0 == $arrException['sku_id']) {
-                        $strOrderException = $arrException['exception_info'];
-                    } else {
-                        $arrSkuExceptionMap[$arrException['sku_id']] = [
-                            'exception_info' => $arrException['exception_info'],
-                            'exception_time' => $arrException['exception_time'],
-                        ];
-                    }
-                }
-                $arrBusinessOrderInfo['skus'] = $this->dealNwmsOrderSkuException($arrBusinessOrderInfo['skus'], $arrSkuExceptionMap);
-                $arrBusinessOrderInfo['business_form_order_exception'] = $strOrderException;
+                $strException = empty($strOrderException) ? $arrResponse['result']['error_msg'] : $strOrderException;
+
+                $arrBusinessOrderInfo['business_form_order_exception'] = $strException;
                 $arrBusinessOrderInfo['business_form_order_create_status'] = Orderui_Define_Const::NWMS_ORDER_CREATE_STATUS_FAILED;
             } else {
                 $arrBusinessOrderInfo['business_form_order_create_status'] = Orderui_Define_Const::NWMS_ORDER_CREATE_STATUS_SUCCESS;
             }
+            $arrBusinessOrderInfo['skus'] = $this->dealNwmsOrderSkuException($arrBusinessOrderInfo['skus'], $arrSkuExceptionMap);
         }
         return $arrBusinessOrderInfo;
     }
@@ -80,7 +81,7 @@ class Service_Data_NWmsOrder
             }
             $arrSkuInfoItem['exception_info'] = $strSkuException;
             $arrSkuInfoItem['exception_time'] = $strSkuExceptionTime;
-            $arrDealSkuInfo[] = $arrDealSkuInfo;
+            $arrDealSkuInfo[] = $arrSkuInfoItem;
         }
         return $arrDealSkuInfo;
     }
