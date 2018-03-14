@@ -140,6 +140,8 @@ class Service_Data_BusinessFormOrder
         $arrCreateParams['customer_address'] = empty($arrInput['customer_address']) ?
                                                         '' : strval($arrInput['customer_address']);
         $arrCreateParams['business_form_ext'] = json_encode($this->getBusinessFormExt($arrInput));
+        $arrCreateParams['business_form_order_exception'] = empty($arrInput['business_form_order_exception']) ?
+                                                        '' : strval($arrInput['business_form_order_exception']);
         return $arrCreateParams;
     }
 
@@ -184,6 +186,13 @@ class Service_Data_BusinessFormOrder
             $arrSkuParamsItem['sku_id'] = intval($arrSkuItem['sku_id']);
             $arrSkuParamsItem['sku_name'] = strval($arrSkuItem['sku_name']);
             $arrSkuParamsItem['sku_amount'] = intval($arrSkuItem['order_amount']);
+            $arrSkuParamsItem['sku_exception_time'] = isset($arrSkuItem['exception_time']) ?
+                                                    $arrSkuItem['exception_time'] : 0;
+            $arrSkuParamsItem['sku_exception'] = isset($arrSkuItem['exception_info']) ?
+                                                    $arrSkuItem['exception_info'] : '';
+            if (isset($arrSkuItem['exception_info']) && !empty($arrSkuItem['exception_info'])) {
+                $arrSkuParamsItem['sku_exception_status'] = 2;
+            }
             $arrSkuParams[] = $arrSkuParamsItem;
         }
         return $arrSkuParams;
@@ -263,11 +272,37 @@ class Service_Data_BusinessFormOrder
         }
         $arrOrderSysDetailListDb = [];
         $arrOrderSysDetailSkuListDb = [];
-        foreach ($res as $re) {
+
+        foreach ($res as $re) { // TODO: 1.重新封装 2.重新规划流程
             $strOrderException = '';
             $strOrderExceptionTime = '';
             $intOrderSystemDetailId = Orderui_Util_Utility::generateOmsOrderCode();
             if (0 != $re['result']['error_no']) {
+                //存储business_form_order_info
+                $strOrderException = $re['result']['error_msg'];
+                $arrSkuExceptionMap = [];
+                foreach ($re['result']['exceptions'] as $arrException) {
+                    if (0 == $arrException['sku_id']) {
+                        $strOrderException = $arrException['exception_info'];
+                    } else {
+                        $arrSkuExceptionMap[$arrException['sku_id']] = [
+                            'exception_info' => $arrException['exception_info'],
+                            'exception_time' => $arrException['exception_time'],
+                        ];
+                    }
+                }
+                foreach ($arrBusinessOrderInfo['skus'] as &$arrSkuInfo) {
+                    $strSkuException = '';
+                    $strSkuExceptionTime = 0;
+                    if (isset($arrSkuExceptionMap[$arrSkuInfo['sku_id']])) {
+                        $strSkuException = $arrSkuExceptionMap[$arrSkuInfo['sku_id']]['exception_info'];
+                        $strSkuExceptionTime = $arrSkuExceptionMap[$arrSkuInfo['sku_id']]['exception_time'];
+                    }
+                    $arrSkuInfo['exception_info'] = $strSkuException;
+                    $arrSkuInfo['exception_time'] = $strSkuExceptionTime;
+                }
+                $arrBusinessOrderInfo['business_form_order_exception'] = $strOrderException;
+                $this->createBusinessFormOrder($arrBusinessOrderInfo);
                 Orderui_BusinessError::throwException($re['result']['error_no'], $re['result']['error_msg']);
             }
             foreach ($re['result']['exceptions'] as $arrSkuException) {
@@ -292,9 +327,6 @@ class Service_Data_BusinessFormOrder
                     'sku_amount' => $arrSkuInfoMap[$arrSku['sku_id']],
                     'sku_exception' => '',
                 ];
-                if (!empty($strOrderException)) {
-                    $arrSkuItem['sku_exception'] = $strOrderException;
-                }
                 $arrOrderSysDetailSkuListDb[] = $arrSkuItem;
             }
 

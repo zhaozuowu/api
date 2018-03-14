@@ -29,8 +29,8 @@ class Service_Page_Business_CreateBusinessFormOrder
      */
     public function execute($arrInput) {
         $arrInput['business_form_order_id'] = Orderui_Util_Utility::generateBusinessFormOrderId();
-        $this->objDsBusinessFormOrder->createBusinessFormOrder($arrInput);
         $res = $this->objDsBusinessFormOrder->splitBusinessOrder($arrInput);
+        $this->objDsBusinessFormOrder->createBusinessFormOrder($arrInput);
         return $res;
     }
 }
