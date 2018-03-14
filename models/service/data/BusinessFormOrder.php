@@ -267,6 +267,9 @@ class Service_Data_BusinessFormOrder
             $strOrderException = '';
             $strOrderExceptionTime = '';
             $intOrderSystemDetailId = Orderui_Util_Utility::generateOmsOrderCode();
+            if (0 != $re['result']['error_no']) {
+                Orderui_BusinessError::throwException($re['result']['error_no'], $re['result']['error_msg']);
+            }
             foreach ($re['result']['exceptions'] as $arrSkuException) {
                 if ($arrSkuException['sku_id'] == 0) {
                     $strOrderException = $arrSkuException['exception_info'];
