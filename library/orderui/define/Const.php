@@ -86,4 +86,16 @@ class  Orderui_Define_Const
      * 事件回调无效父节点
      */
     const NWMS_ORDER_CREATE_STATUS_SUCCESS = 1;
+
+    /**
+     * @var integer
+     * 业态订单SKU异常状态 正常
+     */
+    const BUSINESS_ORDER_SKU_NORMAL = 1;
+
+    /**
+     * @var integer
+     * 业态订单SKU异常状态 异常
+     */
+    const BUSINESS_ORDER_SKU_EXCEPTION = 2;
 }
