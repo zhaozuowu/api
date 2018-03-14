@@ -10,12 +10,27 @@ class Service_Page_Business_CreateBusinessFormOrder
      * @var Service_Data_BusinessFormOrder
      */
     protected $objDsBusinessFormOrder;
+    /**
+     * @var Service_Data_OmsDetailOrder
+     */
+    protected $objDsOmsDetail;
+    /**
+     * @var Service_Data_OrderSystem
+     */
+    protected $objDsOmsSys;
+    /**
+     * @var Service_Data_OrderSystem
+     */
+    protected $objDsNwmsOrder;
 
     /**
      * init object
      */
     public function __construct() {
         $this->objDsBusinessFormOrder = new Service_Data_BusinessFormOrder();
+        $this->objDsOmsDetail = new Service_Data_OmsDetailOrder();
+        $this->objDsOmsSys = new Service_Data_OrderSystem();
+        $this->objDsNwmsOrder = new Service_Data_NWmsOrder();
     }
 
     /**
@@ -29,8 +44,14 @@ class Service_Page_Business_CreateBusinessFormOrder
      */
     public function execute($arrInput) {
         $arrInput['business_form_order_id'] = Orderui_Util_Utility::generateBusinessFormOrderId();
-        $res = $this->objDsBusinessFormOrder->splitBusinessOrder($arrInput);
-        $this->objDsBusinessFormOrder->createBusinessFormOrder($arrInput);
-        return $res;
+        $arrOrderSysDetailList = $this->objDsBusinessFormOrder->splitBusinessOrder($arrInput);
+        $arrResponseList = $this->objDsBusinessFormOrder->distributeOrder($arrOrderSysDetailList);
+        $arrBusinessOrderInfo = $this->objDsNwmsOrder->dealNwmsOrderException($arrResponseList, $arrInput);
+        $arrOrderSysListDb = $this->objDsOmsSys->assembleOrderSystemDbData($arrResponseList);
+        $arrOrderSysDetailListDb = $this->objDsOmsDetail->assembleOrderSysDetailDBData($arrResponseList, $arrBusinessOrderInfo['skus']);
+        $arrBusinessFormOrderDb = $this->objDsBusinessFormOrder->assembleBusinessFormOrder($arrBusinessOrderInfo);
+        $this->objDsBusinessFormOrder->createOrder($arrBusinessOrderInfo['business_form_order_create_status'],
+            $arrOrderSysListDb, $arrOrderSysDetailListDb, $arrBusinessFormOrderDb);
+        return $arrResponseList[0]['result']['result'];
     }
 }

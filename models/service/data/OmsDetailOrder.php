@@ -163,4 +163,65 @@ class Service_Data_OmsDetailOrder
     {
         return Model_Orm_OrderSystemDetail::getOrderInfoByOrderIdAndType($intOrderId, $intOrderType);
     }
+
+    /**
+     * 组件order system detail 订单信息
+     * @param  array $arrResponseList
+     * @param  array $arrSkuInfoList
+     * @return array
+     * @throws Wm_Error
+     */
+    public function assembleOrderSysDetailDBData($arrResponseList, $arrSkuInfoList)
+    {
+        $arrOrderSysDetailListDb = [];
+        $arrOrderSysDetailSkuListDb = [];
+        $arrSkuInfoMap = [];
+        foreach ($arrSkuInfoList as $arrSkuInfo) {
+            $arrSkuInfoMap[$arrSkuInfo['sku_id']] = $arrSkuInfo['order_amount'];
+        }
+        foreach ($arrResponseList as $re) { // TODO: 1.重新封装 2.重新规划流程
+            $strOrderException = '';
+            $strOrderExceptionTime = '';
+            $intOrderSystemDetailId = Orderui_Util_Utility::generateOmsOrderCode();
+            foreach ($re['result']['exceptions'] as $arrSkuException) {
+                if ($arrSkuException['sku_id'] == 0) {
+                    $strOrderException = $arrSkuException['exception_info'];
+                    $strOrderExceptionTime = $arrSkuException['exception_time'];
+                } else {
+                    $arrOrderSysDetailSkuListDb[] = [
+                        'order_system_detail_order_id' => $intOrderSystemDetailId,
+                        'order_id' => $re['result']['result']['business_form_order_id'],
+                        'sku_id' => $arrSkuException['sku_id'] ,
+                        'sku_amount' => $arrSkuInfoMap[$arrSkuException['sku_id']],
+                        'sku_exception' => $arrSkuException['exception_info'],
+                    ];
+                }
+            }
+            foreach ($re['result']['result']['skus'] as $arrSku) {
+                $arrSkuItem = [
+                    'order_system_detail_order_id' => $intOrderSystemDetailId,
+                    'order_id' => $re['result']['result']['business_form_order_id'],
+                    'sku_id' => $arrSku['sku_id'],
+                    'sku_amount' => $arrSkuInfoMap[$arrSku['sku_id']],
+                    'sku_exception' => '',
+                ];
+                $arrOrderSysDetailSkuListDb[] = $arrSkuItem;
+            }
+
+            $arrOrderSysDetailListDb[] = [
+                'order_system_detail_order_id' => $intOrderSystemDetailId,
+                'order_system_id' => $re['order_system_id'],
+                'order_type' => $re['order_type'],
+                'business_form_order_id' => $re['business_form_order_id'],
+                'parent_order_id' => $re['order_system_id'],
+                'order_id' => $re['result']['result']['business_form_order_id'],
+                'order_exception' => $strOrderException,
+            ];
+        }
+
+        return [
+            'detail_list' => $arrOrderSysDetailListDb,
+            'sku_list' => $arrOrderSysDetailSkuListDb,
+        ];
+    }
 }

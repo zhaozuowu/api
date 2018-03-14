@@ -74,4 +74,16 @@ class  Orderui_Define_Const
      * 事件回调无效父节点
      */
     const OMS_EVENT_INVALID_PARENT_KEY = -1;
+
+    /**
+     * @var integer
+     * 事件回调无效父节点
+     */
+    const NWMS_ORDER_CREATE_STATUS_FAILED = 2;
+
+    /**
+     * @var integer
+     * 事件回调无效父节点
+     */
+    const NWMS_ORDER_CREATE_STATUS_SUCCESS = 1;
 }

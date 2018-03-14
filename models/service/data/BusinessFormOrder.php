@@ -54,6 +54,48 @@ class Service_Data_BusinessFormOrder
     }
 
     /**
+     * @param  integer $intBusinessCreateStatus
+     * @param  array $arrOrderSysListDb
+     * @param  array $arrOrderSysDetailListDb
+     * @param  array $arrBusinessFormOrderDb
+     * @throws Exception
+     */
+    public function createOrder($intBusinessCreateStatus, $arrOrderSysListDb, $arrOrderSysDetailListDb, $arrBusinessFormOrderDb)
+    {
+        Model_Orm_BusinessFormOrder::getConnection()->transaction(function () use ($arrOrderSysListDb,
+                                        $arrOrderSysDetailListDb, $arrBusinessFormOrderDb) {
+            Model_Orm_BusinessFormOrder::insert($arrBusinessFormOrderDb['order_info']);
+            Model_Orm_BusinessFormOrderSku::batchInsert($arrBusinessFormOrderDb['sku_info']);
+            if (!empty($arrOrderSysListDb)) {
+                Model_Orm_OrderSystem::batchInsert($arrOrderSysListDb);
+            }
+            if (!empty($arrOrderSysDetailListDb['detail_list'])
+                && !empty($arrOrderSysDetailListDb['sku_list'])) {
+                Model_Orm_OrderSystemDetail::batchInsert($arrOrderSysDetailListDb['detail_list']);
+                Model_Orm_OrderSystemDetailSku::batchInsert($arrOrderSysDetailListDb['sku_list']);
+            }
+        });
+        if (Orderui_Define_Const::NWMS_ORDER_CREATE_STATUS_FAILED == $intBusinessCreateStatus) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_CREATE_ERROR);
+        }
+    }
+    /**
+     * 组建业态订单信息
+     * @param  array $arrBusinessOrderInfo
+     * @return array
+     * @throws Nscm_Exception_Error
+     * @throws Wm_Error
+     */
+    public function assembleBusinessFormOrder($arrBusinessOrderInfo)
+    {
+        $arrCreateParams = $this->getCreateParams($arrBusinessOrderInfo);
+        $arrBatchSkuParams = $this->getBatchSkuParams($arrCreateParams['business_form_order_id'], $arrBusinessOrderInfo['skus']);
+        return [
+            'order_info' => $arrCreateParams,
+            'sku_info' => $arrBatchSkuParams,
+        ];
+    }
+    /**
      * 业态订单参数校验
      * @param $arrInput
      * @return void
@@ -238,25 +280,11 @@ class Service_Data_BusinessFormOrder
         if (empty($intBusinessOrderId)) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR, 'business_order_id invalid');
         }
-        $arrSkuInfoMap = [];
-        foreach ($arrBusinessOrderInfo['skus'] as $arrSkuInfo) {
-            $arrSkuInfoMap[$arrSkuInfo['sku_id']] = $arrSkuInfo['order_amount'];
-        }
         //check business order has been split
         if (!$this->checkBusinessOrderWhetherSplit($intBusinessOrderId)) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::BUSINESS_ORDER_IS_SPLIT, 'business_order_id is already split');
         }
-
         $intOrderSystemId = Orderui_Util_Utility::generateOmsOrderCode();
-
-        $arrOrderSysList = [
-            [
-                'order_system_id' => $intOrderSystemId,
-                'order_system_type' => Orderui_Define_Const::ORDER_SYS_NWMS,
-                'business_form_order_id' => $intBusinessOrderId,
-            ],
-        ];
-
         $arrOrderSysDetailList = [
             [
                 'order_system_id' => $intOrderSystemId,
@@ -265,89 +293,8 @@ class Service_Data_BusinessFormOrder
                 'request_info' => $arrBusinessOrderInfo,
             ],
         ];
-        //转发
-        $res = $this->distributeOrder($arrOrderSysDetailList);
-        if (empty($res)) {
-            Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_CREATE_ERROR);
-        }
-        $arrOrderSysDetailListDb = [];
-        $arrOrderSysDetailSkuListDb = [];
-
-        foreach ($res as $re) { // TODO: 1.重新封装 2.重新规划流程
-            $strOrderException = '';
-            $strOrderExceptionTime = '';
-            $intOrderSystemDetailId = Orderui_Util_Utility::generateOmsOrderCode();
-            if (0 != $re['result']['error_no']) {
-                //存储business_form_order_info
-                $strOrderException = $re['result']['error_msg'];
-                $arrSkuExceptionMap = [];
-                foreach ($re['result']['exceptions'] as $arrException) {
-                    if (0 == $arrException['sku_id']) {
-                        $strOrderException = $arrException['exception_info'];
-                    } else {
-                        $arrSkuExceptionMap[$arrException['sku_id']] = [
-                            'exception_info' => $arrException['exception_info'],
-                            'exception_time' => $arrException['exception_time'],
-                        ];
-                    }
-                }
-                foreach ($arrBusinessOrderInfo['skus'] as &$arrSkuInfo) {
-                    $strSkuException = '';
-                    $strSkuExceptionTime = 0;
-                    if (isset($arrSkuExceptionMap[$arrSkuInfo['sku_id']])) {
-                        $strSkuException = $arrSkuExceptionMap[$arrSkuInfo['sku_id']]['exception_info'];
-                        $strSkuExceptionTime = $arrSkuExceptionMap[$arrSkuInfo['sku_id']]['exception_time'];
-                    }
-                    $arrSkuInfo['exception_info'] = $strSkuException;
-                    $arrSkuInfo['exception_time'] = $strSkuExceptionTime;
-                }
-                $arrBusinessOrderInfo['business_form_order_exception'] = $strOrderException;
-                $this->createBusinessFormOrder($arrBusinessOrderInfo);
-                Orderui_BusinessError::throwException($re['result']['error_no'], $re['result']['error_msg']);
-            }
-            foreach ($re['result']['exceptions'] as $arrSkuException) {
-                if ($arrSkuException['sku_id'] == 0) {
-                    $strOrderException = $arrSkuException['exception_info'];
-                    $strOrderExceptionTime = $arrSkuException['exception_time'];
-                } else {
-                    $arrOrderSysDetailSkuListDb[] = [
-                        'order_system_detail_order_id' => $intOrderSystemDetailId,
-                        'order_id' => $re['result']['result']['business_form_order_id'],
-                        'sku_id' => $arrSkuException['sku_id'] ,
-                        'sku_amount' => $arrSkuInfoMap[$arrSkuException['sku_id']],
-                        'sku_exception' => $arrSkuException['exception_info'],
-                    ];
-                }
-            }
-            foreach ($re['result']['result']['skus'] as $arrSku) {
-                $arrSkuItem = [
-                    'order_system_detail_order_id' => $intOrderSystemDetailId,
-                    'order_id' => $re['result']['result']['business_form_order_id'],
-                    'sku_id' => $arrSku['sku_id'],
-                    'sku_amount' => $arrSkuInfoMap[$arrSku['sku_id']],
-                    'sku_exception' => '',
-                ];
-                $arrOrderSysDetailSkuListDb[] = $arrSkuItem;
-            }
-
-            $arrOrderSysDetailListDb[] = [
-                'order_system_detail_order_id' => $intOrderSystemDetailId,
-                'order_system_id' => $re['order_system_id'],
-                'order_type' => $re['order_type'],
-                'business_form_order_id' => $re['business_form_order_id'],
-                'parent_order_id' => $re['order_system_id'],
-                'order_id' => $re['result']['result']['business_form_order_id'],
-                'order_exception' => $strOrderException,
-            ];
-        }
-        Model_Orm_OrderSystem::getConnection()->transaction(function () use ($arrOrderSysList, $arrOrderSysDetailListDb, $arrOrderSysDetailSkuListDb) {
-            Model_Orm_OrderSystem::batchInsert($arrOrderSysList);
-            Model_Orm_OrderSystemDetail::batchInsert($arrOrderSysDetailListDb);
-            Model_Orm_OrderSystemDetailSku::batchInsert($arrOrderSysDetailSkuListDb);
-        });
-        return $res;
+        return $arrOrderSysDetailList;
     }
-
 
     /**
      * 验证业态订单是否已经被拆分
