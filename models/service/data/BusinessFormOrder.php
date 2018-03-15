@@ -336,4 +336,18 @@ class Service_Data_BusinessFormOrder
         }
         return $ret;
     }
+
+    /**
+     * 通过上游订单号验证是否存在业态订单信息
+     * @param  integer $intSourceOrderId
+     * @return bool
+     */
+    public function checkBusinessFormOrderWhetherExisted($intSourceOrderId)
+    {
+        $arrBusinessOrderInfo = Model_Orm_BusinessFormOrder::getOrderInfoBySourceOrderId($intSourceOrderId);
+        if (empty($arrBusinessOrderInfo)) {
+            return false;
+        }
+        return true;
+    }
 }

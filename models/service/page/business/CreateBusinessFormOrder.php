@@ -38,7 +38,6 @@ class Service_Page_Business_CreateBusinessFormOrder
      * @param  array $arrInput
      * @return array
      * @throws Nscm_Exception_Error
-     * @throws Orderui_Error
      * @throws Wm_Error
      * @throws Exception
      */
@@ -46,12 +45,16 @@ class Service_Page_Business_CreateBusinessFormOrder
         $arrInput['business_form_order_id'] = Orderui_Util_Utility::generateBusinessFormOrderId();
         $arrOrderSysDetailList = $this->objDsBusinessFormOrder->splitBusinessOrder($arrInput);
         $arrResponseList = $this->objDsBusinessFormOrder->distributeOrder($arrOrderSysDetailList);
-        $arrBusinessOrderInfo = $this->objDsNwmsOrder->dealNwmsOrderException($arrResponseList, $arrInput);
-        $arrOrderSysListDb = $this->objDsOmsSys->assembleOrderSystemDbData($arrResponseList);
-        $arrOrderSysDetailListDb = $this->objDsOmsDetail->assembleOrderSysDetailDBData($arrResponseList, $arrBusinessOrderInfo['skus']);
-        $arrBusinessFormOrderDb = $this->objDsBusinessFormOrder->assembleBusinessFormOrder($arrBusinessOrderInfo);
-        $this->objDsBusinessFormOrder->createOrder($arrBusinessOrderInfo['business_form_order_create_status'],
-            $arrOrderSysListDb, $arrOrderSysDetailListDb, $arrBusinessFormOrderDb);
+        //判断是否已经存储上游单号
+        $boolBusinessFormOrderWhetherExisted = $this->objDsBusinessFormOrder->checkBusinessFormOrderWhetherExisted($arrInput['logistics_order_id']);
+        if (!$boolBusinessFormOrderWhetherExisted) {
+            $arrBusinessOrderInfo = $this->objDsNwmsOrder->dealNwmsOrderException($arrResponseList, $arrInput);
+            $arrOrderSysListDb = $this->objDsOmsSys->assembleOrderSystemDbData($arrResponseList);
+            $arrOrderSysDetailListDb = $this->objDsOmsDetail->assembleOrderSysDetailDBData($arrResponseList, $arrBusinessOrderInfo['skus']);
+            $arrBusinessFormOrderDb = $this->objDsBusinessFormOrder->assembleBusinessFormOrder($arrBusinessOrderInfo);
+            $this->objDsBusinessFormOrder->createOrder($arrBusinessOrderInfo['business_form_order_create_status'],
+                $arrOrderSysListDb, $arrOrderSysDetailListDb, $arrBusinessFormOrderDb);
+        }
         return $arrResponseList[0]['result']['result'];
     }
 }
