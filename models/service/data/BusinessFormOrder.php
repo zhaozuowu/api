@@ -184,6 +184,7 @@ class Service_Data_BusinessFormOrder
         $arrCreateParams['business_form_order_exception'] = empty($arrInput['business_form_order_exception']) ?
                                                         '' : strval($arrInput['business_form_order_exception']);
         $arrCreateParams['process_time'] = Orderui_Util::getNowUnixDateTime();
+        $arrCreateParams['status'] = $arrInput['business_form_order_create_status'];
         return $arrCreateParams;
     }
 

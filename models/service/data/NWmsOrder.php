@@ -53,9 +53,9 @@ class Service_Data_NWmsOrder
                 $strException = empty($strOrderException) ? $arrResponse['result']['error_msg'] : $strOrderException;
 
                 $arrBusinessOrderInfo['business_form_order_exception'] = $strException;
-                $arrBusinessOrderInfo['business_form_order_create_status'] = Orderui_Define_Const::NWMS_ORDER_CREATE_STATUS_FAILED;
+                $arrBusinessOrderInfo['business_form_order_create_status'] = Orderui_Define_Const::OMS_ORDER_DEAL_FAILED;
             } else {
-                $arrBusinessOrderInfo['business_form_order_create_status'] = Orderui_Define_Const::NWMS_ORDER_CREATE_STATUS_SUCCESS;
+                $arrBusinessOrderInfo['business_form_order_create_status'] = Orderui_Define_Const::OMS_ORDER_DEAL_SUCCESS;
             }
             $arrBusinessOrderInfo['skus'] = $this->dealNwmsOrderSkuException($arrBusinessOrderInfo['skus'], $arrSkuExceptionMap);
         }

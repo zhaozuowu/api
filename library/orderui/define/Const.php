@@ -89,6 +89,18 @@ class  Orderui_Define_Const
 
     /**
      * @var integer
+     * oms订单处理失败
+     */
+    const OMS_ORDER_DEAL_FAILED = 3;
+
+    /**
+     * @var integer
+     * oms订单处理完成
+     */
+    const OMS_ORDER_DEAL_SUCCESS = 1;
+
+    /**
+     * @var integer
      * 业态订单SKU异常状态 正常
      */
     const BUSINESS_ORDER_SKU_NORMAL = 1;
