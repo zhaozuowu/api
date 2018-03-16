@@ -27,7 +27,7 @@ class Service_Data_BusinessFormOrder
      * @throws Orderui_Error
      */
     public function checkAuthority($strBusinessFormKey, $strBusinessFormToken) {
-        $strGenKey = md5(md5($strBusinessFormKey) . md5(Orderui_Define_BusinessFormOrder::SALT_VAL));
+        $strGenKey = md5($strBusinessFormKey . Orderui_Define_BusinessFormOrder::SALT_VAL);
         if ($strGenKey != $strBusinessFormToken) {
             Orderui_Error::throwException(Orderui_Error_Code::OMS_CHECK_AUTHORITY_ERROR);
         }
