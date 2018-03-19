@@ -66,7 +66,7 @@ class Service_Data_BusinessOrder
                     $strOrderExceptionTime = $arrSkuException['exception_time'];
                 } else {
                     $arrOrderSysDetailSkuListDb[] = [
-                        'order_system_detail_order_id' => $intOrderSystemDetailId,
+                        'order_system_detail_id' => $intOrderSystemDetailId,
                         'order_id' => $re['result']['result']['business_form_order_id'],
                         'sku_id' => $arrSkuException['sku_id'] ,
                         'sku_amount' => $arrSkuInfoMap[$arrSkuException['sku_id']],
@@ -76,7 +76,7 @@ class Service_Data_BusinessOrder
             }
             foreach ($re['result']['result']['skus'] as $arrSku) {
                 $arrSkuItem = [
-                    'order_system_detail_order_id' => $intOrderSystemDetailId,
+                    'order_system_detail_id' => $intOrderSystemDetailId,
                     'order_id' => $re['result']['result']['business_form_order_id'],
                     'sku_id' => $arrSku['sku_id'],
                     'sku_amount' => $arrSkuInfoMap[$arrSku['sku_id']],
@@ -89,7 +89,7 @@ class Service_Data_BusinessOrder
             }
 
             $arrOrderSysDetailListDb[] = [
-                'order_system_detail_order_id' => $intOrderSystemDetailId,
+                'order_system_detail_id' => $intOrderSystemDetailId,
                 'order_system_id' => $re['order_system_id'],
                 'order_type' => $re['order_type'],
                 'business_form_order_id' => $re['business_form_order_id'],

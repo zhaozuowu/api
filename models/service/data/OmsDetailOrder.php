@@ -23,7 +23,7 @@ class Service_Data_OmsDetailOrder
         //去除$arrOrderDetailList中的sku
         foreach ($arrOrderDetailList as  $arrOrderDetailInfo) {
             $arrOrderDetailListDb[] = [
-                'order_system_detail_order_id' => $arrOrderDetailInfo['order_system_detail_order_id'],
+                'order_system_detail_id' => $arrOrderDetailInfo['order_system_detail_id'],
                 'order_system_id' => $arrOrderDetailInfo['order_system_id'],
                 'order_type' => $arrOrderDetailInfo['order_type'],
                 'business_form_order_id' => $arrOrderDetailInfo['business_form_order_id'],
@@ -112,7 +112,7 @@ class Service_Data_OmsDetailOrder
             unset($arrOrderInfoItem['parent_key']);
             $arrOrderInfoItem['order_system_id'] = $intOrderSysId;
             $arrOrderInfoItem['business_form_order_id'] = $intBusinessFormOrderId;
-            $arrOrderInfoItem['order_system_detail_order_id'] = Orderui_Util_Utility::generateOmsOrderCode();
+            $arrOrderInfoItem['order_system_detail_id'] = Orderui_Util_Utility::generateOmsOrderCode();
             $arrOrderInfoListData[$intKey] = $arrOrderInfoItem;
         }
         if (empty($arrOrderInfoListData)) {
@@ -137,7 +137,7 @@ class Service_Data_OmsDetailOrder
             $arrSkuList = $arrOrderInfo['skus'];
             foreach ($arrSkuList as  $arrSkuInfo) {
                 $arrSkuListDbItem = [
-                    'order_system_detail_order_id' => $arrOrderInfo['order_system_detail_order_id'],
+                    'order_system_detail_id' => $arrOrderInfo['order_system_detail_id'],
                     'order_id' => $arrOrderInfo['order_id'],
                     'sku_id' => $arrSkuInfo['sku_id'],
                     'sku_amount' => $arrSkuInfo['sku_amount'],
@@ -189,7 +189,7 @@ class Service_Data_OmsDetailOrder
                     $strOrderExceptionTime = $arrSkuException['exception_time'];
                 } else {
                     $arrOrderSysDetailSkuListDb[] = [
-                        'order_system_detail_order_id' => $intOrderSystemDetailId,
+                        'order_system_detail_id' => $intOrderSystemDetailId,
                         'order_id' => $re['result']['result']['business_form_order_id'],
                         'sku_id' => $arrSkuException['sku_id'] ,
                         'sku_amount' => $arrSkuInfoMap[$arrSkuException['sku_id']],
@@ -204,7 +204,7 @@ class Service_Data_OmsDetailOrder
                         continue;
                     }
                     $arrSkuItem = [
-                        'order_system_detail_order_id' => $intOrderSystemDetailId,
+                        'order_system_detail_id' => $intOrderSystemDetailId,
                         'order_id' => $re['result']['result']['business_form_order_id'],
                         'sku_id' => $arrSku['sku_id'],
                         'sku_amount' => $arrSkuInfoMap[$arrSku['sku_id']],
@@ -215,7 +215,7 @@ class Service_Data_OmsDetailOrder
             }
 
             $arrOrderSysDetailListDb[] = [
-                'order_system_detail_order_id' => $intOrderSystemDetailId,
+                'order_system_detail_id' => $intOrderSystemDetailId,
                 'order_system_id' => $re['order_system_id'],
                 'order_type' => $re['order_type'],
                 'business_form_order_id' => $re['business_form_order_id'],

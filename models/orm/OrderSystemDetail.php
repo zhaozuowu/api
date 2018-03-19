@@ -2,7 +2,7 @@
 
 /**
  * @property int $id
- * @property int $order_system_detail_order_id
+ * @property int $order_system_detail_id
  * @property int $order_system_id
  * @property int $order_type
  * @property int $business_form_order_id
