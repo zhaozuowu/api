@@ -56,6 +56,9 @@ class Service_Page_Business_CreateBusinessFormOrder
             $this->objDsBusinessFormOrder->createOrder($arrBusinessOrderInfo['business_form_order_create_status'],
                 $arrOrderSysListDb, $arrOrderSysDetailListDb, $arrBusinessFormOrderDb);
         }
+        if (0 != $arrResponseList[0]['result']['error_no']) {
+            Orderui_BusinessError::throwException($arrResponseList[0]['result']['error_no'], $arrResponseList[0]['result']['error_msg']);
+        }
         return $arrResponseList[0]['result']['result'];
     }
 }
