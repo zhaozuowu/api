@@ -197,19 +197,21 @@ class Service_Data_OmsDetailOrder
                     ];
                 }
             }
-            foreach ($re['result']['result']['skus'] as $arrSku) {
-                //分配数量为0-异常信息中已存在
-                if (0 == $arrSku['distribute_amount']) {
-                    continue;
+            if (!empty($re['result']['result']['skus'])) {
+                foreach ($re['result']['result']['skus'] as $arrSku) {
+                    //分配数量为0-异常信息中已存在
+                    if (0 == $arrSku['distribute_amount']) {
+                        continue;
+                    }
+                    $arrSkuItem = [
+                        'order_system_detail_order_id' => $intOrderSystemDetailId,
+                        'order_id' => $re['result']['result']['business_form_order_id'],
+                        'sku_id' => $arrSku['sku_id'],
+                        'sku_amount' => $arrSkuInfoMap[$arrSku['sku_id']],
+                        'sku_exception' => '',
+                    ];
+                    $arrOrderSysDetailSkuListDb[] = $arrSkuItem;
                 }
-                $arrSkuItem = [
-                    'order_system_detail_order_id' => $intOrderSystemDetailId,
-                    'order_id' => $re['result']['result']['business_form_order_id'],
-                    'sku_id' => $arrSku['sku_id'],
-                    'sku_amount' => $arrSkuInfoMap[$arrSku['sku_id']],
-                    'sku_exception' => '',
-                ];
-                $arrOrderSysDetailSkuListDb[] = $arrSkuItem;
             }
 
             $arrOrderSysDetailListDb[] = [
