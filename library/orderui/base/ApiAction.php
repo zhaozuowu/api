@@ -11,7 +11,7 @@ abstract class Orderui_Base_ApiAction extends Orderui_Base_Action
      *
      * @var boolean
      */
-    protected $boolCheckLogin = true;
+    protected $boolCheckLogin = false;
 
     /**
      * 判断是否有权限
@@ -25,7 +25,7 @@ abstract class Orderui_Base_ApiAction extends Orderui_Base_Action
      *
      * @var boolean
      */
-    protected $boolCheckIp = false;
+    protected $boolCheckIp = true;
 
     /**
      * show price switch
