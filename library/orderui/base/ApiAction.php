@@ -11,7 +11,7 @@ abstract class Orderui_Base_ApiAction extends Orderui_Base_Action
      *
      * @var boolean
      */
-    protected $boolCheckLogin = false;
+    protected $boolCheckLogin = true;
 
     /**
      * 判断是否有权限
