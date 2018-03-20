@@ -42,7 +42,7 @@ class Service_Data_BusinessFormOrder
      * @throws Wm_Error
      */
     public function createBusinessFormOrder($arrInput) {
-        //$this->checkAuthority($arrInput['business_form_key'], $arrInput['business_form_token']);
+        $this->checkAuthority($arrInput['business_form_key'], $arrInput['business_form_token']);
         $arrCreateParams = $this->getCreateParams($arrInput);
         $arrBatchSkuParams = $this->getBatchSkuParams($arrCreateParams['business_form_order_id'], $arrInput['skus']);
         Model_Orm_BusinessFormOrder::getConnection()->transaction(function ()
