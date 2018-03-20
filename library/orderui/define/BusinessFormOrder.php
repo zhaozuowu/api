@@ -11,7 +11,7 @@ class Orderui_Define_BusinessFormOrder
      * 用户授权介入校验
      * @var string
      */
-    const SALT_VAL = 'AFJK348F';
+    const SALT_VAL = 'HWDGRMY';
 
     /**
      * 业态订单创建成功
