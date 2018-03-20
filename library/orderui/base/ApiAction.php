@@ -25,7 +25,7 @@ abstract class Orderui_Base_ApiAction extends Orderui_Base_Action
      *
      * @var boolean
      */
-    protected $boolCheckIp = true;
+    protected $boolCheckIp = false;
 
     /**
      * show price switch
