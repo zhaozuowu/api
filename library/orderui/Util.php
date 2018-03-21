@@ -1,11 +1,11 @@
 <?php
 
 /**
- * @name Order_Util
+ * @name Orderui_Util
  * @desc APP公共工具类
  * @author nscm
  */
-class Order_Util
+class Orderui_Util
 {
     /**
      * 对参数时间进行校验，结束时间应该在开始时间之后或者相等
@@ -241,15 +241,15 @@ class Order_Util
 
         // preg_match('/^ASN\d{13}$/', $strSourceOrderId)
         if (!empty(preg_match('/^' . Nscm_Define_OrderPrefix::ASN . '\d{13}$/', $strSourceOrderId))) {
-            $arrSourceOrderIdInfo['source_order_type'] = Order_Define_StockinOrder::STOCKIN_ORDER_TYPE_RESERVE;
-            $arrSourceOrderIdInfo['source_order_id'] = intval(Order_Util::trimReserveOrderIdPrefix($strSourceOrderId));
+            $arrSourceOrderIdInfo['source_order_type'] = Orderui_Define_StockinOrder::STOCKIN_ORDER_TYPE_RESERVE;
+            $arrSourceOrderIdInfo['source_order_id'] = intval(Orderui_Util::trimReserveOrderIdPrefix($strSourceOrderId));
             return $arrSourceOrderIdInfo;
         }
 
         // preg_match('/^SOO\d{13}$/', $strSourceOrderId)
         if (!empty(preg_match('/^' . Nscm_Define_OrderPrefix::SOO . '\d{13}$/', $strSourceOrderId))) {
             $arrSourceOrderIdInfo['source_order_type'] = Order_Define_StockinOrder::STOCKIN_ORDER_TYPE_STOCKOUT;
-            $arrSourceOrderIdInfo['source_order_id'] = intval(Order_Util::trimStockoutOrderIdPrefix($strSourceOrderId));
+            $arrSourceOrderIdInfo['source_order_id'] = intval(Orderui_Util::trimStockoutOrderIdPrefix($strSourceOrderId));
             return $arrSourceOrderIdInfo;
         }
 

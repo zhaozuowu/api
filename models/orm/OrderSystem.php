@@ -61,4 +61,5 @@ class Model_Orm_OrderSystem extends Orderui_Base_Orm
         ];
         return self::findRow(self::getAllColumns(), $arrCondition);
     }
+
 }

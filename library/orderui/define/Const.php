@@ -56,31 +56,58 @@ class  Orderui_Define_Const
      * NWMS ORDER 类型范围
      */
     const NWMS_ORDER_TYPE = [
-        self::NWMS_ORDER_TYPE_ORDER,
-        self::NWMS_ORDER_TYPE_STOCK_OUT,
-        self::NWMS_ORDER_TYPE_RESERVE,
-        self::NWMS_ORDER_TYPE_STOCK_IN,
+        Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_ORDER,
+        Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_STOCK_OUT,
+        Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_RESERVE,
+        Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_STOCK_IN,
     ];
-    /**
-     * NWMS订单类型 订单
-     */
-    const NWMS_ORDER_TYPE_ORDER = 1;
-    /**
-     * NWMS订单类型 出库单
-     */
-    const NWMS_ORDER_TYPE_STOCK_OUT = 2;
-    /**
-     * NWMS订单类型 预约入库单
-     */
-    const NWMS_ORDER_TYPE_RESERVE = 3;
-    /**
-     * NWMS订单类型 入库单
-     */
-    const NWMS_ORDER_TYPE_STOCK_IN = 4;
 
+    /**
+     * oms子单类型向上追溯关系
+     */
     const ORDER_PARENT_ORDER_TYPE = [
-        self::ORDER_SYS_NWMS => [
-            self::NWMS_ORDER_TYPE_STOCK_OUT => self::NWMS_ORDER_TYPE_ORDER,
-        ],
+        Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_STOCK_OUT => Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_ORDER,
     ];
+
+    /**
+     * @var integer
+     * 事件回调无效父节点
+     */
+    const OMS_EVENT_INVALID_PARENT_KEY = -1;
+
+    /**
+     * @var integer
+     * 事件回调无效父节点
+     */
+    const NWMS_ORDER_CREATE_STATUS_FAILED = 2;
+
+    /**
+     * @var integer
+     * 事件回调无效父节点
+     */
+    const NWMS_ORDER_CREATE_STATUS_SUCCESS = 1;
+
+    /**
+     * @var integer
+     * oms订单处理失败
+     */
+    const OMS_ORDER_DEAL_FAILED = 3;
+
+    /**
+     * @var integer
+     * oms订单处理完成
+     */
+    const OMS_ORDER_DEAL_SUCCESS = 1;
+
+    /**
+     * @var integer
+     * 业态订单SKU异常状态 正常
+     */
+    const BUSINESS_ORDER_SKU_NORMAL = 1;
+
+    /**
+     * @var integer
+     * 业态订单SKU异常状态 异常
+     */
+    const BUSINESS_ORDER_SKU_EXCEPTION = 2;
 }

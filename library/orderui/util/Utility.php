@@ -1,11 +1,21 @@
 <?php
 /**
- * @name Orderui_Util_Util
- * @desc Orderui_Util_Util
- * @author lvbochao@iwaimai.baidu.com
+ * @name Orderui_Util_Utility
+ * @desc Order_Util_Utility
+ * @author yu.jin03@ele.me
  */
-class Orderui_Util_Util
+class Orderui_Util_Utility
 {
+    /**
+     * generate business form order id
+     * @return int
+     * @throws Wm_Error
+     */
+    public static function generateBusinessFormOrderId() 
+    {
+        return NScm_Lib_IdGenerator::sequenceDateNumber();
+    }
+
 
     /**
      * generate oms order code

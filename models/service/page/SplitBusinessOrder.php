@@ -25,13 +25,11 @@ class Service_Page_SplitBusinessOrder implements Orderui_Base_Page
      * @return array
      * @throws Orderui_BusinessError
      * @throws Wm_Error
+     * @throws Exception
      */
     public function execute($arrInput)
     {
-        //拆分业态订单
-        $arrOrderList = $this->objData->splitBusinessOrder($arrInput['business_order_id']);
-        //转发拆分完毕业态订单
-        $res = $this->objData->distributeOrder($arrOrderList);
+        $res = $this->objData->splitBusinessOrder($arrInput);
         return $res;
     }
 }

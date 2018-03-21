@@ -2,7 +2,7 @@
 
 /**
  * @property int $id
- * @property int $order_system_detail_order_id
+ * @property int $order_system_detail_id
  * @property int $order_id
  * @property int $sku_id
  * @property int $sku_amount
@@ -28,7 +28,7 @@
  * @method static Generator|Model_Orm_OrderSystemDetailSku[] yieldAllFromRdview($cond, $orderBy = [], $offset = 0, $limit = null)
  * @method static yieldRowsFromRdview($columns, $cond, $orderBy = [], $offset = 0, $limit = null)
  * @method static yieldColumnFromRdview($column, $cond, $orderBy = [], $offset = 0, $limit = null)
- */
+*/
 
 class Model_Orm_OrderSystemDetailSku extends Orderui_Base_Orm
 {
@@ -40,15 +40,9 @@ class Model_Orm_OrderSystemDetailSku extends Orderui_Base_Orm
     /**
      * 批量创建order system detail sku记录
      * @param array   $arrSkuList
-     * @param integer $intOrderSysDetailOrderId
-     * @param integer $intOrderId
      */
-    public static function batchInsertSkuInfo($arrSkuList, $intOrderSysDetailOrderId, $intOrderId)
+    public static function batchInsertSkuInfo($arrSkuList)
     {
-        foreach ($arrSkuList as &$arrSkuInfo) {
-            $arrSkuInfo['order_system_detail_order_id'] = $intOrderSysDetailOrderId;
-            $arrSkuInfo['order_id'] = $intOrderId;
-        }
         self::batchInsert($arrSkuList);
     }
 }
