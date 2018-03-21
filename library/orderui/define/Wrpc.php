@@ -5,23 +5,23 @@
  * @author jinyu02@iwaimai.baidu.com
  */
 
-class Order_Define_Wrpc
+class Orderui_Define_Wrpc
 {
     /**
-     * tms app id
+     * nwms app id
      * @var string
      */
-    const TMS_APP_ID = 'scm.tms_core';
+    const NWMS_APP_ID = 'bdwaimai_earthnet.nwms';
 
     /**
-     * tms namespace
+     * nwms namespace
      * @var string
      */
-    const TMS_NAMESPACE = 'me.ele.scm.tms.oms.api.omsouter';
+    const NWMS_NAMESPACE = 'order';
 
     /**
-     * tms service name
+     * nwms service name
      * @var string
      */
-    const TMS_SERVICE_NAME = 'WmsReferService';
+    const NWMS_SERVICE_NAME = 'BusinessService';
 }

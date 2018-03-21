@@ -8,84 +8,50 @@
 class Service_Data_OmsDetailOrder
 {
     /**
-     * 创建订单详情数据
-     * @param integer $intOrderSysId
-     * @param integer $intBusinessFormOrderId
-     * @param integer $intOrderType
-     * @param integer $intParentOrderId
-     * @param integer $intOrderId
-     * @param integer $intChildrenOrderId
-     * @param integer $intOrderSysType
-     * @param array   $arrSkuList
-     * @param string  $strOrderException
+     * 增量更新子单下游订单详情
+     * @param  array $arrOrderDetailList
+     * @param  array $arrOrderSkuList
      * @throws Orderui_BusinessError
      * @throws Exception
      */
-    public function insertOmsSysDetail($intOrderType, $intParentOrderId,
-                                        $intOrderId, $arrSkuList, $intOrderSysType,
-                                       $intChildrenOrderId = 0, $strOrderException = '')
+    public function addOrderSysDetail($arrOrderDetailList, $arrOrderSkuList)
     {
-        $arrOrderInfo = $this->getOrderInfoByParentOrderId($intParentOrderId, $intOrderType, $intOrderSysType);
-        $arrValidateParams = [
-            'order_type' => $intOrderType,
-            'parent_order_id' => $intParentOrderId,
-            'order_id' => $intOrderId,
-            'skus' => $arrSkuList,
-        ];
-        $this->validateEmptyParams($arrValidateParams);
-        $this->validateOrderType($intOrderSysType, $intOrderType);
-        if (Orderui_Define_Const::ORDER_SYS_NWMS == $intOrderSysType
-            && Orderui_Define_Const::NWMS_ORDER_TYPE_STOCK_OUT == $intOrderType
-            && empty($intChildrenOrderId)) {
-            Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR, 'children order id is invalid');
+        if (empty($arrOrderDetailList) || empty($arrOrderSkuList)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR);
         }
-        $intOrderSysId = $arrOrderInfo['order_system_id'];
-        $intBusinessFormOrderId = $arrOrderInfo['business_form_order_id'];
-        Model_Orm_OrderSystemDetail::getConnection()->transaction(function () use ($intOrderSysId, $intOrderType,
-            $intBusinessFormOrderId, $intOrderId, $intParentOrderId, $intChildrenOrderId, $strOrderException, $arrSkuList){
-            $intOrderSysDetailOrderId = Model_Orm_OrderSystemDetail::insertOrderSysDetail($intOrderSysId, $intOrderType,
-                $intBusinessFormOrderId, $intOrderId, $intParentOrderId, $intChildrenOrderId, $strOrderException);
-            Model_Orm_OrderSystemDetailSku::batchInsertSkuInfo($arrSkuList, $intOrderSysDetailOrderId, $intOrderId);
+        $arrOrderDetailListDb = [];
+        //去除$arrOrderDetailList中的sku
+        foreach ($arrOrderDetailList as  $arrOrderDetailInfo) {
+            $arrOrderDetailListDb[] = [
+                'order_system_detail_id' => $arrOrderDetailInfo['order_system_detail_id'],
+                'order_system_id' => $arrOrderDetailInfo['order_system_id'],
+                'order_type' => $arrOrderDetailInfo['order_type'],
+                'business_form_order_id' => $arrOrderDetailInfo['business_form_order_id'],
+                'parent_order_id' => $arrOrderDetailInfo['parent_order_id'],
+                'order_id' => $arrOrderDetailInfo['order_id'],
+                'order_exception' => $arrOrderDetailInfo['order_exception'],
+            ];
+        }
+        Model_Orm_OrderSystemDetail::getConnection()->transaction(function () use ($arrOrderDetailListDb, $arrOrderSkuList){
+            Model_Orm_OrderSystemDetail::batchInsert($arrOrderDetailListDb);
+            Model_Orm_OrderSystemDetailSku::batchInsert($arrOrderSkuList);
         });
     }
 
     /**
-     * @param  integer $intParentOrderId
+     * 验证订单是否已经存在
+     * @param  integer $intOrderId
+     * @param  integer $intOrderSysId
      * @param  integer $intOrderType
-     * @param  integer $intOrderSysType
-     * @return array   $intOrderSysType
+     * @return bool
      */
-    public function getOrderInfoByParentOrderId($intParentOrderId, $intOrderType, $intOrderSysType)
+    public function validateOrderIsExisted($intOrderId, $intOrderSysId, $intOrderType)
     {
-        if ($intParentOrderType = Orderui_Define_Const::ORDER_PARENT_ORDER_TYPE[$intOrderSysType][$intOrderType]) {
-            $arrOrderSysDetailInfo = Model_Orm_OrderSystemDetail::getOrderInfoByOrderId($intParentOrderId, $intParentOrderType);
-
-            $arrOrderInfo = [
-                'business_form_order_id' => $arrOrderSysDetailInfo['business_form_order_id'],
-                'order_system_id' => $arrOrderSysDetailInfo['order_system_id'],
-            ];
-        } else {
-            $arrOrderSysInfo = Model_Orm_OrderSystem::getOrderInfoByOmsOrderId($intParentOrderId);
-            $arrOrderInfo = [
-                'business_form_order_id' => $arrOrderSysInfo['business_form_order_id'],
-                'order_system_id' => $arrOrderSysInfo['order_system_id'],
-            ];
+        $arrOrderSysInfo = Model_Orm_OrderSystemDetail::getOrderInfo($intOrderId, $intOrderType, $intOrderSysId);
+        if (!empty($arrOrderSysInfo)) {
+            return true;
         }
-        return $arrOrderInfo;
-    }
-
-    /**
-     * 验证孔参数
-     * @param  array $arrValidateParams
-     * @throws Orderui_BusinessError
-     */
-    public function validateEmptyParams($arrValidateParams)
-    {
-        foreach ($arrValidateParams as $strKey => $value) {
-            if (empty($value)) {
-                Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR, "{$strKey} param is invalid");
-            }
-        }
+        return false;
     }
 
     /**
@@ -101,5 +67,167 @@ class Service_Data_OmsDetailOrder
                 Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_ORDER_DETAIL_TYPE_INVALID);
             }
         }
+    }
+
+    /**
+     * 组装订单存储数据
+     * @param  array $arrOrderInfoList
+     * @return array
+     * @throws Orderui_BusinessError
+     * @throws Wm_Error
+     */
+    public function assembleOmsSysDetailInfo($arrOrderInfoList)
+    {
+        if (empty($arrOrderInfoList)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR);
+        }
+        $arrOrderInfoListData = [];
+        foreach ($arrOrderInfoList as $intKey => $arrOrderInfo) {
+            $arrOrderInfoItem = $arrOrderInfo;
+            if ($intKey <= $arrOrderInfo['parent_key']) {
+                Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_EVENT_CALLBACK_INVALID);
+            }
+            if (Orderui_Define_Const::OMS_EVENT_INVALID_PARENT_KEY != $arrOrderInfo['parent_key']) {
+                $arrParentOrderInfo = $arrOrderInfoListData[$arrOrderInfo['parent_key']];
+                if ($arrParentOrderInfo['order_id'] != $arrOrderInfo['parent_order_id']) {
+                    Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_EVENT_CALLBACK_PARENT_KEY_INVALID);
+                }
+                $intOrderSysId = $arrParentOrderInfo['order_system_id'];
+                $intBusinessFormOrderId = $arrParentOrderInfo['business_form_order_id'];
+            } else {
+                //通过表获取订单信息
+                $intParentOrderType = Orderui_Define_Const::ORDER_PARENT_ORDER_TYPE[$arrOrderInfo['order_type']];
+
+                $arrOrderInfoInDB = $this->getOrderInfoByOrderIdAndType($arrOrderInfo['parent_order_id'], $intParentOrderType);
+                if (empty($arrOrderInfoInDB)) {
+                    Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_ORDER_IS_NOT_EXITED);
+                }
+                $intOrderSysId = $arrOrderInfoInDB['order_system_id'];
+                $intBusinessFormOrderId = $arrOrderInfoInDB['business_form_order_id'];
+            }
+
+            if ($this->validateOrderIsExisted($arrOrderInfo['order_id'], $intOrderSysId, $arrOrderInfo['order_type'])) {
+                continue;
+            }
+            unset($arrOrderInfoItem['parent_key']);
+            $arrOrderInfoItem['order_system_id'] = $intOrderSysId;
+            $arrOrderInfoItem['business_form_order_id'] = $intBusinessFormOrderId;
+            $arrOrderInfoItem['order_system_detail_id'] = Orderui_Util_Utility::generateOmsOrderCode();
+            $arrOrderInfoListData[$intKey] = $arrOrderInfoItem;
+        }
+        if (empty($arrOrderInfoListData)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::ORDER_SYS_DETAIL_IS_EXITED);
+        }
+        return $arrOrderInfoListData;
+    }
+
+    /**
+     * 组装子单sku详情信息
+     * @param  array $arrOrderInfoList
+     * @return array
+     * @throws Orderui_BusinessError
+     */
+    public function assembleOmsSysDetailSkuInfo($arrOrderInfoList)
+    {
+        if (empty($arrOrderInfoList)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR);
+        }
+        $arrSkuListDb = [];
+        foreach ($arrOrderInfoList as $arrOrderInfo) {
+            $arrSkuList = $arrOrderInfo['skus'];
+            foreach ($arrSkuList as  $arrSkuInfo) {
+                $arrSkuListDbItem = [
+                    'order_system_detail_id' => $arrOrderInfo['order_system_detail_id'],
+                    'order_id' => $arrOrderInfo['order_id'],
+                    'sku_id' => $arrSkuInfo['sku_id'],
+                    'sku_amount' => $arrSkuInfo['sku_amount'],
+                    'sku_ext' => $arrSkuInfo['sku_ext'],
+                    'sku_exception' => $arrSkuInfo['sku_exception'],
+                ];
+                if (empty($arrSkuInfo['sku_exception'])) {
+                    $arrSkuListDbItem['sku_exception'] = $arrOrderInfo['order_exception'];
+                }
+                $arrSkuListDb[] = $arrSkuListDbItem;
+            }
+        }
+        return $arrSkuListDb;
+    }
+
+    /**
+     * 通过下游系统订单号和订单类型获取订单信息
+     * @param  integer $intOrderId
+     * @param  integer $intOrderType
+     * @return array
+     */
+    public function getOrderInfoByOrderIdAndType($intOrderId, $intOrderType)
+    {
+        return Model_Orm_OrderSystemDetail::getOrderInfoByOrderIdAndType($intOrderId, $intOrderType);
+    }
+
+    /**
+     * 组件order system detail 订单信息
+     * @param  array $arrResponseList
+     * @param  array $arrSkuInfoList
+     * @return array
+     * @throws Wm_Error
+     */
+    public function assembleOrderSysDetailDBData($arrResponseList, $arrSkuInfoList)
+    {
+        $arrOrderSysDetailListDb = [];
+        $arrOrderSysDetailSkuListDb = [];
+        $arrSkuInfoMap = [];
+        foreach ($arrSkuInfoList as $arrSkuInfo) {
+            $arrSkuInfoMap[$arrSkuInfo['sku_id']] = $arrSkuInfo['order_amount'];
+        }
+        foreach ($arrResponseList as $re) {
+            $strOrderException = '';
+            $strOrderExceptionTime = '';
+            $intOrderSystemDetailId = Orderui_Util_Utility::generateOmsOrderCode();
+            foreach ($re['result']['exceptions'] as $arrSkuException) {
+                if ($arrSkuException['sku_id'] == 0) {
+                    $strOrderException = $arrSkuException['exception_info'];
+                    $strOrderExceptionTime = $arrSkuException['exception_time'];
+                } else {
+                    $arrOrderSysDetailSkuListDb[] = [
+                        'order_system_detail_id' => $intOrderSystemDetailId,
+                        'order_id' => $re['result']['result']['business_form_order_id'],
+                        'sku_id' => $arrSkuException['sku_id'] ,
+                        'sku_amount' => $arrSkuInfoMap[$arrSkuException['sku_id']],
+                        'sku_exception' => $arrSkuException['exception_info'],
+                    ];
+                }
+            }
+            if (!empty($re['result']['result']['skus'])) {
+                foreach ($re['result']['result']['skus'] as $arrSku) {
+                    //分配数量为0-异常信息中已存在
+                    if (0 == $arrSku['distribute_amount']) {
+                        continue;
+                    }
+                    $arrSkuItem = [
+                        'order_system_detail_id' => $intOrderSystemDetailId,
+                        'order_id' => $re['result']['result']['business_form_order_id'],
+                        'sku_id' => $arrSku['sku_id'],
+                        'sku_amount' => $arrSkuInfoMap[$arrSku['sku_id']],
+                        'sku_exception' => '',
+                    ];
+                    $arrOrderSysDetailSkuListDb[] = $arrSkuItem;
+                }
+            }
+
+            $arrOrderSysDetailListDb[] = [
+                'order_system_detail_id' => $intOrderSystemDetailId,
+                'order_system_id' => $re['order_system_id'],
+                'order_type' => $re['order_type'],
+                'business_form_order_id' => $re['business_form_order_id'],
+                'parent_order_id' => $re['order_system_id'],
+                'order_id' => $re['result']['result']['business_form_order_id'],
+                'order_exception' => $strOrderException,
+            ];
+        }
+
+        return [
+            'detail_list' => $arrOrderSysDetailListDb,
+            'sku_list' => $arrOrderSysDetailSkuListDb,
+        ];
     }
 }

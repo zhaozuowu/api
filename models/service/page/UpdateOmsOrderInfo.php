@@ -8,36 +8,27 @@
 class Service_Page_UpdateOmsOrderInfo
 {
     /**
-     * @var Service_Data_OmsOrder
+     * @var Service_Data_OmsDetailOrder
      */
-    protected $objDataOrderSysDetail;
-
-    /**
-     * @var Service_Data_OmsOrder
-     */
-    protected $objDataOrderSys;
-
+    protected $objData;
     /**
      * Service_Page_UpdateOmsOrderInfo constructor.
      */
     public function __construct()
     {
-        $this->objDataOrderSysDetail = new Service_Data_OmsDetailOrder();
-        $this->objDataOrderSys = new Service_Data_OmsOrder();
+        $this->objData = new Service_Data_OmsDetailOrder();
     }
 
     /**
      * @param array $arrInput
      * @throws Orderui_BusinessError
+     * @throws Wm_Error
      * @throws Exception
      */
     public function execute($arrInput)
     {
-        //验证订单来源类型合法性
-        $this->objDataOrderSys->validateOrderSysType($arrInput['order_sys_type']);
-        $this->objDataOrderSysDetail->insertOmsSysDetail($arrInput['order_type'], $arrInput['parent_order_id'],
-            $arrInput['order_id'], $arrInput['skus'], $arrInput['order_sys_type'],
-            $arrInput['children_order_id'], $arrInput['order_exception']
-        );
+        $arrOrderDetailList = $this->objData->assembleOmsSysDetailInfo($arrInput['order_info']);
+        $arrOrderSkuList = $this->objData->assembleOmsSysDetailSkuInfo($arrOrderDetailList);
+        $this->objData->addOrderSysDetail($arrOrderDetailList, $arrOrderSkuList);
     }
 }

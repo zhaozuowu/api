@@ -38,10 +38,63 @@
  * @method static yieldColumnFromRdview($column, $cond, $orderBy = [], $offset = 0, $limit = null)
 */
 
-class Model_Orm_BusinessFormOrder extends Wm_Orm_ActiveRecord
+class Model_Orm_BusinessFormOrder extends Orderui_Base_Orm
 {
 
     public static $tableName = 'business_form_order';
     public static $dbName = 'oms_order';
     public static $clusterName = 'oms_orderui_cluster';
+
+    /**
+     * 获取业态订单信息
+     * @param $arrConditions
+     * @param array $arrColumns
+     * @param null $intOffset
+     * @param null $intLimit
+     * @return array
+     */
+    public static function getBusinessFormOrderListByConditions($arrConditions, $arrColumns = [], $intOffset = null, $intLimit = null)
+    {
+        if (empty($arrColumns)) {
+            $arrColumns = self::getAllColumns();
+        }
+        return self::findRows($arrColumns, $arrConditions, ['create_time' => 'desc'], $intOffset, $intLimit);
+    }
+
+
+    /**
+     * 根据出库单号获取出库单信息
+     * @param $strOrderId 业态订单号
+     * @return array
+     */
+    public static function getBusinessFormOrderByOrderId($strOrderId)
+    {
+        Bd_Log::debug(__METHOD__ . ' called, input params: ' . json_encode(func_get_args()));
+        $strOrderId = empty($strOrderId) ? 0 : intval($strOrderId);
+        if (empty($strOrderId)) {
+            return [];
+        }
+        $condition = ['business_form_order_id' => $strOrderId];
+        $arrList = self::findOne($condition);
+        if (empty($arrList)) {
+            return [];
+        }
+        $arrList = $arrList->toArray();
+        Bd_Log::debug(__METHOD__ . ' return: ' . json_encode($arrList));
+        return $arrList;
+    }
+
+    /**
+     * 通过上游订单号获取业态订单信息
+     * @param  integer $intSourceOrderId
+     * @return Model_Orm_BusinessFormOrder
+     */
+    public static function getOrderInfoBySourceOrderId($intSourceOrderId)
+    {
+        $arrCondition = [
+            'source_order_id' => $intSourceOrderId,
+            'is_delete' => Orderui_Define_Const::NOT_DELETE,
+        ];
+        return self::findRow(self::getAllColumns(), $arrCondition);
+    }
 }

@@ -341,7 +341,7 @@ class Order_Util_Ral
             );
             Bd_Log::warning(sprintf(
                 'error[%s] method[%s] msg[%s]',
-                Order_Error_Code::RAL_ERROR,
+                Orderui_Error_Code::RAL_ERROR,
                 '',
                 json_encode($arrLog)
             ));
