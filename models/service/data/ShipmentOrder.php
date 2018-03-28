@@ -1,7 +1,8 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: xhb
+ * @name Service_Data_ShipmentOrder
+ * @desc 运单相关逻辑
+ * @author huabang.xue@ele.me
  * Date: 2018/3/26
  * Time: 下午4:31
  */

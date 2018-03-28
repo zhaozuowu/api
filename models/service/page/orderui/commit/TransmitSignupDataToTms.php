@@ -1,8 +1,8 @@
 <?php
 /**
  * @name Service_Page_Orderui_Commit_TransmitSignupDataToTms
- * @desc 异步创建出库单
- * @author jinyu02@iwaimai.baidu.com
+ * @desc 异步签收运单
+ * @author huabang.xue@ele.me
  */
 class Service_Page_Orderui_Commit_TransmitSignupDataToTms extends Wm_Lib_Wmq_CommitPageService {
 

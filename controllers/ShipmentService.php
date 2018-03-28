@@ -2,7 +2,7 @@
 /**
  * @name Controller_ShipmentService
  * @desc 签收运单
- * @author  jinyu02@iwaimai.baidu.com
+ * @author  huabang.xue@ele.me
  */
 class Controller_ShipmentService extends Orderui_Base_ServiceController {
 

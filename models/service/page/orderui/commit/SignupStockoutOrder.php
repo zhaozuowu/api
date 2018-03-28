@@ -2,7 +2,7 @@
 /**
  * @name Service_Page_Orderui_Commit_SignupStockoutorder
  * @desc 异步签收出库单
- * @author jinyu02@iwaimai.baidu.com
+ * @author huabang.xue@ele.me
  */
 class Service_Page_Orderui_Commit_SignupStockoutorder extends Wm_Lib_Wmq_CommitPageService {
     

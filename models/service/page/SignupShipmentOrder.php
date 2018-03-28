@@ -1,7 +1,8 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: xhb
+ * @name Service_Page_SignupShipmentOrder
+ * @desc 对运单进行签收
+ * @author huabang.xue@ele.me
  * Date: 2018/3/26
  * Time: 下午4:23
  */
