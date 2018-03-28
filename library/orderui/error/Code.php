@@ -33,7 +33,7 @@ class Orderui_Error_Code extends Wm_Error_Code
      * 预计送达时间不合法
      * @var integer
      */
-    const NWMS_ORDER_STOCKOUT_EXPECT_ARRIVE_TIME_ERROR = 340019;/**
+    const NWMS_ORDER_STOCKOUT_EXPECT_ARRIVE_TIME_ERROR = 340019;
 
    /**
     * 纬度错误
@@ -115,4 +115,10 @@ class Orderui_Error_Code extends Wm_Error_Code
      * 事件回调指定父节点异常
      */
     const OMS_EVENT_CALLBACK_PARENT_KEY_INVALID = 350036;
+
+    /**
+     * OMS取消物流单失败
+     * @var integer
+     */
+    const OMS_ORDER_CANCEL_FAILED = 350037;
 }

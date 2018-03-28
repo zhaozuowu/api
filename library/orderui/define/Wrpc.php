@@ -24,4 +24,22 @@ class Orderui_Define_Wrpc
      * @var string
      */
     const NWMS_SERVICE_NAME = 'BusinessService';
+
+    /**
+     * tms app id
+     * @var string
+     */
+    const TMS_APP_ID = 'scm.tms_core';
+
+    /**
+     * tms namespace
+     * @var string
+     */
+    const TMS_NAMESPACE = 'me.ele.scm.tms.shipment.api';
+
+    /**
+     * tms service name
+     * @var string
+     */
+    const TMS_SERVICE_NAME = 'ShipmentService';
 }

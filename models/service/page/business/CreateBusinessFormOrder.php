@@ -42,7 +42,7 @@ class Service_Page_Business_CreateBusinessFormOrder
      * @throws Exception
      */
     public function execute($arrInput) {
-        $this->objDsBusinessFormOrder->checkAuthority($arrInput['business_form_key'], $arrInput['business_form_token']);
+        //$this->objDsBusinessFormOrder->checkAuthority($arrInput['business_form_key'], $arrInput['business_form_token']);
         $arrInput['business_form_order_id'] = Orderui_Util_Utility::generateBusinessFormOrderId();
         $arrOrderSysDetailList = $this->objDsBusinessFormOrder->splitBusinessOrder($arrInput);
         $arrResponseList = $this->objDsBusinessFormOrder->distributeOrder($arrOrderSysDetailList);

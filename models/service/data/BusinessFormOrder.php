@@ -12,11 +12,23 @@ class Service_Data_BusinessFormOrder
     protected $objDaoRalSku;
 
     /**
+     * @var Dao_Ral_NWmsOrder
+     */
+    protected $objDaoRalNWmsOrder;
+
+    /**
+     * @var Dao_Wrpc_Tms
+     */
+    protected $objDaoWrpcTms;
+
+    /**
      * init object
      */
     public function __construct()
     {
         $this->objDaoRalSku = new Dao_Ral_Sku();
+        $this->objDaoRalNWmsOrder = new Dao_Ral_NWmsOrder();
+        $this->objDaoWrpcTms = new Dao_Wrpc_Tms();
     }
 
     /**
@@ -350,5 +362,43 @@ class Service_Data_BusinessFormOrder
             return false;
         }
         return true;
+    }
+
+    /**
+     * 取消物流单
+     * @param $intLogisticsOrderId
+     * @param $strRemark
+     * @return bool
+     * @throws Nscm_Exception_Error
+     */
+    public function cancelLogisticsOrder($intLogisticsOrderId, $strRemark)
+    {
+        $arrBusinessOrderInfo = Model_Orm_BusinessFormOrder::getOrderInfoBySourceOrderId($intLogisticsOrderId);
+        $intBusinessFormOrderId = $arrBusinessOrderInfo['business_form_order_id'];
+        //预取消沧海出库单
+        $arrStockoutOrderInfo = Model_Orm_OrderSystemDetail::
+                        getOrderInfoByBusinessFormOrderIdAndType($intBusinessFormOrderId,
+                                                    Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_STOCK_OUT);
+        $intStockoutOrderId = $arrStockoutOrderInfo[0]['order_id'];
+        $arrRet = $this->objDaoRalNWmsOrder->preCancelStockoutOrder($intStockoutOrderId);
+        if (isset($arrRet['error_no']) && 0 != $arrRet['error_no']) {
+            $strErrorMsg = sprintf(Orderui_Define_BusinessFormOrder::OMS_CANCEL_FAILED_MESSAGE,
+                                    $arrRet['error_msg']);
+            Orderui_Error::throwException($arrRet['error_no'], $strErrorMsg);
+        }
+        //取消tms运单
+        $arrShipmentOrderInfo = Model_Orm_OrderSystemDetail::getOrderInfoByBusinessFormOrderIdAndType($intBusinessFormOrderId,
+                                                                Orderui_Define_Const::NWMS_ORDER_TYPE_SHIPMENT_ORDER);
+        $intShipmentOrderId = $arrShipmentOrderInfo[0]['order_id'];
+        $arrRet = $this->objDaoWrpcTms->cancelShipmentOrder($intShipmentOrderId, $strRemark);
+        if (isset($arrRet['errno']) && 0 != $arrRet['errno']) {
+            $this->objDaoRalNWmsOrder->rollbackCancelStockoutOrder($intStockoutOrderId);
+            $strErrorMsg = sprintf(Orderui_Define_BusinessFormOrder::OMS_CANCEL_FAILED_MESSAGE,
+                $arrRet['errmsg']);
+            Orderui_Error::throwException($arrRet['errno'], $strErrorMsg);
+        }
+        //确认取消wms出库单
+        $this->objDaoRalNWmsOrder->confirmCancelStockoutOrder($intStockoutOrderId, $strRemark);
+        return Orderui_Define_Const::CANCEL_SUCCESS;
     }
 }
