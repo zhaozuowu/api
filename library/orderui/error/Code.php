@@ -115,4 +115,20 @@ class Orderui_Error_Code extends Wm_Error_Code
      * 事件回调指定父节点异常
      */
     const OMS_EVENT_CALLBACK_PARENT_KEY_INVALID = 350036;
+    /**
+     * 找不到运单
+     */
+    const OMS_NOT_FOUND_SHIPMENT_ORDER = 360001;
+    /**
+     * 找不到出库单
+     */
+    const OMS_NOT_FOUND_STOCKOUT_ORDER = 360002;
+    /**
+     * 签收运单失败
+     */
+    const OMS_SIGNUP_SHIPMENT_ORDER_FAIL = 360003;
+    /**
+     * 找不到出库单
+     */
+    const OMS_SIGNUP_STOCKOUT_ORDER_FAIL = 360004;
 }

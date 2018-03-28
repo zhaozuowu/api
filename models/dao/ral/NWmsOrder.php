@@ -18,6 +18,11 @@ class Dao_Ral_NWmsOrder
      * @var string
      */
     const API_RALER_CREATE_NWMS_ORDER = 'createnwmsorder';
+    /*
+     * signup stockout order
+     * @var string
+     */
+    const API_SIGNUP_STOCKOUT_ORDER = 'signupstockoutorder';
 
     /**
      * init
@@ -40,6 +45,22 @@ class Dao_Ral_NWmsOrder
         $ret = $this->objApiRal->getData($req);
         Bd_Log::trace(sprintf("create nwms order response %s", json_encode($ret)));
         $ret = !empty($ret[self::API_RALER_CREATE_NWMS_ORDER]) ? $ret[self::API_RALER_CREATE_NWMS_ORDER] : [];
+        return $ret;
+    }
+
+    /**
+     * 签收nwms出库单
+     * @param  array $arrSignupInfo
+     * @return array
+     * @throws Nscm_Exception_Error
+     */
+    public function signupStockoutOrder($arrSignupInfo)
+    {
+        $req[self::API_SIGNUP_STOCKOUT_ORDER] = $arrSignupInfo;
+        Bd_Log::trace(sprintf("signup nwms order request params %s", json_encode($req)));
+        $ret = $this->objApiRal->getData($req);
+        Bd_Log::trace(sprintf("signup nwms order response %s", json_encode($ret)));
+        $ret = !empty($ret[self::API_SIGNUP_STOCKOUT_ORDER]) ? $ret[self::API_SIGNUP_STOCKOUT_ORDER] : [];
         return $ret;
     }
 }
