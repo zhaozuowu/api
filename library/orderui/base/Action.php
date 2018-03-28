@@ -5,6 +5,8 @@
  * @author lvbochao@iwaimai.baidu.com
  */
 abstract class Orderui_Base_Action extends Nscm_Base_Action {
+    //是否接入事件
+    protected $boolIsEvent = false;
     /**
      * show price switch
      * @var bool $boolHidePrice
@@ -117,6 +119,17 @@ abstract class Orderui_Base_Action extends Nscm_Base_Action {
             $this->arrFilterResult = array_merge($arrValidateResult, $this->arrFilterResult);
         } else{
             $this->arrFilterResult = $this->validate($this->arrInputParams, $arrInput);
+        }
+        //校验系统与事件的对应关系是否合法
+        if ($this->boolIsEvent) {
+            if (!array_key_exists($this->arrFilterResult['client_id'], Orderui_Define_Event::CLIENT_LIST)) {
+                Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_NOT_FOUND_CLIENT);
+            }
+            if (!array_key_exists($this->arrFilterResult['event_key'], Orderui_Define_Event::CLIENT_EVENT_LIST[$this->arrFilterResult['client_id']])) {
+                Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_NOT_FOUND_EVENT);
+            }
+            //校验data参加格式
+            $this->arrFilterResult['data'] = $this->validate(Orderui_Define_EventParameter::EVENT_PARAMETER_LIST[$this->arrFilterResult['event_key']], $this->arrFilterResult['data']);
         }
         if ($this->boolCheckLogin) {
             $this->arrSession = Nscm_Lib_Singleton::get('Nscm_Lib_Map')->get('user_info');

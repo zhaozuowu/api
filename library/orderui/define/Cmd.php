@@ -19,6 +19,12 @@ class Orderui_Define_Cmd
     const NWMS_ORDER_TOPIC = 'nwmsorder';
 
     /**
+     * nwms topic
+     * @var string
+     */
+    const OMS_ENS_TOPIC = 'oms_ens';
+
+    /**
      * nscm sync inbound
      * @var string
      */
@@ -67,6 +73,12 @@ class Orderui_Define_Cmd
      * @var string
      */
     const CMD_SYNC_INBOUND_NWMS = 'nscm_purchase_order_sync';
+
+    /**
+     * cmd trigger event
+     * @var string
+     */
+    const CMD_EVENT_SYSTEM = 'event_system';
 
     /**
      * wmq使用的默认配置

@@ -115,4 +115,17 @@ class Orderui_Error_Code extends Wm_Error_Code
      * 事件回调指定父节点异常
      */
     const OMS_EVENT_CALLBACK_PARENT_KEY_INVALID = 350036;
+
+    /**
+     * 接入事件失败
+     */
+    const OMS_TRIGGER_EVENT_FAIL = 360005;
+    /**
+     * 接入系统不存在
+     */
+    const OMS_NOT_FOUND_CLIENT = 360006;
+    /**
+     * 接入事件不存在
+     */
+    const OMS_NOT_FOUND_EVENT = 360007;
 }
