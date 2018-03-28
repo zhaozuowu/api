@@ -28,7 +28,7 @@ class Service_Data_ShipmentOrder
     /*
      * 接收签收运单请求并转发wms和tms
      */
-    public function SignupShipmentOrderByInput($intShipmentOrderId, $intSignupStatus, $strSinupSkus, $strOffShelfSkus)
+    public function SignupShipmentOrderByInput($intShipmentOrderId, $intSignupStatus, $arrSinupSkus, $arrOffShelfSkus, $arrAdjustSkus)
     {
         $arrRet = [
             'shipment_order_id' => strval($intShipmentOrderId),
@@ -45,11 +45,22 @@ class Service_Data_ShipmentOrder
         if (empty($arrStockoutOrder)) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_NOT_FOUND_STOCKOUT_ORDER);
         }
+        //存储库存调整sku
+        if (!empty($arrAdjustSkus)) {
+            $intBusinessFormOrderId = intval($arrShipmentOrder['business_form_order_id']);
+            $objBusinessFormOrder = Model_Orm_BusinessFormOrder::getBusinessFormOrderByBusinessOrderId($intBusinessFormOrderId);
+            if (!empty($objBusinessFormOrder)) {
+                $arrBusinessFormOrderExt = json_decode($objBusinessFormOrder['business_form_ext'], true);
+                $arrBusinessFormOrderExt['adjust_stock_skus'] = $arrAdjustSkus;
+                $arrRow['business_form_ext'] = json_encode($arrBusinessFormOrderExt);
+                $objBusinessFormOrder->update($arrRow);
+            }
+        }
         //转发nwms
         $arrParam = [
             'stockout_order_id' => $intStockOutOrderId,
             'signup_satus'      => $intSignupStatus,
-            'signup_skus'       => $strSinupSkus,
+            'signup_skus'       => $arrSinupSkus,
         ];
         $strCmd = Orderui_Define_Cmd::CMD_SIGNUP_STOCKOUT_ORDER;
         $ret = Orderui_Wmq_Commit::sendWmqCmd($strCmd, $arrParam, strval($intStockOutOrderId));
@@ -58,11 +69,12 @@ class Service_Data_ShipmentOrder
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_SIGNUP_STOCKOUT_ORDER_FAIL);
         }
         //转发tms
+        /*暂时不传tms
         $arrParamTms = [
             'shipment_order_id' => $intShipmentOrderId,
             'signup_satus'      => $intSignupStatus,
-            'signup_skus'       => $strSinupSkus,
-            'offshelf_skus'     => $strOffShelfSkus,
+            'signup_skus'       => $arrSinupSkus,
+            'offshelf_skus'     => $arrOffShelfSkus,
         ];
         $strCmdTms = Orderui_Define_Cmd::CMD_TRANSMIT_SIGNUP_DATA;
         $retTms = Orderui_Wmq_Commit::sendWmqCmd($strCmdTms, $arrParamTms, strval($intShipmentOrderId));
@@ -70,6 +82,7 @@ class Service_Data_ShipmentOrder
             Bd_Log::warning(sprintf("method[%s] cmd[%s] error", __METHOD__, $strCmdTms));
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_SIGNUP_SHIPMENT_ORDER_FAIL);
         }
+        */
         $arrRet['result'] = true;
         return $arrRet;
     }

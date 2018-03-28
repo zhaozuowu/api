@@ -18,6 +18,7 @@ class Action_Service_SignupShipmentOrder extends Orderui_Base_ServiceAction
         'signup_status' => 'int|required',
         'signup_skus' => 'arr|required',
         'offshelf_skus' => 'arr',
+        'adjust_skus' => 'arr',
     ];
 
     /*

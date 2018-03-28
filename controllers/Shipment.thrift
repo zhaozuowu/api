@@ -19,6 +19,7 @@ struct ShipmentOrderInfo {
     2:required i32 signup_status,
     3:required list<map<string,string>> signup_skus,
     4:optional list<map<string,string>> offshelf_skus,
+    5:optional list<string> adjust_skus
 }
 #服务定义
 service ShipmentService {

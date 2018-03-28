@@ -29,8 +29,9 @@ class Service_Page_SignupShipmentOrder
     {
         $intShipmentOrderId = intval($arrInput['shipment_order_id']);
         $intSignupStatus = intval($arrInput['signup_status']);
-        $strSinupSkus = $arrInput['signup_skus'];
-        $strOffShelfSkus = $arrInput['offshelf_skus'];
-        return $this->objData->SignupShipmentOrderByInput($intShipmentOrderId, $intSignupStatus, $strSinupSkus, $strOffShelfSkus);
+        $arrSinupSkus = $arrInput['signup_skus'];
+        $arrOffShelfSkus = $arrInput['offshelf_skus'];
+        $arrAdjustSkus = $arrInput['adjust_skus'];
+        return $this->objData->SignupShipmentOrderByInput($intShipmentOrderId, $intSignupStatus, $arrSinupSkus, $arrOffShelfSkus, $arrAdjustSkus);
     }
 }

@@ -85,6 +85,25 @@ class Model_Orm_BusinessFormOrder extends Orderui_Base_Orm
     }
 
     /**
+     * 根据业态订单号获取业态订单信息
+     * @param $strOrderId 业态订单号
+     * @return array
+     */
+    public static function getBusinessFormOrderByBusinessOrderId($strOrderId)
+    {
+        $strOrderId = empty($strOrderId) ? 0 : intval($strOrderId);
+        if (empty($strOrderId)) {
+            return [];
+        }
+        $condition = ['business_form_order_id' => $strOrderId, 'is_delete' => Orderui_Define_Const::NOT_DELETE];
+        $objOrder = self::findOne($condition);
+        if (empty($objOrder)) {
+            return [];
+        }
+        return $objOrder;
+    }
+
+    /**
      * 通过上游订单号获取业态订单信息
      * @param  integer $intSourceOrderId
      * @return Model_Orm_BusinessFormOrder
