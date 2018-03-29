@@ -121,4 +121,16 @@ class Orderui_Error_Code extends Wm_Error_Code
      * @var integer
      */
     const OMS_ORDER_CANCEL_FAILED = 350037;
+
+    /**
+     * 找不到关联的出库单
+     * @var integer
+     */
+    const OMS_NWMS_ORDER_NOT_FOUND = 350038;
+
+    /**
+     * 找不到关联的tms运单
+     * @var integer
+     */
+    const OMS_TMS_ORDER_NOT_FOUND = 350039;
 }

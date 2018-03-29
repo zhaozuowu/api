@@ -42,8 +42,8 @@ class Dao_Wrpc_Tms
     protected function getCancelParams($intShipmentOrderId, $strRemark)
     {
         $arrParams = [];
-        $arrParams['user'] = (object)[];
         $arrParams['request'] = $this->getCancelRequest($intShipmentOrderId, $strRemark);
+        return $arrParams;
     }
 
     /**

@@ -41,7 +41,7 @@ class Service_Data_BusinessFormOrder
     public function checkAuthority($strBusinessFormKey, $strBusinessFormToken) {
         $strGenKey = md5($strBusinessFormKey . Orderui_Define_BusinessFormOrder::SALT_VAL);
         if ($strGenKey != $strBusinessFormToken) {
-            Orderui_Error::throwException(Orderui_Error_Code::OMS_CHECK_AUTHORITY_ERROR);
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_CHECK_AUTHORITY_ERROR);
         }
     }
 
@@ -379,23 +379,31 @@ class Service_Data_BusinessFormOrder
         $arrStockoutOrderInfo = Model_Orm_OrderSystemDetail::
                         getOrderInfoByBusinessFormOrderIdAndType($intBusinessFormOrderId,
                                                     Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_STOCK_OUT);
+
+        if (empty($arrStockoutOrderInfo)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_NWMS_ORDER_NOT_FOUND);
+        }
         $intStockoutOrderId = $arrStockoutOrderInfo[0]['order_id'];
         $arrRet = $this->objDaoRalNWmsOrder->preCancelStockoutOrder($intStockoutOrderId);
         if (isset($arrRet['error_no']) && 0 != $arrRet['error_no']) {
             $strErrorMsg = sprintf(Orderui_Define_BusinessFormOrder::OMS_CANCEL_FAILED_MESSAGE,
                                     $arrRet['error_msg']);
-            Orderui_Error::throwException($arrRet['error_no'], $strErrorMsg);
+            Orderui_BusinessError::throwException($arrRet['error_no'], $strErrorMsg);
         }
         //取消tms运单
         $arrShipmentOrderInfo = Model_Orm_OrderSystemDetail::getOrderInfoByBusinessFormOrderIdAndType($intBusinessFormOrderId,
                                                                 Orderui_Define_Const::NWMS_ORDER_TYPE_SHIPMENT_ORDER);
+        if (empty($arrShipmentOrderInfo)) {
+            $this->objDaoRalNWmsOrder->rollbackCancelStockoutOrder($intStockoutOrderId);
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_TMS_ORDER_NOT_FOUND);
+        }
         $intShipmentOrderId = $arrShipmentOrderInfo[0]['order_id'];
         $arrRet = $this->objDaoWrpcTms->cancelShipmentOrder($intShipmentOrderId, $strRemark);
         if (isset($arrRet['errno']) && 0 != $arrRet['errno']) {
             $this->objDaoRalNWmsOrder->rollbackCancelStockoutOrder($intStockoutOrderId);
             $strErrorMsg = sprintf(Orderui_Define_BusinessFormOrder::OMS_CANCEL_FAILED_MESSAGE,
                 $arrRet['errmsg']);
-            Orderui_Error::throwException($arrRet['errno'], $strErrorMsg);
+            Orderui_BusinessError::throwException($arrRet['errno'], $strErrorMsg);
         }
         //确认取消wms出库单
         $this->objDaoRalNWmsOrder->confirmCancelStockoutOrder($intStockoutOrderId, $strRemark);
