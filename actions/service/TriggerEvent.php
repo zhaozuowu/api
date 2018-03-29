@@ -15,7 +15,7 @@ class Action_Service_TriggerEvent extends Orderui_Base_ServiceAction
      */
     protected $arrInputParams = [
         'client_id' => 'int|required|min[1]|max[6]',
-        'event_key' => 'string|required|len[256]',
+        'event_key' => 'str|required|len[256]',
         'data'      => 'json|required|decode',
     ];
 
