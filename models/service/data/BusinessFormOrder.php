@@ -370,6 +370,7 @@ class Service_Data_BusinessFormOrder
      * @param $strRemark
      * @return bool
      * @throws Nscm_Exception_Error
+     * @throws Orderui_BusinessError
      */
     public function cancelLogisticsOrder($intLogisticsOrderId, $strRemark)
     {
