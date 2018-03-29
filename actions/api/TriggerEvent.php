@@ -15,8 +15,8 @@ class Action_TriggerEvent extends Orderui_Base_ApiAction
      */
     protected $arrInputParams = [
         'client_id' => 'int|required|min[1]|max[6]',
-        'event_key' => 'string|required|len[256]',
-        'data'      => 'json|required|decode',
+        'event_key' => 'str|required|len[256]',
+        'data'      => 'json|decode|required',
     ];
 
     /**
