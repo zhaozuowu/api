@@ -7,8 +7,6 @@
 
 class Action_Service_TriggerEvent extends Orderui_Base_ServiceAction
 {
-    //是否接入事件
-    protected $boolIsEvent = true;
     /**
      * input params
      * @var array
@@ -16,7 +14,7 @@ class Action_Service_TriggerEvent extends Orderui_Base_ServiceAction
     protected $arrInputParams = [
         'client_id' => 'int|required|min[1]|max[6]',
         'event_key' => 'str|required|len[256]',
-        'data'      => 'json|required|decode',
+        'data'      => 'json|decode|required',
     ];
 
     /**
@@ -31,6 +29,25 @@ class Action_Service_TriggerEvent extends Orderui_Base_ServiceAction
     function myConstruct()
     {
         $this->objPage = new Service_Page_TriggerEvent();
+    }
+
+    /**
+     * add validate
+     * @throws Wm_Error
+     */
+    public function myExecute()
+    {
+        //校验系统与事件的对应关系是否合法
+        if (!array_key_exists($this->arrFilterResult['client_id'], Orderui_Define_Event::CLIENT_LIST)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_NOT_FOUND_CLIENT);
+        }
+        if (!array_key_exists($this->arrFilterResult['event_key'], Orderui_Define_Event::CLIENT_EVENT_LIST[$this->arrFilterResult['client_id']])) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_NOT_FOUND_EVENT);
+        }
+        //校验data参数格式
+        $this->arrFilterResult['data'] = $this->validate(Orderui_Define_EventParameter::EVENT_PARAMETER_LIST[$this->arrFilterResult['event_key']], $this->arrFilterResult['data']);
+
+        return parent::myExecute();
     }
 
     /**
