@@ -207,6 +207,10 @@ class Service_Data_BusinessFormOrder
                                                     0 : strval($arrInput['executor']);
         $arrBusinessFormExt['executor_contact'] = empty($arrInput['executor_contact']) ?
                                                     '' : strval($arrInput['executor_contact']);
+        $arrBusinessFormExt['expect_arrive_start_time'] = empty($arrInput['expect_arrive_time']['start']) ?
+            '' : intval($arrInput['expect_arrive_time']['start']);
+        $arrBusinessFormExt['expect_arrive_end_time'] = empty($arrInput['expect_arrive_time']['end']) ?
+            '' : intval($arrInput['expect_arrive_time']['end']);
         return$arrBusinessFormExt;
     }
 
