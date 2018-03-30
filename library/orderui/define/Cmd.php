@@ -81,6 +81,12 @@ class Orderui_Define_Cmd
     const CMD_TRANSMIT_SIGNUP_DATA = 'transmit_signup_data_to_tms';
 
     /**
+     * 创建销退入库单
+     * @var string
+     */
+    const CMD_CREATE_RETURN_STOCKIN_ORDER = 'create_sales_return_stockin_order';
+
+    /**
      * wmq使用的默认配置
      * @var array
      */

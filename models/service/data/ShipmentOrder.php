@@ -63,20 +63,19 @@ class Service_Data_ShipmentOrder
         //转发nwms
         $arrParam = [
             'stockout_order_id' => $intStockOutOrderId,
-            'signup_satus'      => $intSignupStatus,
+            'signup_status'      => $intSignupStatus,
             'signup_skus'       => $arrSinupSkus,
         ];
         $strCmd = Orderui_Define_Cmd::CMD_SIGNUP_STOCKOUT_ORDER;
         $ret = Orderui_Wmq_Commit::sendWmqCmd($strCmd, $arrParam, strval($intStockOutOrderId));
         if (false == $ret) {
             Bd_Log::warning(sprintf("method[%s] cmd[%s] error", __METHOD__, $strCmd));
-            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_SIGNUP_STOCKOUT_ORDER_FAIL);
         }
         //转发tms
         /*暂时不传tms
         $arrParamTms = [
             'shipment_order_id' => $intShipmentOrderId,
-            'signup_satus'      => $intSignupStatus,
+            'signup_status'      => $intSignupStatus,
             'signup_skus'       => $arrSinupSkus,
             'offshelf_skus'     => $arrOffShelfSkus,
         ];
@@ -84,17 +83,86 @@ class Service_Data_ShipmentOrder
         $retTms = Orderui_Wmq_Commit::sendWmqCmd($strCmdTms, $arrParamTms, strval($intShipmentOrderId));
         if (false == $retTms) {
             Bd_Log::warning(sprintf("method[%s] cmd[%s] error", __METHOD__, $strCmdTms));
-            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_SIGNUP_SHIPMENT_ORDER_FAIL);
         }
         */
+        //若是部分签收或拒收则创建销退入库单
+        if ($intSignupStatus == Orderui_Define_ShipmentOrder::SHIPMENT_SIGINUP_REJECT_ALL || $intSignupStatus == Orderui_Define_ShipmentOrder::SHIPMENT_SIGINUP_ACCEPT_PART) {
+            $this->SendStockinSkuInfoToWmq($intShipmentOrderId, $intStockOutOrderId, $arrSinupSkus, $arrOffShelfSkus);
+        }
         $arrRet['result'] = true;
         return $arrRet;
     }
+    /*
+     * 创建销退入库单的sku信息发送wmq
+     * @param int $intShipmentOrderId
+     * @param int $intStockOutOrderId
+     * @param array $arrSinupSkus
+     * @param array $arrOffShelfSkus
+     * @return bool
+     */
+    public function SendStockinSkuInfoToWmq($intShipmentOrderId, $intStockOutOrderId, $arrSinupSkus, $arrOffShelfSkus)
+    {
+        $arrSkuList = [];
+        $arrSkuInfoList = array_merge($arrSinupSkus, $arrOffShelfSkus);
+        foreach ($arrSkuInfoList as $arrSku) {
+            $skuId = array_keys($arrSku)[0];
+            $skuAmount = $arrSku[$skuId];
+            $arrSkuList[] = [
+                'sku_id'     => $skuId,
+                'sku_amount' => $skuAmount,
+            ];
+        }
+        $arrParamCreateStockin = [
+            'stockout_order_id' => $intStockOutOrderId,
+            'shipment_order_id' => $intShipmentOrderId,
+            'sku_info_list'     => json_encode($arrSkuList),
+            'stockin_order_remark' => '',
+        ];
+        $strCmdStockin = Orderui_Define_Cmd::CMD_CREATE_RETURN_STOCKIN_ORDER;
+        $wmqRet = Orderui_Wmq_Commit::sendWmqCmd($strCmdStockin, $arrParamCreateStockin, strval($intStockOutOrderId));
+        if (false == $wmqRet) {
+            Bd_Log::warning(sprintf("method[%s] cmd[%s] error", __METHOD__, $strCmdStockin));
+        }
+        return true;
+    }
+
     /*
      * 签收wms出库单
      */
     public function SignupStockoutOrder($arrSignupData)
     {
         return $this->objDaoRalNwmsOrder->signupStockoutOrder($arrSignupData);
+    }
+
+    /*
+     * 创建销退入库单
+     */
+    public function CreateSalesReturnStockinOrder($arrData)
+    {
+        $intStockoutOrderId = intval($arrData['stockout_order_id']);
+        $arrRet = $this->objDaoRalNwmsOrder->CreateSalesReturnStockinOrder($arrData);
+        if (!empty($arrRet)) {
+            $intStockinOrderId = intval($arrRet['result']['stockin_order_id']);
+            $arrStockoutOrder = Model_Orm_OrderSystemDetail::getOrderInfoByOrderIdAndType($intStockoutOrderId, Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_STOCK_OUT);
+            if (!empty($arrStockoutOrder)) {
+                $intBusinessFormOrderId = intval($arrStockoutOrder['business_form_order_id']);
+                $intOrderSystemId = intval($arrStockoutOrder['order_system_id']);
+                $intOrderSystemDetailId = Orderui_Util_Utility::generateOmsOrderCode();
+                $arrRow = [
+                    'order_system_detail_id' => $intOrderSystemDetailId,
+                    'order_system_id'        => $intOrderSystemId,
+                    'business_form_order_id' => $intBusinessFormOrderId,
+                    'order_type'             => Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_STOCK_IN,
+                    'order_id'               => $intStockinOrderId,
+                    'parent_order_id'        => $intStockoutOrderId,
+                ];
+                $ret = Model_Orm_OrderSystemDetail::insert($arrRow);
+                if(false === $ret) {
+                    Bd_Log::warning(sprintf("method[%s] insert stockin order fail stockin_order_id[%s]", __METHOD__, $intStockinOrderId));
+                }
+            }
+
+        }
+        return true;
     }
 }
