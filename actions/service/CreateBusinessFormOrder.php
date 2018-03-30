@@ -52,6 +52,7 @@ class Action_Service_CreateBusinessFormOrder extends Orderui_Base_ServiceAction
                 'order_amount' => 'int',
                 'event_type'   => 'int'
             ],
+            
         ],
         'business_form_token' => 'str|required',
         'business_form_key' => 'str|required',
