@@ -59,7 +59,7 @@ class Service_Data_ShipmentOrder
         //转发nwms
         $arrParam = [
             'stockout_order_id' => $intStockOutOrderId,
-            'signup_satus'      => $intSignupStatus,
+            'signup_status'      => $intSignupStatus,
             'signup_skus'       => $arrSinupSkus,
         ];
         $strCmd = Orderui_Define_Cmd::CMD_SIGNUP_STOCKOUT_ORDER;
@@ -71,7 +71,7 @@ class Service_Data_ShipmentOrder
         /*暂时不传tms
         $arrParamTms = [
             'shipment_order_id' => $intShipmentOrderId,
-            'signup_satus'      => $intSignupStatus,
+            'signup_status'      => $intSignupStatus,
             'signup_skus'       => $arrSinupSkus,
             'offshelf_skus'     => $arrOffShelfSkus,
         ];
@@ -140,6 +140,30 @@ class Service_Data_ShipmentOrder
      */
     public function CreateSalesReturnStockinOrder($arrData)
     {
-        return $this->objDaoRalNwmsOrder->CreateSalesReturnStockinOrder($arrData);
+        $intStockoutOrderId = intval($arrData['stockout_order_id']);
+        $arrRet = $this->objDaoRalNwmsOrder->CreateSalesReturnStockinOrder($arrData);
+        if (!empty($arrRet)) {
+            $intStockinOrderId = intval($arrRet['result']['stockin_order_id']);
+            $arrStockoutOrder = Model_Orm_OrderSystemDetail::getOrderInfoByOrderIdAndType($intStockoutOrderId, Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_STOCK_OUT);
+            if (!empty($arrStockoutOrder)) {
+                $intBusinessFormOrderId = intval($arrStockoutOrder['business_form_order_id']);
+                $intOrderSystemId = intval($arrStockoutOrder['order_system_id']);
+                $intOrderSystemDetailId = Orderui_Util_Utility::generateOmsOrderCode();
+                $arrRow = [
+                    'order_system_detail_id' => $intOrderSystemDetailId,
+                    'order_system_id'        => $intOrderSystemId,
+                    'business_form_order_id' => $intBusinessFormOrderId,
+                    'order_type'             => Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_STOCK_IN,
+                    'order_id'               => $intStockinOrderId,
+                    'parent_order_id'        => $intStockoutOrderId,
+                ];
+                $ret = Model_Orm_OrderSystemDetail::insert($arrRow);
+                if(false === $ret) {
+                    Bd_Log::warning(sprintf("method[%s] insert stockin order fail stockin_order_id[%s]", __METHOD__, $intStockinOrderId));
+                }
+            }
+
+        }
+        return true;
     }
 }

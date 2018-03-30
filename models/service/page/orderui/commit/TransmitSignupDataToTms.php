@@ -1,10 +1,10 @@
 <?php
 /**
- * @name Service_Page_Orderui_Commit_TransmitSignupDataToTms
+ * @name Service_Page_Orderui_Commit_Transmitsignupdatatotms
  * @desc 异步签收运单
  * @author huabang.xue@ele.me
  */
-class Service_Page_Orderui_Commit_TransmitSignupDataToTms extends Wm_Lib_Wmq_CommitPageService {
+class Service_Page_Orderui_Commit_Transmitsignupdatatotms extends Wm_Lib_Wmq_CommitPageService {
 
     /**
      * @var Service_Data_ShipmentOrder

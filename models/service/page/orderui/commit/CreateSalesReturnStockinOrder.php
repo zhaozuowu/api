@@ -1,10 +1,10 @@
 <?php
 /**
- * @name Service_Page_Orderui_Commit_CreateSalesReturnStockinOrder
+ * @name Service_Page_Orderui_Commit_Createsalesreturnstockinorder
  * @desc 异步创建销退入库单
  * @author huabang.xue@ele.me
  */
-class Service_Page_Orderui_Commit_CreateSalesReturnStockinOrder extends Wm_Lib_Wmq_CommitPageService {
+class Service_Page_Orderui_Commit_Createsalesreturnstockinorder extends Wm_Lib_Wmq_CommitPageService {
 
     /**
      * @var Service_Data_ShipmentOrder

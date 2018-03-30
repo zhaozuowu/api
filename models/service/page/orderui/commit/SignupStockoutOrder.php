@@ -1,10 +1,10 @@
 <?php
 /**
- * @name Service_Page_Orderui_Commit_SignupStockoutorder
+ * @name Service_Page_Orderui_Commit_Signupstockoutorder
  * @desc 异步签收出库单
  * @author huabang.xue@ele.me
  */
-class Service_Page_Orderui_Commit_SignupStockoutorder extends Wm_Lib_Wmq_CommitPageService {
+class Service_Page_Orderui_Commit_Signupstockoutorder extends Wm_Lib_Wmq_CommitPageService {
     
     /**
      * @var Service_Data_ShipmentOrder
