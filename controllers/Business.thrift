@@ -25,6 +25,12 @@ struct BusinessFormOrderSku {
     1:required string sku_id,
     3:required i32 order_amount
 }
+#业态订单sku事件
+struct BusinessFormOrderSkuEvent {
+    1:required string sku_id,
+    2:required i32 order_amount,
+    3:required i32 event_type,
+}
 #货架信息
 struct ShelfInfo {
     1:required i32 supply_type,
@@ -53,7 +59,8 @@ struct BusinessFormOrderInfo {
     19:required map<string, i64> expect_arrive_time,
     20:required list<BusinessFormOrderSku> skus,
     21:required string business_form_token,
-    22:required string business_form_key
+    22:required string business_form_key,
+    23:required list<BusinessFormOrderSkuEvent> skus_event,
 }
 
 #服务定义
@@ -61,5 +68,5 @@ service BusinessService {
     Data createBusinessFormOrder(1:required BusinessFormOrderInfo objBusinessFormOrderInfo)
         throws (1: OrderUserException userException),
     i32 cancelLogisticsOrder(1:required string logistics_order_id, 2:required string cancelRemark)
-        throws (1: OrderUserException userException)
+        throws (1: OrderUserException userException)，
 }

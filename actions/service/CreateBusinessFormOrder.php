@@ -14,7 +14,7 @@ class Action_Service_CreateBusinessFormOrder extends Orderui_Base_ServiceAction
         'logistics_order_id' => 'str|required',
         'business_form_order_type' => 'int|required',
         'shelf_info' => 'arr|required',
-        'business_form_order_remark' => 'str|len[128]',
+        'business_form_order_remark' => 'str|len[255]',
         'customer_id' => 'str|required|len[32]',
         'customer_name' => 'str|required|len[128]',
         'customer_contactor' => 'str|required|len[32]',
@@ -43,6 +43,16 @@ class Action_Service_CreateBusinessFormOrder extends Orderui_Base_ServiceAction
                 'sku_id' => 'int|required',
                 'order_amount' => 'int|required|min[1]',
             ],
+        ],
+        'skus_event' => [
+            'validate' => 'arr',
+            'type' => 'array',
+            'params' => [
+                'sku_id' => 'int',
+                'order_amount' => 'int',
+                'event_type'   => 'int'
+            ],
+            
         ],
         'business_form_token' => 'str|required',
         'business_form_key' => 'str|required',
@@ -92,8 +102,8 @@ class Action_Service_CreateBusinessFormOrder extends Orderui_Base_ServiceAction
             $arrFormatSkuItem['sku_id'] = empty($arrSkuItem['sku_id']) ? 0 : $arrSkuItem['sku_id'];
             $arrFormatSkuItem['cost_price_tax'] = empty($arrSkuItem['cost_price_tax']) ?
                 0 : $arrSkuItem['cost_price_tax'];
-            $arrFormatSkuItem['cost_price_untax'] = empty($arrSkuItem['cost_price']) ?
-                0 : $arrSkuItem['cost_price'];
+            $arrFormatSkuItem['cost_price_untax'] = empty($arrSkuItem['cost_price_untax']) ?
+                0 : $arrSkuItem['cost_price_untax'];
             $arrFormatSkuItem['order_amount'] = empty($arrSkuItem['order_amount']) ?
                 0 : $arrSkuItem['order_amount'];
             $arrFormatSkuItem['distribute_amount'] = empty($arrSkuItem['distribute_amount']) ?
