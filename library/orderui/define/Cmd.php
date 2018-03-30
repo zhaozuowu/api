@@ -19,6 +19,12 @@ class Orderui_Define_Cmd
     const NWMS_ORDER_TOPIC = 'nwmsorder';
 
     /**
+     * nwms topic
+     * @var string
+     */
+    const OMS_ENS_TOPIC = 'oms_ens';
+
+    /**
      * nscm sync inbound
      * @var string
      */
@@ -69,6 +75,7 @@ class Orderui_Define_Cmd
     const CMD_SYNC_INBOUND_NWMS = 'nscm_purchase_order_sync';
 
     /**
+<<<<<<< HEAD
      * cmd signup stockout order
      * @var string
      */
@@ -85,6 +92,12 @@ class Orderui_Define_Cmd
      * @var string
      */
     const CMD_CREATE_RETURN_STOCKIN_ORDER = 'create_sales_return_stockin_order';
+
+    /**
+     * cmd trigger event
+     * @var string
+     */
+    const CMD_EVENT_SYSTEM = 'event_system';
 
     /**
      * wmq使用的默认配置
