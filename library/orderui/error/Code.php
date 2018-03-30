@@ -133,4 +133,29 @@ class Orderui_Error_Code extends Wm_Error_Code
      * @var integer
      */
     const OMS_TMS_ORDER_NOT_FOUND = 350039;
+    /**
+     * 找不到运单
+     */
+    const OMS_NOT_FOUND_SHIPMENT_ORDER = 360001;
+    /**
+     * 找不到出库单
+     */
+    const OMS_NOT_FOUND_STOCKOUT_ORDER = 360002;
+    /**
+     * 签收运单失败
+     */
+    const OMS_SIGNUP_SHIPMENT_ORDER_FAIL = 360003;
+    /**
+     * 找不到出库单
+     */
+    const OMS_SIGNUP_STOCKOUT_ORDER_FAIL = 360004;
+    /**
+     * 运单签收失败
+     */
+    const OMS_TMS_SIGNUP_SHIPMENT_ORDER_FAILED = 360005;
+
+    /**
+     * 找不到关联订单
+     */
+    const OMS_MAP_ORDER_NOT_FOUND = 370001;
 }

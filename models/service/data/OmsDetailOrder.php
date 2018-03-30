@@ -230,4 +230,5 @@ class Service_Data_OmsDetailOrder
             'sku_list' => $arrOrderSysDetailSkuListDb,
         ];
     }
+
 }

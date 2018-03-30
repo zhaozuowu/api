@@ -30,6 +30,10 @@ class Orderui_Error_Message extends Wm_Error_Message
         Orderui_Error_Code::OMS_EVENT_CALLBACK_PARENT_KEY_INVALID => '事件回调指定父节点异常',
         Orderui_Error_Code::OMS_NWMS_ORDER_NOT_FOUND => '没有关联的出库单',
         Orderui_Error_Code::OMS_TMS_ORDER_NOT_FOUND => '没有关联的运单',
+        Orderui_Error_Code::OMS_NOT_FOUND_SHIPMENT_ORDER => '找不到运单',
+        Orderui_Error_Code::OMS_NOT_FOUND_STOCKOUT_ORDER => '找不到出库单',
+        Orderui_Error_Code::OMS_TMS_SIGNUP_SHIPMENT_ORDER_FAILED => '轻舟系统运单签收失败',
+        Orderui_Error_Code::OMS_MAP_ORDER_NOT_FOUND => '找不到关联订单',
     ];
 
 }

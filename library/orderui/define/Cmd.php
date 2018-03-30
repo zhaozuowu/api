@@ -69,6 +69,24 @@ class Orderui_Define_Cmd
     const CMD_SYNC_INBOUND_NWMS = 'nscm_purchase_order_sync';
 
     /**
+     * cmd signup stockout order
+     * @var string
+     */
+    const CMD_SIGNUP_STOCKOUT_ORDER = 'signup_stockout_order';
+
+    /**
+     * cmd transmit signup data to tms
+     * @var string
+     */
+    const CMD_TRANSMIT_SIGNUP_DATA = 'transmit_signup_data_to_tms';
+
+    /**
+     * 创建销退入库单
+     * @var string
+     */
+    const CMD_CREATE_RETURN_STOCKIN_ORDER = 'create_sales_return_stockin_order';
+
+    /**
      * wmq使用的默认配置
      * @var array
      */
