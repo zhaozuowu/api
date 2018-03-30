@@ -15,7 +15,7 @@ class Action_Service_SignupShipmentOrder extends Orderui_Base_ServiceAction
 
     protected $arrInputParams = [
         'shipment_order_id' => 'str|required',
-        'signup_status' => 'int|required',
+        'signup_status' => 'int|required|min[1]|max[3]',
         'signup_skus' => 'arr|required',
         'offshelf_skus' => 'arr',
         'adjust_skus' => 'arr',

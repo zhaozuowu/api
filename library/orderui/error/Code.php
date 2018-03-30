@@ -131,4 +131,8 @@ class Orderui_Error_Code extends Wm_Error_Code
      * 找不到出库单
      */
     const OMS_SIGNUP_STOCKOUT_ORDER_FAIL = 360004;
+    /**
+     * wb
+     */
+    const OMS_CREATE_STOCKIN_ORDER_FAIL = 360007;
 }

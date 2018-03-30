@@ -66,7 +66,6 @@ class Service_Data_ShipmentOrder
         $ret = Orderui_Wmq_Commit::sendWmqCmd($strCmd, $arrParam, strval($intStockOutOrderId));
         if (false == $ret) {
             Bd_Log::warning(sprintf("method[%s] cmd[%s] error", __METHOD__, $strCmd));
-            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_SIGNUP_STOCKOUT_ORDER_FAIL);
         }
         //转发tms
         /*暂时不传tms
@@ -80,9 +79,32 @@ class Service_Data_ShipmentOrder
         $retTms = Orderui_Wmq_Commit::sendWmqCmd($strCmdTms, $arrParamTms, strval($intShipmentOrderId));
         if (false == $retTms) {
             Bd_Log::warning(sprintf("method[%s] cmd[%s] error", __METHOD__, $strCmdTms));
-            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_SIGNUP_SHIPMENT_ORDER_FAIL);
         }
         */
+        //创建销退入库单
+        if ($intSignupStatus == Orderui_Define_ShipmentOrder::SHIPMENT_SIGINUP_REJECT_ALL || $intSignupStatus == Orderui_Define_ShipmentOrder::SHIPMENT_SIGINUP_ACCEPT_PART) {
+            $arrSkuList = [];
+            $arrSkuInfoList = array_merge($arrSinupSkus, $arrOffShelfSkus);
+            foreach ($arrSkuInfoList as $arrSku) {
+                $skuId = array_keys($arrSku)[0];
+                $skuAmount = $arrSku[$skuId];
+                $arrSkuList[] = [
+                    'sku_id'     => $skuId,
+                    'sku_amount' => $skuAmount,
+                ];
+            }
+            $arrParamCreateStockin = [
+                'stockout_order_id' => $intStockOutOrderId,
+                'shipment_order_id' => $intShipmentOrderId,
+                'sku_info_list'     => json_encode($arrSkuList),
+                'stockin_order_remark' => '',
+            ];
+            $strCmdStockin = Orderui_Define_Cmd::CMD_CREATE_RETURN_STOCKIN_ORDER;
+            $wmqRet = Orderui_Wmq_Commit::sendWmqCmd($strCmdStockin, $arrParamCreateStockin, strval($intStockOutOrderId));
+            if (false == $wmqRet) {
+                Bd_Log::warning(sprintf("method[%s] cmd[%s] error", __METHOD__, $strCmdStockin));
+            }
+        }
         $arrRet['result'] = true;
         return $arrRet;
     }
@@ -99,5 +121,12 @@ class Service_Data_ShipmentOrder
     public function SignupShipmentOrder($arrSignupData)
     {
         return $this->objDaoWprcTms->SignupShipmentOrder($arrSignupData);
+    }
+    /*
+     * 创建销退入库单
+     */
+    public function CreateSalesReturnStockinOrder($arrData)
+    {
+        return $this->objDaoRalNwmsOrder->CreateSalesReturnStockinOrder($arrData);
     }
 }
