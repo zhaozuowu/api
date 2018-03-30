@@ -33,7 +33,7 @@ class Orderui_Error_Code extends Wm_Error_Code
      * 预计送达时间不合法
      * @var integer
      */
-    const NWMS_ORDER_STOCKOUT_EXPECT_ARRIVE_TIME_ERROR = 340019;/**
+    const NWMS_ORDER_STOCKOUT_EXPECT_ARRIVE_TIME_ERROR = 340019;
 
    /**
     * 纬度错误
@@ -128,4 +128,22 @@ class Orderui_Error_Code extends Wm_Error_Code
      * 接入事件不存在
      */
     const OMS_NOT_FOUND_EVENT = 360007;
+
+    /**
+     * OMS取消物流单失败
+     * @var integer
+     */
+    const OMS_ORDER_CANCEL_FAILED = 350037;
+
+    /**
+     * 找不到关联的出库单
+     * @var integer
+     */
+    const OMS_NWMS_ORDER_NOT_FOUND = 350038;
+
+    /**
+     * 找不到关联的tms运单
+     * @var integer
+     */
+    const OMS_TMS_ORDER_NOT_FOUND = 350039;
 }

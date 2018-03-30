@@ -31,6 +31,8 @@ class Orderui_Error_Message extends Wm_Error_Message
         Orderui_Error_Code::OMS_TRIGGER_EVENT_FAIL => '接入事件失败',
         Orderui_Error_Code::OMS_NOT_FOUND_CLIENT   => '接入系统不存在',
         Orderui_Error_Code::OMS_NOT_FOUND_EVENT   => '接入事件不存在',
+        Orderui_Error_Code::OMS_NWMS_ORDER_NOT_FOUND => '没有关联的出库单',
+        Orderui_Error_Code::OMS_TMS_ORDER_NOT_FOUND => '没有关联的运单',
     ];
 
 }

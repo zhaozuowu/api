@@ -72,4 +72,19 @@ class Model_Orm_OrderSystemDetail extends Orderui_Base_Orm
         ];
         return self::findRow(self::getAllColumns(), $arrCondition);
     }
+
+    /**
+     * 通过业态订单和类型获取下游订单信息
+     * @param $intBusinessFormOrderId
+     * @param $intOrderType
+     * @return mixed
+     */
+    public static function getOrderInfoByBusinessFormOrderIdAndType($intBusinessFormOrderId, $intOrderType) {
+        $arrCondition = [
+            'business_form_order_id' => $intBusinessFormOrderId,
+            'order_type' => $intOrderType,
+            'is_delete' => Orderui_Define_Const::NOT_DELETE,
+        ];
+        return self::findRows(self::getAllColumns(), $arrCondition);
+    }
 }
