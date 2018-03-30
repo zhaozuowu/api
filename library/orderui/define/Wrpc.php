@@ -24,4 +24,27 @@ class Orderui_Define_Wrpc
      * @var string
      */
     const NWMS_SERVICE_NAME = 'BusinessService';
+
+    ////////////////////
+    /// APP_ID_*
+    ////////////////////
+    const APP_ID_NWMS = 'bdwaimai_earthnet.nwms';
+    const APP_ID_TMS = 'tms???????????';
+    const APP_ID_OMS = 'bdwaimai_earthnet.oms';
+
+
+    ////////////////////
+    /// NAMESPACE_*
+    ////////////////////
+    const NAMESPACE_NWMS = 'order';
+    const NAMESPACE_TMS = 'tms?????????';
+    const NAMESPACE_OMS = 'orderui';
+
+
+    ////////////////////
+    /// SERVICE_NAME_*
+    ////////////////////
+    const SERVICE_NAME_NWMS = 'BusinessService';
+    const SERVICE_NAME_TMS = 'tms???????????';
+    const SERVICE_NAME_OMS = 'BusinessService';
 }

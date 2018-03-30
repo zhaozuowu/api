@@ -107,4 +107,44 @@ class Orderui_Define_Event
     const PRE_WAREHOUSE_EVENT_LIST = [
 
     ];
+
+    /**
+     * branch 1
+     */
+    const BRANCH_1 = 1;
+
+    /**
+     * branch 2
+     */
+    const BRANCH_2 = 2;
+
+    /**
+     * branch 3
+     */
+    const BRANCH_3 = 3;
+
+    /**
+     * branch 4
+     */
+    const BRANCH_4 = 4;
+
+    /**
+     * branch 5
+     */
+    const BRANCH_5 = 5;
+
+    /**
+     * branch 6
+     */
+    const BRANCH_6 = 6;
+
+    /**
+     * call ral
+     */
+    const CALL_RAL = 1;
+
+    /**
+     * call wrpc
+     */
+    const CALL_WRPC = 2;
 }
