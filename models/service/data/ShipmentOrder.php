@@ -25,6 +25,10 @@ class Service_Data_ShipmentOrder
         $this->objDaoWprcTms = new Dao_Wrpc_Tms();
     }
 
+    public function signupShipmentOrder($intShipmentOrderId, $arrSignupSkus, $intBizType) {
+        $this->objDaoWprcTms->signupShipmentOrder($intShipmentOrderId,$arrSignupSkus, $intBizType);
+    }
+
     /*
      * 接收签收运单请求并转发wms和tms
      */
@@ -92,12 +96,5 @@ class Service_Data_ShipmentOrder
     public function SignupStockoutOrder($arrSignupData)
     {
         return $this->objDaoRalNwmsOrder->signupStockoutOrder($arrSignupData);
-    }
-    /*
-     * 签收TMS运单
-     */
-    public function SignupShipmentOrder($arrSignupData)
-    {
-        return $this->objDaoWprcTms->SignupShipmentOrder($arrSignupData);
     }
 }
