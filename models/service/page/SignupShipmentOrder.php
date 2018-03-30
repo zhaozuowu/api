@@ -27,11 +27,12 @@ class Service_Page_SignupShipmentOrder
      */
     public function execute($arrInput)
     {
-        $intShipmentOrderId = intval($arrInput['shipment_order_id']);
-        $intSignupStatus = intval($arrInput['signup_status']);
-        $arrSinupSkus = $arrInput['signup_skus'];
-        $arrOffShelfSkus = $arrInput['offshelf_skus'];
-        $arrAdjustSkus = $arrInput['adjust_skus'];
-        return $this->objData->SignupShipmentOrderByInput($intShipmentOrderId, $intSignupStatus, $arrSinupSkus, $arrOffShelfSkus, $arrAdjustSkus);
+        $intLogisticsOrderId = intval($arrInput['logistics_order_id']);
+        $arrSkuEvents = Orderui_Event::filterEventTypes($arrInput['sku_events']);
+        $arrSignupSkus = $arrSkuEvents['signup_skus'];
+        $arrOffShelfSkus = $arrSkuEvents['off_skus'];
+        $arrAdjustSkus = $arrSkuEvents['adjust_skus'];
+        [$intShipmentOrderId, $intSignupStatus] = $this->objData->signupShipmentOrder($intLogisticsOrderId, $arrSignupSkus);
+        return $this->objData->SignupShipmentOrderByInput($intShipmentOrderId, $intSignupStatus, $arrSignupSkus, $arrOffShelfSkus, $arrAdjustSkus);
     }
 }

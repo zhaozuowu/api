@@ -25,8 +25,29 @@ class Service_Data_ShipmentOrder
         $this->objDaoWprcTms = new Dao_Wrpc_Tms();
     }
 
-    public function signupShipmentOrder($intShipmentOrderId, $arrSignupSkus, $intBizType) {
-        $this->objDaoWprcTms->signupShipmentOrder($intShipmentOrderId,$arrSignupSkus, $intBizType);
+    /**
+     * tms进行签收
+     * @param $intShipmentOrderId
+     * @param $arrSignupSkus
+     * @param $intBizType
+     * @return array
+     * @throws Orderui_BusinessError
+     */
+    public function signupShipmentOrder($intLogisticsOrderId, $arrSignupSkus, $intBizType)
+    {
+        //根据物流单号获取运单号
+        $intShipmentOrderId = Model_Orm_BusinessFormOrder::getMapOrderIdBySourceOrderId($intLogisticsOrderId,
+                                    Nscm_Define_OmsOrder::TMS_ORDER_TYPE_SHIPMENT);
+        if (empty($intShipmentOrderId)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_MAP_ORDER_NOT_FOUND);
+        }
+        //调用tms接口进行运单签收
+        $arrRet = $this->objDaoWprcTms->signupShipmentOrder($intShipmentOrderId,$arrSignupSkus, $intBizType);
+        if (!empty($arrRet['errno']) || 0 != $arrRet['errno']) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_TMS_SIGNUP_SHIPMENT_ORDER_FAILED);
+        }
+        $intSignupStatus = $arrRet['status'];
+        return [$intShipmentOrderId, $intSignupStatus];
     }
 
     /*
@@ -71,20 +92,6 @@ class Service_Data_ShipmentOrder
         if (false == $ret) {
             Bd_Log::warning(sprintf("method[%s] cmd[%s] error", __METHOD__, $strCmd));
         }
-        //转发tms
-        /*暂时不传tms
-        $arrParamTms = [
-            'shipment_order_id' => $intShipmentOrderId,
-            'signup_status'      => $intSignupStatus,
-            'signup_skus'       => $arrSinupSkus,
-            'offshelf_skus'     => $arrOffShelfSkus,
-        ];
-        $strCmdTms = Orderui_Define_Cmd::CMD_TRANSMIT_SIGNUP_DATA;
-        $retTms = Orderui_Wmq_Commit::sendWmqCmd($strCmdTms, $arrParamTms, strval($intShipmentOrderId));
-        if (false == $retTms) {
-            Bd_Log::warning(sprintf("method[%s] cmd[%s] error", __METHOD__, $strCmdTms));
-        }
-        */
         //若是部分签收或拒收则创建销退入库单
         if ($intSignupStatus == Orderui_Define_ShipmentOrder::SHIPMENT_SIGINUP_REJECT_ALL || $intSignupStatus == Orderui_Define_ShipmentOrder::SHIPMENT_SIGINUP_ACCEPT_PART) {
             $this->SendStockinSkuInfoToWmq($intShipmentOrderId, $intStockOutOrderId, $arrSinupSkus, $arrOffShelfSkus);

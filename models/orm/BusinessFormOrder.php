@@ -116,4 +116,23 @@ class Model_Orm_BusinessFormOrder extends Orderui_Base_Orm
         ];
         return self::findRow(self::getAllColumns(), $arrCondition);
     }
+
+    /**
+     * 通过源订单号获取关联订单号
+     * @param $intSourceOrderId
+     * @param $intOrderType
+     * @return array
+     */
+    public static function getMapOrderIdBySourceOrderId($intSourceOrderId, $intOrderType) {
+        $arrOrderInfo = self::getOrderInfoBySourceOrderId($intSourceOrderId);
+        if (empty($arrOrderInfo[0]['order_id'])) {
+            return [];
+        }
+        $intBusinessFormOrderId = intval($arrOrderInfo[0]['order_id']);
+        $arrMapOrderInfo = Model_Orm_OrderSystemDetail::getOrderInfoByOrderIdAndType($intBusinessFormOrderId, $intOrderType);
+        if (empty($arrMapOrderInfo[0]['order_id'])) {
+            return [];
+        }
+        return $arrMapOrderInfo[0]['order_id'];
+    }
 }

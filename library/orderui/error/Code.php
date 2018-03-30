@@ -131,4 +131,13 @@ class Orderui_Error_Code extends Wm_Error_Code
      * 找不到出库单
      */
     const OMS_SIGNUP_STOCKOUT_ORDER_FAIL = 360004;
+    /**
+     * 运单签收失败
+     */
+    const OMS_TMS_SIGNUP_SHIPMENT_ORDER_FAILED = 360005;
+
+    /**
+     * 找不到关联订单
+     */
+    const OMS_MAP_ORDER_NOT_FOUND = 370001;
 }
