@@ -28,6 +28,8 @@ class Orderui_Error_Message extends Wm_Error_Message
         Orderui_Error_Code::OMS_CHECK_AUTHORITY_ERROR => 'oms权限校验失败',
         Orderui_Error_Code::OMS_EVENT_CALLBACK_INVALID => '事件回调顺序异常',
         Orderui_Error_Code::OMS_EVENT_CALLBACK_PARENT_KEY_INVALID => '事件回调指定父节点异常',
+        Orderui_Error_Code::OMS_NWMS_ORDER_NOT_FOUND => '没有关联的出库单',
+        Orderui_Error_Code::OMS_TMS_ORDER_NOT_FOUND => '没有关联的运单',
     ];
 
 }

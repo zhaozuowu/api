@@ -17,6 +17,18 @@ class  Orderui_Define_Const
     const IS_DELETE = 2;
 
     /**
+     * 取消物流单成功
+     * @var integer
+     */
+    const CANCEL_SUCCESS = 1;
+
+    /**
+     * 取消物流单失败
+     * @var integer
+     */
+    const CANCEL_FAILED = 2;
+
+    /**
      * delete
      * @var array
      */
@@ -52,6 +64,11 @@ class  Orderui_Define_Const
         self::ORDER_SYS_NWMS,
     ];
 
+    /**
+     * 运单号类型
+     * @var integer
+     */
+    const NWMS_ORDER_TYPE_SHIPMENT_ORDER = 301;
     /**
      * NWMS ORDER 类型范围
      */
