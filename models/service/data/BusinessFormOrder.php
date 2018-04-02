@@ -377,6 +377,7 @@ class Service_Data_BusinessFormOrder
         $arrBusinessOrderInfo = Model_Orm_BusinessFormOrder::getOrderInfoBySourceOrderId($intLogisticsOrderId);
         $intBusinessFormOrderId = $arrBusinessOrderInfo['business_form_order_id'];
         //预取消沧海出库单
+        sleep(0.3);
         $arrStockoutOrderInfo = Model_Orm_OrderSystemDetail::
                         getOrderInfoByBusinessFormOrderIdAndType($intBusinessFormOrderId,
                                                     Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_STOCK_OUT);
@@ -402,9 +403,8 @@ class Service_Data_BusinessFormOrder
         $arrRet = $this->objDaoWrpcTms->cancelShipmentOrder($intShipmentOrderId, $strRemark);
         if (isset($arrRet['errno']) && 0 != $arrRet['errno']) {
             $this->objDaoRalNWmsOrder->rollbackCancelStockoutOrder($intStockoutOrderId);
-            $strErrorMsg = sprintf(Orderui_Define_BusinessFormOrder::OMS_CANCEL_FAILED_MESSAGE,
-                $arrRet['errmsg']);
-            Orderui_BusinessError::throwException($arrRet['errno'], $strErrorMsg);
+            Orderui_BusinessError::throwException($arrRet['errno'],
+                                    Orderui_Define_BusinessFormOrder::OMS_CANCEL_SHIPMENT_ORDER_FAILED);
         }
         //确认取消wms出库单
         $this->objDaoRalNWmsOrder->confirmCancelStockoutOrder($intStockoutOrderId, $strRemark);
