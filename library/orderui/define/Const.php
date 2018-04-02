@@ -127,4 +127,10 @@ class  Orderui_Define_Const
      * 业态订单SKU异常状态 异常
      */
     const BUSINESS_ORDER_SKU_EXCEPTION = 2;
+
+    /**
+     * @var integer
+     * 取消物流单延迟读库微秒数
+     */
+    const CANCEL_DELAY_MICRO_SECONDS = 200000;
 }
