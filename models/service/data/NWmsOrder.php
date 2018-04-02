@@ -19,13 +19,24 @@ class Service_Data_NWmsOrder
 
     /**
      * 创建NWms订单
-     * @param  array $arrBusinessOrderInfo
+     * @param $arrBusinessOrderInfo
      * @return array
      * @throws Nscm_Exception_Error
      */
     public function createNWmsOrder($arrBusinessOrderInfo)
     {
         return $this->objDao->createNWmsOrder($arrBusinessOrderInfo);
+    }
+
+    /**
+     * 确认取消出库单
+     * @param $intStockoutOrderId
+     * @param $strRemark
+     * @return array
+     * @throws Nscm_Exception_Error
+     */
+    public function confirmCancelNWmsOrder($intStockoutOrderId, $strRemark) {
+        return $this->objDao->confirmCancelStockoutOrder($intStockoutOrderId, $strRemark);
     }
 
     /**
