@@ -12,11 +12,23 @@ class Service_Data_BusinessFormOrder
     protected $objDaoRalSku;
 
     /**
+     * @var Dao_Ral_NWmsOrder
+     */
+    protected $objDaoRalNWmsOrder;
+
+    /**
+     * @var Dao_Wrpc_Tms
+     */
+    protected $objDaoWrpcTms;
+
+    /**
      * init object
      */
     public function __construct()
     {
         $this->objDaoRalSku = new Dao_Ral_Sku();
+        $this->objDaoRalNWmsOrder = new Dao_Ral_NWmsOrder();
+        $this->objDaoWrpcTms = new Dao_Wrpc_Tms();
     }
 
     /**
@@ -29,7 +41,7 @@ class Service_Data_BusinessFormOrder
     public function checkAuthority($strBusinessFormKey, $strBusinessFormToken) {
         $strGenKey = md5($strBusinessFormKey . Orderui_Define_BusinessFormOrder::SALT_VAL);
         if ($strGenKey != $strBusinessFormToken) {
-            Orderui_Error::throwException(Orderui_Error_Code::OMS_CHECK_AUTHORITY_ERROR);
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_CHECK_AUTHORITY_ERROR);
         }
     }
 
@@ -350,5 +362,63 @@ class Service_Data_BusinessFormOrder
             return false;
         }
         return true;
+    }
+
+    /**
+     * 取消物流单
+     * @param $intLogisticsOrderId
+     * @param $strRemark
+     * @return bool
+     * @throws Nscm_Exception_Error
+     * @throws Orderui_BusinessError
+     */
+    public function cancelLogisticsOrder($intLogisticsOrderId, $strRemark)
+    {
+        $arrBusinessOrderInfo = Model_Orm_BusinessFormOrder::getOrderInfoBySourceOrderId($intLogisticsOrderId);
+        $intBusinessFormOrderId = $arrBusinessOrderInfo['business_form_order_id'];
+        //预取消沧海出库单
+        usleep(Orderui_Define_Const::CANCEL_DELAY_MICRO_SECONDS);
+        $arrStockoutOrderInfo = Model_Orm_OrderSystemDetail::
+                        getOrderInfoByBusinessFormOrderIdAndType($intBusinessFormOrderId,
+                                                    Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_STOCK_OUT);
+
+        if (empty($arrStockoutOrderInfo)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_NWMS_ORDER_NOT_FOUND);
+        }
+        $intStockoutOrderId = $arrStockoutOrderInfo[0]['order_id'];
+        $arrRet = $this->objDaoRalNWmsOrder->preCancelStockoutOrder($intStockoutOrderId);
+        if (isset($arrRet['error_no']) && 0 != $arrRet['error_no']) {
+            $strErrorMsg = sprintf(Orderui_Define_BusinessFormOrder::OMS_CANCEL_FAILED_MESSAGE,
+                                    $arrRet['error_msg']);
+            Bd_Log::warning(sprintf("method[%s] order_id[%s] arrRet[%s] precancel failed",
+                            __METHOD__, $intStockoutOrderId, json_encode($arrRet)));
+            Orderui_BusinessError::throwException($arrRet['error_no'], $strErrorMsg);
+        }
+        //取消tms运单
+        $arrShipmentOrderInfo = Model_Orm_OrderSystemDetail::getOrderInfoByBusinessFormOrderIdAndType($intBusinessFormOrderId,
+                                                                Orderui_Define_Const::NWMS_ORDER_TYPE_SHIPMENT_ORDER);
+        if (empty($arrShipmentOrderInfo)) {
+            $this->objDaoRalNWmsOrder->rollbackCancelStockoutOrder($intStockoutOrderId);
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_TMS_ORDER_NOT_FOUND);
+        }
+        $intShipmentOrderId = $arrShipmentOrderInfo[0]['order_id'];
+        $arrRet = $this->objDaoWrpcTms->cancelShipmentOrder($intShipmentOrderId, $strRemark);
+        if (isset($arrRet['errno']) && 0 != $arrRet['errno']) {
+            $this->objDaoRalNWmsOrder->rollbackCancelStockoutOrder($intStockoutOrderId);
+            Bd_Log::warning(sprintf("method[%s] order_id[%s] arrRet[%s] cancel shipment failed",
+                            __METHOD__, $intShipmentOrderId, json_encode($arrRet)));
+            Orderui_BusinessError::throwException($arrRet['errno'],
+                                    Orderui_Define_BusinessFormOrder::OMS_CANCEL_SHIPMENT_ORDER_FAILED);
+        }
+        //确认取消wms出库单
+        $arrRet = $this->objDaoRalNWmsOrder->confirmCancelStockoutOrder($intStockoutOrderId, $strRemark);
+        if (isset($arrRet['errno']) && 0 != $arrRet['errno']) {
+            $strErrorMsg = sprintf(Orderui_Define_BusinessFormOrder::OMS_CANCEL_FAILED_MESSAGE,
+                $arrRet['error_msg']);
+            Bd_Log::warning(sprintf("method[%s] order_id[%s] arrRet[%s] cancel failed",
+                __METHOD__, $intStockoutOrderId, json_encode($arrRet)));
+            Orderui_BusinessError::throwException($arrRet['error_no'], $strErrorMsg);
+        }
+        return Orderui_Define_Const::CANCEL_SUCCESS;
     }
 }

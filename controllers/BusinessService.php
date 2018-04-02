@@ -12,6 +12,7 @@ class Controller_BusinessService extends Orderui_Base_ServiceController {
      */
     public $arrMap = [
         'Action_Service_CreateBusinessFormOrder' => 'actions/service/CreateBusinessFormOrder.php',
+        'Action_Service_CancelLogisticsOrder' => 'actions/service/CancelLogisticsOrder.php',
     ];
 
     /**
@@ -22,6 +23,17 @@ class Controller_BusinessService extends Orderui_Base_ServiceController {
     public function createBusinessFormOrder($arrRequest) {
         $arrRequest = $arrRequest['objBusinessFormOrderInfo'];
         $objAction = new Action_Service_CreateBusinessFormOrder($arrRequest);
+        return $objAction->execute();
+    }
+
+    /**
+     * 取消物流单
+     * @param $strLogisticsOrderId
+     * @param $strCancelRemark
+     * @return array
+     */
+    public function cancelLogisticsOrder($arrRequest) {
+        $objAction = new Action_Service_CancelLogisticsOrder($arrRequest);
         return $objAction->execute();
     }
 }

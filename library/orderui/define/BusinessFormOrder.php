@@ -159,4 +159,16 @@ class Orderui_Define_BusinessFormOrder
         self::CUSTOMER_LOCATION_SOURCE_AMAP => '高德',
         self::CUSTOMER_LOCATION_SOURCE_BAIDU => '百度',
     ];
+
+    /**
+     * 取消失败文案
+     * @var string
+     */
+    const OMS_CANCEL_FAILED_MESSAGE = '%s，如需取消请线下联系沧海及轻舟人员使用手动取消功能';
+
+    /**
+     * 取消运单失败文案
+     * @var string
+     */
+    const OMS_CANCEL_SHIPMENT_ORDER_FAILED = '取消运单失败，如需取消请线下联系沧海及轻舟人员使用手动取消功能';
 }
