@@ -91,10 +91,29 @@ class Dao_Wrpc_Tms
         $arrSignupRequest = [];
         $arrSignupRequest['shipmentId'] = $intShipmentOrderId;
         $arrSignupRequest['bizType'] = $intBizType;
-        $arrSignupRequest['skus'] = $arrSkus;
+        $arrSignupRequest['skus'] = $this->getSkus($arrSkus);
         $arrParams['shipmentId'] = $intShipmentOrderId;
         $arrParams['request'] = $arrSignupRequest;
-        $arrParams['user'] = $arrUser;
+        $arrParams['user'] = (object)$arrUser;
         return $arrParams;
+    }
+
+    /**
+     * 拼接skus参数
+     * @param $arrSkus
+     * @return array
+     */
+    public function getSkus($arrSkus) {
+        $arrRetSkus = [];
+        if (empty($arrSkus)) {
+            return [];
+        }
+        foreach ((array)$arrSkus as $intKey => $intCount) {
+            $arrRetSkuItem = [];
+            $arrRetSkuItem['id'] = $intKey;
+            $arrRetSkuItem['count'] = $intCount;
+            $arrRetSkus[] = $arrRetSkuItem;
+        }
+        return $arrRetSkus;
     }
 }

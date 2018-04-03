@@ -29,7 +29,7 @@ class Orderui_Define_Wrpc
     /// APP_ID_*
     ////////////////////
     const APP_ID_NWMS = 'bdwaimai_earthnet.nwms';
-    const APP_ID_TMS = 'scm.tms_cor';
+    const APP_ID_TMS = 'scm.tms_core';
     const APP_ID_OMS = 'bdwaimai_earthnet.oms';
 
 
