@@ -11,7 +11,7 @@ class Controller_ShipmentService extends Orderui_Base_ServiceController {
      * @var array
      */
     public $arrMap = [
-        'Action_Service_SignupShipmentOrder'     => 'actions/service/SignupShipmentOrder.php',
+        'Action_Service_Signup'     => 'actions/service/Signup.php',
     ];
 
     /**
