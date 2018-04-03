@@ -33,7 +33,7 @@ class Service_Data_ShipmentOrder
      * @return array
      * @throws Orderui_BusinessError
      */
-    public function signupShipmentOrder($intLogisticsOrderId, $arrSignupSkus, $intBizType)
+    public function signupShipmentOrder($intLogisticsOrderId, $arrSignupSkus, $intBizType, $arrUser)
     {
         //根据物流单号获取运单号
         $intShipmentOrderId = Model_Orm_BusinessFormOrder::getMapOrderIdBySourceOrderId($intLogisticsOrderId,
@@ -42,7 +42,7 @@ class Service_Data_ShipmentOrder
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_MAP_ORDER_NOT_FOUND);
         }
         //调用tms接口进行运单签收
-        $arrRet = $this->objDaoWprcTms->signupShipmentOrder($intShipmentOrderId,$arrSignupSkus, $intBizType);
+        $arrRet = $this->objDaoWprcTms->signupShipmentOrder($intShipmentOrderId,$intBizType, $arrSignupSkus, $arrUser);
         if (!empty($arrRet['errno']) || 0 != $arrRet['errno']) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_TMS_SIGNUP_SHIPMENT_ORDER_FAILED);
         }
