@@ -21,7 +21,7 @@ class Controller_ShipmentService extends Orderui_Base_ServiceController {
      */
     public function signupShipmentOrder($arrRequest) {
         $arrRequest = $arrRequest['objShipmentOrderInfo'];
-        $objAction = new Action_Service_SignupShipmentOrder($arrRequest);
+        $objAction = new Action_Service_Signup($arrRequest);
         return $objAction->execute();
     }
 }
