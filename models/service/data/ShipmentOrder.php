@@ -27,7 +27,7 @@ class Service_Data_ShipmentOrder
 
     /**
      * tms进行签收
-     * @param $intShipmentOrderId
+     * @param $intLogisticsOrderId
      * @param $arrSignupSkus
      * @param $intBizType
      * @return array
@@ -43,6 +43,7 @@ class Service_Data_ShipmentOrder
         }
         //调用tms接口进行运单签收
         $arrRet = $this->objDaoWprcTms->signupShipmentOrder($intShipmentOrderId,$intBizType, $arrSignupSkus);
+        Bd_Log::trace(sprintf("method[%s] signup arrRet[%s]", __METHOD__, json_encode($arrRet)));
         if (!empty($arrRet['errno']) || 0 != $arrRet['errno']) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_TMS_SIGNUP_SHIPMENT_ORDER_FAILED);
         }

@@ -17,7 +17,7 @@ class Action_Service_Signup extends Orderui_Base_ServiceAction
      */
     protected $arrInputParams = [
         'logistics_order_id' => 'str|required',
-        'sku_events' => [
+        'skus_event' => [
             'validate' => 'arr|required',
             'type' => 'array',
             'params' => [

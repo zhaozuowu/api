@@ -125,11 +125,11 @@ class Model_Orm_BusinessFormOrder extends Orderui_Base_Orm
      */
     public static function getMapOrderIdBySourceOrderId($intSourceOrderId, $intOrderType) {
         $arrOrderInfo = self::getOrderInfoBySourceOrderId($intSourceOrderId);
-        if (empty($arrOrderInfo[0]['order_id'])) {
+        if (empty($arrOrderInfo['business_form_order_id'])) {
             return [];
         }
-        $intBusinessFormOrderId = intval($arrOrderInfo[0]['order_id']);
-        $arrMapOrderInfo = Model_Orm_OrderSystemDetail::getOrderInfoByOrderIdAndType($intBusinessFormOrderId, $intOrderType);
+        $intBusinessFormOrderId = intval($arrOrderInfo['business_form_order_id']);
+        $arrMapOrderInfo = Model_Orm_OrderSystemDetail::getOrderInfoByBusinessFormOrderIdAndType($intBusinessFormOrderId, $intOrderType);
         if (empty($arrMapOrderInfo[0]['order_id'])) {
             return [];
         }
