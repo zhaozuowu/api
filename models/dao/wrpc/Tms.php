@@ -71,9 +71,9 @@ class Dao_Wrpc_Tms
      * @param $arrUser
      * @return mixed
      */
-    public function signupShipmentOrder($intShipmentOrderId, $intBizType, $arrSkus, $arrUser)
+    public function signupShipmentOrder($intShipmentOrderId, $intBizType, $arrSkus)
     {
-        $arrParams = $this->getSignupParams($intShipmentOrderId, $intBizType, $arrSkus, $arrUser);
+        $arrParams = $this->getSignupParams($intShipmentOrderId, $intBizType, $arrSkus);
         return $this->objWrpcService->signUp($arrParams);
     }
 
@@ -85,7 +85,7 @@ class Dao_Wrpc_Tms
      * @param $arrUser
      * @return array
      */
-    public function getSignupParams($intShipmentOrderId, $intBizType, $arrSkus, $arrUser)
+    public function getSignupParams($intShipmentOrderId, $intBizType, $arrSkus)
     {
         $arrParams = [];
         $arrSignupRequest = [];
@@ -94,7 +94,7 @@ class Dao_Wrpc_Tms
         $arrSignupRequest['skus'] = $this->getSkus($arrSkus);
         $arrParams['shipmentId'] = $intShipmentOrderId;
         $arrParams['request'] = $arrSignupRequest;
-        $arrParams['user'] = (object)$arrUser;
+        $arrParams['user'] = (object)[];
         return $arrParams;
     }
 
