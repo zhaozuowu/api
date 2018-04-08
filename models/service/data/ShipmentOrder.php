@@ -120,13 +120,16 @@ class Service_Data_ShipmentOrder
     public function SendStockinSkuInfoToWmq($intShipmentOrderId, $intStockOutOrderId, $arrSinupSkus, $arrOffShelfSkus)
     {
         $arrSkuList = [];
-        $arrSkuInfoList = array_merge($arrSinupSkus, $arrOffShelfSkus);
-        foreach ($arrSkuInfoList as $arrSku) {
-            $skuId = array_keys($arrSku)[0];
-            $skuAmount = $arrSku[$skuId];
+        foreach ($arrOffShelfSkus as $intSkuId => $intSkuAmount) {
             $arrSkuList[] = [
-                'sku_id'     => $skuId,
-                'sku_amount' => $skuAmount,
+                'sku_id'     => $intSkuId,
+                'sku_amount' => $intSkuAmount,
+            ];
+        }
+        foreach ($arrSinupSkus as $intSkuId => $intSkuAmount) {
+            $arrSkuList[] = [
+                'sku_id'     => $intSkuId,
+                'sku_amount' => $intSkuAmount,
             ];
         }
         $arrParamCreateStockin = [
