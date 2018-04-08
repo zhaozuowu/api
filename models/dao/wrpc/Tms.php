@@ -73,6 +73,8 @@ class Dao_Wrpc_Tms
      */
     public function signupShipmentOrder($intShipmentOrderId, $intBizType, $arrSkus)
     {
+        $strRoutingKey = sprintf("shardid=%d", $intShipmentOrderId%100);
+        $this->objWrpcService->setMeta(['routing-key'=>$strRoutingKey]);
         $arrParams = $this->getSignupParams($intShipmentOrderId, $intBizType, $arrSkus);
         return $this->objWrpcService->signUp($arrParams);
     }
