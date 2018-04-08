@@ -93,8 +93,10 @@ class Service_Data_ShipmentOrder
         if (false == $ret) {
             Bd_Log::warning(sprintf("method[%s] cmd[%s] error", __METHOD__, $strCmd));
         }
-        //若是部分签收或拒收则创建销退入库单
-        if ($intSignupStatus == Orderui_Define_ShipmentOrder::SHIPMENT_SIGINUP_REJECT_ALL || $intSignupStatus == Orderui_Define_ShipmentOrder::SHIPMENT_SIGINUP_ACCEPT_PART) {
+        //若是部分签收或拒收或有下架商品则创建销退入库单
+        if ($intSignupStatus == Orderui_Define_ShipmentOrder::SHIPMENT_SIGINUP_REJECT_ALL
+            || $intSignupStatus == Orderui_Define_ShipmentOrder::SHIPMENT_SIGINUP_ACCEPT_PART
+            || !empty($arrOffShelfSkus)) {
             $this->SendStockinSkuInfoToWmq($intShipmentOrderId, $intStockOutOrderId, $arrSinupSkus, $arrOffShelfSkus);
         }
         $arrRet['result'] = true;
