@@ -32,7 +32,7 @@ class Service_Page_SignupShipmentOrder
         $arrSignupSkus = $arrSkuEvents['signup_skus'];
         $arrOffShelfSkus = $arrSkuEvents['off_skus'];
         $arrAdjustSkus = $arrSkuEvents['adjust_skus'];
-        list($intShipmentOrderId, $intSignupStatus) = $this->objData->signupShipmentOrder($intLogisticsOrderId, $arrSignupSkus, 1);
-        return $this->objData->SignupShipmentOrderByInput($intShipmentOrderId, $intSignupStatus, $arrSignupSkus, $arrOffShelfSkus, $arrAdjustSkus);
+        list($intShipmentOrderId, $intSignupStatus, $arrRejectSkus) = $this->objData->signupShipmentOrder($intLogisticsOrderId, $arrSignupSkus, 1);
+        return $this->objData->signupShipmentOrderByInput($intShipmentOrderId, $intSignupStatus, $arrSignupSkus, $arrOffShelfSkus, $arrAdjustSkus, $arrRejectSkus);
     }
 }

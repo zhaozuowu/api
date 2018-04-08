@@ -54,7 +54,8 @@ class Service_Data_ShipmentOrder
         if ('REJECT' == $arrRet['data']['status']) {
             $intSignupStatus = Orderui_Define_ShipmentOrder::SHIPMENT_SIGINUP_REJECT_ALL;
         }
-        return [$intShipmentOrderId, $intSignupStatus];
+        $arrRejectSkus = $arrRet['data']['rejectMap'];
+        return [$intShipmentOrderId, $intSignupStatus, $arrRejectSkus];
     }
 
     /**
@@ -67,7 +68,7 @@ class Service_Data_ShipmentOrder
      * @return array
      * @throws Orderui_BusinessError
      */
-    public function signupShipmentOrderByInput($intShipmentOrderId, $intSignupStatus, $arrSinupSkus, $arrOffShelfSkus, $arrAdjustSkus)
+    public function signupShipmentOrderByInput($intShipmentOrderId, $intSignupStatus, $arrSinupSkus, $arrOffShelfSkus, $arrAdjustSkus, $arrRejectSkus)
     {
         $arrRet = [
             'shipment_order_id' => strval($intShipmentOrderId),
@@ -110,7 +111,7 @@ class Service_Data_ShipmentOrder
         if ($intSignupStatus == Orderui_Define_ShipmentOrder::SHIPMENT_SIGINUP_REJECT_ALL
             || $intSignupStatus == Orderui_Define_ShipmentOrder::SHIPMENT_SIGINUP_ACCEPT_PART
             || !empty($arrOffShelfSkus)) {
-            $this->SendStockinSkuInfoToWmq($intShipmentOrderId, $intStockOutOrderId, $arrSinupSkus, $arrOffShelfSkus);
+            $this->SendStockinSkuInfoToWmq($intShipmentOrderId, $intStockOutOrderId, $arrRejectSkus, $arrOffShelfSkus);
         }
         $arrRet['result'] = true;
         return $arrRet;
@@ -123,7 +124,7 @@ class Service_Data_ShipmentOrder
      * @param array $arrOffShelfSkus
      * @return bool
      */
-    public function SendStockinSkuInfoToWmq($intShipmentOrderId, $intStockOutOrderId, $arrSinupSkus, $arrOffShelfSkus)
+    public function SendStockinSkuInfoToWmq($intShipmentOrderId, $intStockOutOrderId, $arrRejectSkus, $arrOffShelfSkus)
     {
         $arrSkuList = [];
         foreach ($arrOffShelfSkus as $intSkuId => $intSkuAmount) {
@@ -132,7 +133,7 @@ class Service_Data_ShipmentOrder
                 'sku_amount' => $intSkuAmount,
             ];
         }
-        foreach ($arrSinupSkus as $intSkuId => $intSkuAmount) {
+        foreach ($arrRejectSkus as $intSkuId => $intSkuAmount) {
             $arrSkuList[] = [
                 'sku_id'     => $intSkuId,
                 'sku_amount' => $intSkuAmount,
