@@ -47,7 +47,13 @@ class Service_Data_ShipmentOrder
         if (!empty($arrRet['errno']) || 0 != $arrRet['errno']) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_TMS_SIGNUP_SHIPMENT_ORDER_FAILED);
         }
-        $intSignupStatus = $arrRet['status'];
+        $intSignupStatus = Orderui_Define_ShipmentOrder::SHIPMENT_SIGINUP_ACCEPT_ALL;
+        if ('SIGNED_PART' == $arrRet['data']['status']) {
+            $intSignupStatus = Orderui_Define_ShipmentOrder::SHIPMENT_SIGINUP_ACCEPT_PART;
+        }
+        if ('REJECT' == $arrRet['data']['status']) {
+            $intSignupStatus = Orderui_Define_ShipmentOrder::SHIPMENT_SIGINUP_REJECT_ALL;
+        }
         return [$intShipmentOrderId, $intSignupStatus];
     }
 
