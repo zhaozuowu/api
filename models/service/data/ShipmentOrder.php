@@ -51,10 +51,17 @@ class Service_Data_ShipmentOrder
         return [$intShipmentOrderId, $intSignupStatus];
     }
 
-    /*
-     * 接收签收运单请求并转发wms和tms
+    /**
+     * @desc 接收签收运单请求并转发wms
+     * @param int $intShipmentOrderId
+     * @param int $intSignupStatus
+     * @param array $arrSinupSkus
+     * @param array $arrOffShelfSkus
+     * @param array $arrAdjustSkus
+     * @return array
+     * @throws Orderui_BusinessError
      */
-    public function SignupShipmentOrderByInput($intShipmentOrderId, $intSignupStatus, $arrSinupSkus, $arrOffShelfSkus, $arrAdjustSkus)
+    public function signupShipmentOrderByInput($intShipmentOrderId, $intSignupStatus, $arrSinupSkus, $arrOffShelfSkus, $arrAdjustSkus)
     {
         $arrRet = [
             'shipment_order_id' => strval($intShipmentOrderId),
