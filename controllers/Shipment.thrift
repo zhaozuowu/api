@@ -12,20 +12,27 @@ struct Data {
     1:required string shipment_order_id,
     2:required bool result
 }
-
-#运单签收信息
+#签收sku信息
+struct SkuInfo {
+    1:required i32 sku_id,
+    2:required i32 order_amount,
+    3:required i32 event_type
+}
+#物流单签收信息
+struct SignupInfo {
+    1:required string logistics_order_id,
+    2:required list<SkuInfo> skus_event,
+    3:optional i32 biz_type
+}
+#运单拒收信息
 struct ShipmentOrderInfo {
     1:required string shipment_order_id,
-    2:optional i32 signup_status,
-    3:optional list<map<string,string>> signup_skus,
-    4:optional list<map<string,string>> reject_skus,
-    5:optional list<map<string,string>> offshelf_skus,
-    6:optional list<string> adjust_skus,
-    7:optional i32 biz_type
+    2:required list<map<string,string>> reject_skus,
+    3:optional i32 biz_type
 }
 #服务定义
 service ShipmentService {
-    Data signupShipmentOrder(1:required ShipmentOrderInfo objShipmentOrderInfo)
+    Data signupShipmentOrder(1:required SignupInfo objSignupInfo)
         throws (1: OrderUserException userException),
     Data rejectShipmentOrder(1:required ShipmentOrderInfo objShipmentOrderInfo)
         throws (1: OrderUserException userException)
