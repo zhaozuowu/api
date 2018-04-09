@@ -26,6 +26,7 @@ class Action_Service_Signup extends Orderui_Base_ServiceAction
                 'event_type' => 'int|required',
             ],
         ],
+        'biz_type' => 'int|default[1]',
     ];
 
     /*

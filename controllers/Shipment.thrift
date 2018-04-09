@@ -24,5 +24,7 @@ struct ShipmentOrderInfo {
 #服务定义
 service ShipmentService {
     Data signupShipmentOrder(1:required ShipmentOrderInfo objShipmentOrderInfo)
+        throws (1: OrderUserException userException),
+    Data rejectShipmentOrder(1:required ShipmentOrderInfo objShipmentOrderInfo)
         throws (1: OrderUserException userException)
 }
