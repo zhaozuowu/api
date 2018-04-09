@@ -17,6 +17,18 @@ class  Orderui_Define_Const
     const IS_DELETE = 2;
 
     /**
+     * 取消物流单成功
+     * @var integer
+     */
+    const CANCEL_SUCCESS = 1;
+
+    /**
+     * 取消物流单失败
+     * @var integer
+     */
+    const CANCEL_FAILED = 2;
+
+    /**
      * delete
      * @var array
      */
@@ -52,6 +64,11 @@ class  Orderui_Define_Const
         self::ORDER_SYS_NWMS,
     ];
 
+    /**
+     * 运单号类型
+     * @var integer
+     */
+    const NWMS_ORDER_TYPE_SHIPMENT_ORDER = 301;
     /**
      * NWMS ORDER 类型范围
      */
@@ -110,4 +127,39 @@ class  Orderui_Define_Const
      * 业态订单SKU异常状态 异常
      */
     const BUSINESS_ORDER_SKU_EXCEPTION = 2;
+
+    /**
+     * 业态订单货位调整事件
+     * @var integer
+     */
+    const BUSINESS_ORDER_EVENT_TYPE_ADJUST = 1;
+
+    /**
+     * 业态订单计划下架事件
+     * @var integer
+     */
+    const BUSINESS_ORDER_EVENT_TYPE_PLAN_PUTOFF = 2;
+
+    /**
+     * 业态订单下架事件
+     * @var integer
+     */
+    const BUSINESS_ORDER_EVENT_TYPE_PUTOFF = 3;
+
+    /**
+     * 业态订单签收事件
+     * @var integer
+     */
+    const BUSINESS_ORDER_EVENT_TYPE_SIGNUP = 4;
+
+    /**
+     * 业态订单事件类型
+     * @var integer
+     */
+    const BUSINESS_ORDER_EVENT_TYPE_MAP = [
+        self::BUSINESS_ORDER_EVENT_TYPE_ADJUST => '货位调整',
+        self::BUSINESS_ORDER_EVENT_TYPE_PLAN_PUTOFF => '计划下架',
+        self::BUSINESS_ORDER_EVENT_TYPE_PUTOFF => '下架',
+        self::BUSINESS_ORDER_EVENT_TYPE_SIGNUP => '签收',
+    ];
 }

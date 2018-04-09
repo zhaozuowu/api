@@ -33,7 +33,7 @@ struct BusinessFormOrderSkuEvent {
 }
 #货架信息
 struct ShelfInfo {
-    1:required i8 supply_type,
+    1:required i32 supply_type,
     2:required map<string, i32> devices 
 }
 #业态订单信
@@ -49,7 +49,7 @@ struct BusinessFormOrderInfo {
     9:required string customer_contact,
     10:required string customer_address,
     11:required string customer_location,
-    12:required i8 customer_location_source,
+    12:required i32 customer_location_source,
     13:required i32 customer_city_id,
     14:required string customer_city_name,
     15:required i32 customer_region_id,
@@ -62,10 +62,11 @@ struct BusinessFormOrderInfo {
     22:required string business_form_key,
     23:required list<BusinessFormOrderSkuEvent> skus_event,
 }
+
 #服务定义
 service BusinessService {
     Data createBusinessFormOrder(1:required BusinessFormOrderInfo objBusinessFormOrderInfo)
+        throws (1: OrderUserException userException),
+    i32 cancelLogisticsOrder(1:required string logistics_order_id, 2:required string cancelRemark)
         throws (1: OrderUserException userException)，
-        i32 cancelLogisticsOrder(1:required string logistics_order_id, 2:required string cancelRemark)
-        throws (1: OrderUserException userException)
 }

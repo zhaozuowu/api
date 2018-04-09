@@ -1,10 +1,10 @@
 <?php
 /**
- * @name Order_Wmq_Commit
+ * @name Orderui_Wmq_Commit
  * @desc send wmq cmd
  * @author jinyu02@iwaimai.baidu.com
  */
-class Order_Wmq_Commit extends Wm_Lib_Wmq_Commit {
+class Orderui_Wmq_Commit extends Wm_Lib_Wmq_Commit {
     
     /**
      * send wmq cmd
@@ -15,7 +15,7 @@ class Order_Wmq_Commit extends Wm_Lib_Wmq_Commit {
      * @return integer
      */
     public static function sendWmqCmd($strCmd, $arrParams, $strKey = '', $strTopic = '') {
-        $arrWmqConfig = Order_Define_Cmd::DEFAULT_WMQ_CONFIG;
+        $arrWmqConfig = Orderui_Define_Cmd::DEFAULT_WMQ_CONFIG;
         if (!empty($strKey)) {
             $arrWmqConfig['Key'] = $strKey;
         }

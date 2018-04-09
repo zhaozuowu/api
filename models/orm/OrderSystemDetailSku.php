@@ -45,4 +45,9 @@ class Model_Orm_OrderSystemDetailSku extends Orderui_Base_Orm
     {
         self::batchInsert($arrSkuList);
     }
+
+    public static function getSkusByOrderSystemDetailId($intOrderSystemDetailId)
+    {
+        return self::findRows(self::getAllColumns(), ['order_system_detail_id' => $intOrderSystemDetailId, 'is_delete' => Orderui_Define_Const::NOT_DELETE]);
+    }
 }

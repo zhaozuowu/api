@@ -33,7 +33,7 @@ class Orderui_Error_Code extends Wm_Error_Code
      * 预计送达时间不合法
      * @var integer
      */
-    const NWMS_ORDER_STOCKOUT_EXPECT_ARRIVE_TIME_ERROR = 340019;/**
+    const NWMS_ORDER_STOCKOUT_EXPECT_ARRIVE_TIME_ERROR = 340019;
 
    /**
     * 纬度错误
@@ -115,4 +115,60 @@ class Orderui_Error_Code extends Wm_Error_Code
      * 事件回调指定父节点异常
      */
     const OMS_EVENT_CALLBACK_PARENT_KEY_INVALID = 350036;
+
+    /**
+     * 接入事件失败
+     */
+    const OMS_TRIGGER_EVENT_FAIL = 360005;
+    /**
+     * 接入系统不存在
+     */
+    const OMS_NOT_FOUND_CLIENT = 360006;
+    /**
+     * 接入事件不存在
+     */
+    const OMS_NOT_FOUND_EVENT = 360007;
+
+    /**
+     * OMS取消物流单失败
+     * @var integer
+     */
+    const OMS_ORDER_CANCEL_FAILED = 350037;
+
+    /**
+     * 找不到关联的出库单
+     * @var integer
+     */
+    const OMS_NWMS_ORDER_NOT_FOUND = 350038;
+
+    /**
+     * 找不到关联的tms运单
+     * @var integer
+     */
+    const OMS_TMS_ORDER_NOT_FOUND = 350039;
+    /**
+     * 找不到运单
+     */
+    const OMS_NOT_FOUND_SHIPMENT_ORDER = 360001;
+    /**
+     * 找不到出库单
+     */
+    const OMS_NOT_FOUND_STOCKOUT_ORDER = 360002;
+    /**
+     * 签收运单失败
+     */
+    const OMS_SIGNUP_SHIPMENT_ORDER_FAIL = 360003;
+    /**
+     * 找不到出库单
+     */
+    const OMS_SIGNUP_STOCKOUT_ORDER_FAIL = 360004;
+    /**
+     * 运单签收失败
+     */
+    const OMS_TMS_SIGNUP_SHIPMENT_ORDER_FAILED = 360005;
+
+    /**
+     * 找不到关联订单
+     */
+    const OMS_MAP_ORDER_NOT_FOUND = 370001;
 }
