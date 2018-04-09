@@ -120,7 +120,7 @@ class Service_Data_ShipmentOrder
      * 创建销退入库单的sku信息发送wmq
      * @param int $intShipmentOrderId
      * @param int $intStockOutOrderId
-     * @param array $arrSinupSkus
+     * @param array $arrRejectSkus
      * @param array $arrOffShelfSkus
      * @return bool
      */
