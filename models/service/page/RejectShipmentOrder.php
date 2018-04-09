@@ -28,6 +28,7 @@ class Service_Page_RejectShipmentOrder
         $intShipmentOrderId = intval($arrInput['shipment_order_id']);
         $arrRejectSkus = $arrInput['reject_skus'];
         $intSignupStatus = Orderui_Define_ShipmentOrder::SHIPMENT_SIGINUP_REJECT_ALL;
-        return $this->objData->signupShipmentOrderByInput($intShipmentOrderId, $intSignupStatus, [], [], [], $arrRejectSkus);
+        $intBizType = $arrInput['biz_type'];
+        return $this->objData->signupShipmentOrderByInput($intShipmentOrderId, $intSignupStatus, [], [], [], $arrRejectSkus, $intBizType);
     }
 }

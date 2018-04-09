@@ -69,7 +69,7 @@ class Service_Data_ShipmentOrder
      * @return array
      * @throws Orderui_BusinessError
      */
-    public function signupShipmentOrderByInput($intShipmentOrderId, $intSignupStatus, $arrSinupSkus, $arrOffShelfSkus, $arrAdjustSkus, $arrRejectSkus)
+    public function signupShipmentOrderByInput($intShipmentOrderId, $intSignupStatus, $arrSinupSkus, $arrOffShelfSkus, $arrAdjustSkus, $arrRejectSkus, $intBizType)
     {
         $arrRet = [
             'shipment_order_id' => strval($intShipmentOrderId),
@@ -111,7 +111,7 @@ class Service_Data_ShipmentOrder
         //若签收状态是拒收或者有拒收商品或有下架商品则创建销退入库单
         if ($intSignupStatus == Orderui_Define_ShipmentOrder::SHIPMENT_SIGINUP_REJECT_ALL
             || !empty($arrRejectSkus) || !empty($arrOffShelfSkus)) {
-            $this->SendStockinSkuInfoToWmq($intShipmentOrderId, $intStockOutOrderId, $arrRejectSkus, $arrOffShelfSkus);
+            $this->SendStockinSkuInfoToWmq($intShipmentOrderId, $intStockOutOrderId, $arrRejectSkus, $arrOffShelfSkus, $intBizType);
         }
         $arrRet['result'] = true;
         return $arrRet;
@@ -124,7 +124,7 @@ class Service_Data_ShipmentOrder
      * @param array $arrOffShelfSkus
      * @return bool
      */
-    public function SendStockinSkuInfoToWmq($intShipmentOrderId, $intStockOutOrderId, $arrRejectSkus, $arrOffShelfSkus)
+    public function SendStockinSkuInfoToWmq($intShipmentOrderId, $intStockOutOrderId, $arrRejectSkus, $arrOffShelfSkus, $intBizType)
     {
         $arrSkuList = [];
         foreach ($arrOffShelfSkus as $intSkuId => $intSkuAmount) {
@@ -143,6 +143,7 @@ class Service_Data_ShipmentOrder
             'stockout_order_id' => $intStockOutOrderId,
             'shipment_order_id' => $intShipmentOrderId,
             'sku_info_list'     => json_encode($arrSkuList),
+            'stockin_order_source' => $intBizType,
             'stockin_order_remark' => '',
         ];
         $strCmdStockin = Orderui_Define_Cmd::CMD_CREATE_RETURN_STOCKIN_ORDER;
