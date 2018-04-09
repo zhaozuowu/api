@@ -16,10 +16,12 @@ struct Data {
 #运单签收信息
 struct ShipmentOrderInfo {
     1:required string shipment_order_id,
-    2:required i32 signup_status,
-    3:required list<map<string,string>> signup_skus,
-    4:optional list<map<string,string>> offshelf_skus,
-    5:optional list<string> adjust_skus
+    2:optional i32 signup_status,
+    3:optional list<map<string,string>> signup_skus,
+    4:optional list<map<string,string>> reject_skus,
+    5:optional list<map<string,string>> offshelf_skus,
+    6:optional list<string> adjust_skus,
+    7:optional i32 biz_type
 }
 #服务定义
 service ShipmentService {
