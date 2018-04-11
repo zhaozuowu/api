@@ -35,7 +35,7 @@ class Orderui_Event
             }
             if (Orderui_Define_Const::BUSINESS_ORDER_EVENT_TYPE_SIGNUP
                 == $arrSkuEventItem['event_type']) {
-                $arrSignupSkus[$arrSkuEventItem['sku_id']] = $arrSkuEventItem['order_amount'];
+                $arrSignupSkus[] = [ $arrSkuEventItem['sku_id'] => $arrSkuEventItem['order_amount'] ];
             }
         }
         return [
