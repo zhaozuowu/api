@@ -57,7 +57,7 @@ class Orderui_Event
             return $arrMapSkuAmount;
         }
         foreach ((array)$arrSkuAmount as $arrSkuAmountItem) {
-            $arrMapSkuAmount = array_merge($arrMapSkuAmount, $arrSkuAmountItem);
+            $arrMapSkuAmount = $arrMapSkuAmount + $arrSkuAmountItem;
         }
         return $arrMapSkuAmount;
     }
