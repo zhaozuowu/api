@@ -182,6 +182,8 @@ class Service_Data_BusinessFormOrder
                                                         0 : intval($arrInput['business_form_order_type']);
         $arrCreateParams['customer_city_id'] = empty($arrInput['customer_city_id']) ?
                                                         0 : intval($arrInput['customer_city_id']);
+        $arrCreateParams['customer_city_name'] = empty($arrInput['customer_city_name']) ?
+            '' : strval($arrInput['customer_city_name']);
         $arrCreateParams['customer_id'] = empty($arrInput['customer_id']) ?
                                                         '' : strval($arrInput['customer_id']);
         $arrCreateParams['customer_name'] = empty($arrInput['customer_name']) ?

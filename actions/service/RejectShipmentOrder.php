@@ -15,6 +15,7 @@ class Action_Service_RejectShipmentOrder extends Orderui_Base_ServiceAction
     protected $arrInputParams = [
         'shipment_order_id' => 'str|required',
         'reject_skus' => 'arr|required',
+        'biz_type' => 'int|default[1]',
     ];
 
     /*

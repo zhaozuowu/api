@@ -65,10 +65,11 @@ class Service_Data_ShipmentOrder
      * @param array $arrSinupSkus
      * @param array $arrOffShelfSkus
      * @param array $arrAdjustSkus
+     * @param array $arrRejectSkus
      * @return array
      * @throws Orderui_BusinessError
      */
-    public function signupShipmentOrderByInput($intShipmentOrderId, $intSignupStatus, $arrSinupSkus, $arrOffShelfSkus, $arrAdjustSkus, $arrRejectSkus)
+    public function signupShipmentOrderByInput($intShipmentOrderId, $intSignupStatus, $arrSinupSkus, $arrOffShelfSkus, $arrAdjustSkus, $arrRejectSkus, $intBizType)
     {
         $arrRet = [
             'shipment_order_id' => strval($intShipmentOrderId),
@@ -97,21 +98,26 @@ class Service_Data_ShipmentOrder
             }
         }
         //转发nwms
+        $arrSkusList = [];
+        foreach ($arrSinupSkus as $strSkuId => $intAmount) {
+            $arrSkusList[] = [
+                $strSkuId => $intAmount,
+            ];
+        }
         $arrParam = [
             'stockout_order_id' => $intStockOutOrderId,
             'signup_status'      => $intSignupStatus,
-            'signup_skus'       => $arrSinupSkus,
+            'signup_skus'       => $arrSkusList,
         ];
         $strCmd = Orderui_Define_Cmd::CMD_SIGNUP_STOCKOUT_ORDER;
         $ret = Orderui_Wmq_Commit::sendWmqCmd($strCmd, $arrParam, strval($intStockOutOrderId));
         if (false == $ret) {
             Bd_Log::warning(sprintf("method[%s] cmd[%s] error", __METHOD__, $strCmd));
         }
-        //若是部分签收或拒收或有下架商品则创建销退入库单
+        //若签收状态是拒收或者有拒收商品或有下架商品则创建销退入库单
         if ($intSignupStatus == Orderui_Define_ShipmentOrder::SHIPMENT_SIGINUP_REJECT_ALL
-            || $intSignupStatus == Orderui_Define_ShipmentOrder::SHIPMENT_SIGINUP_ACCEPT_PART
-            || !empty($arrOffShelfSkus)) {
-            $this->SendStockinSkuInfoToWmq($intShipmentOrderId, $intStockOutOrderId, $arrRejectSkus, $arrOffShelfSkus);
+            || !empty($arrRejectSkus) || !empty($arrOffShelfSkus)) {
+            $this->SendStockinSkuInfoToWmq($intShipmentOrderId, $intStockOutOrderId, $arrRejectSkus, $arrOffShelfSkus, $intBizType);
         }
         $arrRet['result'] = true;
         return $arrRet;
@@ -120,11 +126,11 @@ class Service_Data_ShipmentOrder
      * 创建销退入库单的sku信息发送wmq
      * @param int $intShipmentOrderId
      * @param int $intStockOutOrderId
-     * @param array $arrSinupSkus
+     * @param array $arrRejectSkus
      * @param array $arrOffShelfSkus
      * @return bool
      */
-    public function SendStockinSkuInfoToWmq($intShipmentOrderId, $intStockOutOrderId, $arrRejectSkus, $arrOffShelfSkus)
+    public function SendStockinSkuInfoToWmq($intShipmentOrderId, $intStockOutOrderId, $arrRejectSkus, $arrOffShelfSkus, $intBizType)
     {
         $arrSkuList = [];
         foreach ($arrOffShelfSkus as $intSkuId => $intSkuAmount) {
@@ -143,6 +149,7 @@ class Service_Data_ShipmentOrder
             'stockout_order_id' => $intStockOutOrderId,
             'shipment_order_id' => $intShipmentOrderId,
             'sku_info_list'     => json_encode($arrSkuList),
+            'stockin_order_source' => $intBizType,
             'stockin_order_remark' => '',
         ];
         $strCmdStockin = Orderui_Define_Cmd::CMD_CREATE_RETURN_STOCKIN_ORDER;
