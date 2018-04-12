@@ -45,4 +45,20 @@ class Orderui_Event
             'signup_skus' => $arrSignupSkus,
         ];
     }
+
+    /**
+     * 把数组转成map
+     * @param $arrSkuAmount
+     * @return array
+     */
+    public static function transferArrayToMap($arrSkuAmount) {
+        $arrMapSkuAmount = [];
+        if (empty($arrSkuAmount)) {
+            return $arrMapSkuAmount;
+        }
+        foreach ((array)$arrSkuAmount as $arrSkuAmountItem) {
+            $arrMapSkuAmount = array_merge($arrMapSkuAmount, $arrSkuAmountItem);
+        }
+        return $arrMapSkuAmount;
+    }
 }

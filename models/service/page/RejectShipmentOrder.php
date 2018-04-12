@@ -26,7 +26,7 @@ class Service_Page_RejectShipmentOrder
     public function execute($arrInput)
     {
         $intShipmentOrderId = intval($arrInput['shipment_order_id']);
-        $arrRejectSkus = $arrInput['reject_skus'];
+        $arrRejectSkus = Orderui_Event::transferArrayToMap($arrInput['reject_skus']);
         $intSignupStatus = Orderui_Define_ShipmentOrder::SHIPMENT_SIGINUP_REJECT_ALL;
         return $this->objData->signupShipmentOrderByInput($intShipmentOrderId, $intSignupStatus, [], [], [], $arrRejectSkus);
     }
