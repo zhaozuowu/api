@@ -98,10 +98,16 @@ class Service_Data_ShipmentOrder
             }
         }
         //转发nwms
+        $arrSkusList = [];
+        foreach ($arrSinupSkus as $strSkuId => $intAmount) {
+            $arrSkusList[] = [
+                $strSkuId => $intAmount,
+            ];
+        }
         $arrParam = [
             'stockout_order_id' => $intStockOutOrderId,
             'signup_status'      => $intSignupStatus,
-            'signup_skus'       => $arrSinupSkus,
+            'signup_skus'       => $arrSkusList,
         ];
         $strCmd = Orderui_Define_Cmd::CMD_SIGNUP_STOCKOUT_ORDER;
         $ret = Orderui_Wmq_Commit::sendWmqCmd($strCmd, $arrParam, strval($intStockOutOrderId));
