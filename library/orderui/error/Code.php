@@ -159,13 +159,17 @@ class Orderui_Error_Code extends Wm_Error_Code
      */
     const OMS_SIGNUP_SHIPMENT_ORDER_FAIL = 360003;
     /**
-     * 找不到出库单
+     * 签收出库单失败
      */
     const OMS_SIGNUP_STOCKOUT_ORDER_FAIL = 360004;
     /**
      * 运单签收失败
      */
     const OMS_TMS_SIGNUP_SHIPMENT_ORDER_FAILED = 360005;
+    /**
+     * 创建销退入库单失败
+     */
+    const OMS_CREATE_SALE_RETURN_STOCKIN_ORDER_FAIL = 360006;
 
     /**
      * 找不到关联订单
