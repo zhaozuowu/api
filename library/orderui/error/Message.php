@@ -37,6 +37,8 @@ class Orderui_Error_Message extends Wm_Error_Message
         Orderui_Error_Code::OMS_NOT_FOUND_STOCKOUT_ORDER => '找不到出库单',
         Orderui_Error_Code::OMS_TMS_SIGNUP_SHIPMENT_ORDER_FAILED => '轻舟系统运单签收失败',
         Orderui_Error_Code::OMS_MAP_ORDER_NOT_FOUND => '找不到关联订单',
+        Orderui_Error_Code::OMS_SIGNUP_STOCKOUT_ORDER_FAIL => '签收出库单失败',
+        Orderui_Error_Code::OMS_CREATE_SALE_RETURN_STOCKIN_ORDER_FAIL => '创建销退入库单失败',
     ];
 
 }
