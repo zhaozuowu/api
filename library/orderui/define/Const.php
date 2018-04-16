@@ -162,4 +162,9 @@ class  Orderui_Define_Const
         self::BUSINESS_ORDER_EVENT_TYPE_PUTOFF => '下架',
         self::BUSINESS_ORDER_EVENT_TYPE_SIGNUP => '签收',
     ];
+     /**
+     * @var integer
+     * 取消物流单延迟读库微秒数
+     */
+    const CANCEL_DELAY_MICRO_SECONDS = 200000;
 }
