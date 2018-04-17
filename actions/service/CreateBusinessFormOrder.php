@@ -44,6 +44,16 @@ class Action_Service_CreateBusinessFormOrder extends Orderui_Base_ServiceAction
                 'order_amount' => 'int|required|min[1]',
             ],
         ],
+        'skus_event' => [
+            'validate' => 'arr',
+            'type' => 'array',
+            'params' => [
+                'sku_id' => 'int',
+                'order_amount' => 'int',
+                'event_type'   => 'int'
+            ],
+            
+        ],
         'business_form_token' => 'str|required',
         'business_form_key' => 'str|required',
     ];

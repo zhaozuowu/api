@@ -18,6 +18,16 @@ class Dao_Ral_NWmsOrder
      * @var string
      */
     const API_RALER_CREATE_NWMS_ORDER = 'createnwmsorder';
+    /*
+     * signup stockout order
+     * @var string
+     */
+    const API_SIGNUP_STOCKOUT_ORDER = 'signupstockoutorder';
+    /*
+     * create sales return stockin order
+     * @var string
+     */
+    const API_CREATE_SALES_RETURN_STOCKIN_ORDER = 'createsalereturnstockinorder';
 
     /**
      * pre cancel stockout order
@@ -111,4 +121,35 @@ class Dao_Ral_NWmsOrder
         return $ret;
     }
 
+
+    /**
+     * 签收nwms出库单
+     * @param  array $arrSignupInfo
+     * @return array
+     * @throws Nscm_Exception_Error
+     */
+    public function signupStockoutOrder($arrSignupInfo)
+    {
+        $req[self::API_SIGNUP_STOCKOUT_ORDER] = $arrSignupInfo;
+        Bd_Log::trace(sprintf("signup nwms order request params %s", json_encode($req)));
+        $ret = $this->objApiRal->getData($req);
+        Bd_Log::trace(sprintf("signup nwms order response %s", json_encode($ret)));
+        $ret = !empty($ret[self::API_SIGNUP_STOCKOUT_ORDER]) ? $ret[self::API_SIGNUP_STOCKOUT_ORDER] : [];
+        return $ret;
+    }
+    /**
+     * 创建销退入库单
+     * @param  array $arrData
+     * @return array
+     * @throws Nscm_Exception_Error
+     */
+    public function CreateSalesReturnStockinOrder($arrData)
+    {
+        $req[self::API_CREATE_SALES_RETURN_STOCKIN_ORDER] = $arrData;
+        Bd_Log::trace(sprintf("create sales return stockin order request params %s", json_encode($req)));
+        $ret = $this->objApiRal->getData($req);
+        Bd_Log::trace(sprintf("create sales return stockin order response %s", json_encode($ret)));
+        $ret = !empty($ret[self::API_CREATE_SALES_RETURN_STOCKIN_ORDER]) ? $ret[self::API_CREATE_SALES_RETURN_STOCKIN_ORDER] : [];
+        return $ret;
+    }
 }

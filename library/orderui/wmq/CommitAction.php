@@ -1,9 +1,9 @@
 <?php
 /**
- * @name Order_Wmq_CommitAction
- * @desc order wmq commit action
+ * @name Orderui_Wmq_CommitAction
+ * @desc orderui wmq commit action
  * @author jinyu02@iwaimai.baidu.com
  */
-class Order_Wmq_CommitAction extends Wm_Lib_Wmq_CommitAction {
+class Orderui_Wmq_CommitAction extends Wm_Lib_Wmq_CommitAction {
 
 }

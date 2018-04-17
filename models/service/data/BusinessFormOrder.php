@@ -182,6 +182,8 @@ class Service_Data_BusinessFormOrder
                                                         0 : intval($arrInput['business_form_order_type']);
         $arrCreateParams['customer_city_id'] = empty($arrInput['customer_city_id']) ?
                                                         0 : intval($arrInput['customer_city_id']);
+        $arrCreateParams['customer_city_name'] = empty($arrInput['customer_city_name']) ?
+            '' : strval($arrInput['customer_city_name']);
         $arrCreateParams['customer_id'] = empty($arrInput['customer_id']) ?
                                                         '' : strval($arrInput['customer_id']);
         $arrCreateParams['customer_name'] = empty($arrInput['customer_name']) ?
@@ -219,6 +221,13 @@ class Service_Data_BusinessFormOrder
                                                     0 : strval($arrInput['executor']);
         $arrBusinessFormExt['executor_contact'] = empty($arrInput['executor_contact']) ?
                                                     '' : strval($arrInput['executor_contact']);
+        $arrBusinessFormExt['expect_arrive_start_time'] = empty($arrInput['expect_arrive_time']['start']) ?
+            '' : intval($arrInput['expect_arrive_time']['start']);
+        $arrBusinessFormExt['expect_arrive_end_time'] = empty($arrInput['expect_arrive_time']['end']) ?
+            '' : intval($arrInput['expect_arrive_time']['end']);
+
+        $arrBusinessFormExt['skus_event'] = empty($arrInput['skus_event']) ?
+            [] : ($arrInput['skus_event']);
         return$arrBusinessFormExt;
     }
 
