@@ -184,8 +184,10 @@ class Service_Data_ShipmentOrder
             Bd_Log::warning(sprintf("method[%s] create sale return stockin order fail stockout_order_id[%s]", __METHOD__, $intStockoutOrderId));
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_CREATE_SALE_RETURN_STOCKIN_ORDER_FAIL);
         }
-
         $intStockinOrderId = intval($arrRet['result']['stockin_order_id']);
+        if (empty($intStockinOrderId)) {
+            return false;
+        }
         $arrStockoutOrder = Model_Orm_OrderSystemDetail::getOrderInfoByOrderIdAndType($intStockoutOrderId, Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_STOCK_OUT);
         if (!empty($arrStockoutOrder)) {
             $intBusinessFormOrderId = intval($arrStockoutOrder['business_form_order_id']);
