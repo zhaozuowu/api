@@ -5,6 +5,7 @@
  * @author lvbochao@iwaimai.baidu.com
  */
 abstract class Orderui_Base_ServiceAction extends Nscm_Base_ServiceAction {
+
     /**
      * show price switch
      * @var bool $boolHidePrice
