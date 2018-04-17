@@ -45,6 +45,8 @@ class Service_Data_ShipmentOrder
         $arrRet = $this->objDaoWprcTms->signupShipmentOrder($intShipmentOrderId,$intBizType, $arrSignupSkus);
         Bd_Log::trace(sprintf("method[%s] signup arrRet[%s]", __METHOD__, json_encode($arrRet)));
         if (!empty($arrRet['errno']) || 0 != $arrRet['errno']) {
+            Bd_Log::warning(sprintf("method[%s] signup tms shipmentorder failed shipmentid[%s]",
+                            __METHOD__, $intShipmentOrderId));
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_TMS_SIGNUP_SHIPMENT_ORDER_FAILED);
         }
         $intSignupStatus = Orderui_Define_ShipmentOrder::SHIPMENT_SIGINUP_ACCEPT_ALL;
@@ -184,8 +186,10 @@ class Service_Data_ShipmentOrder
             Bd_Log::warning(sprintf("method[%s] create sale return stockin order fail stockout_order_id[%s]", __METHOD__, $intStockoutOrderId));
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_CREATE_SALE_RETURN_STOCKIN_ORDER_FAIL);
         }
-
         $intStockinOrderId = intval($arrRet['result']['stockin_order_id']);
+        if (empty($intStockinOrderId)) {
+            return false;
+        }
         $arrStockoutOrder = Model_Orm_OrderSystemDetail::getOrderInfoByOrderIdAndType($intStockoutOrderId, Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_STOCK_OUT);
         if (!empty($arrStockoutOrder)) {
             $intBusinessFormOrderId = intval($arrStockoutOrder['business_form_order_id']);

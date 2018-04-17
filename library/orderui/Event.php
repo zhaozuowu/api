@@ -38,10 +38,11 @@ class Orderui_Event
                 $arrSignupSkus[$arrSkuEventItem['sku_id']] = $arrSkuEventItem['order_amount'];
             }
         }
+
         return [
             'adjust_skus' => $arrAdjustSkus,
             'plan_off_skus' => $arrPlanOffSkus,
-            'off_skus' => $arrOffSkus,
+            'off_skus' => self::filterSkuAmount($arrOffSkus),
             'signup_skus' => $arrSignupSkus,
         ];
     }
@@ -60,5 +61,22 @@ class Orderui_Event
             $arrMapSkuAmount = $arrMapSkuAmount + $arrSkuAmountItem;
         }
         return $arrMapSkuAmount;
+    }
+
+    /**
+     * filter off skus amount
+     * @param $arrSkuAmount
+     * @return array
+     */
+    public static function filterSkuAmount($arrSkuAmount) {
+        if (empty($arrSkuAmount)) {
+            return [];
+        }
+        foreach ((array)$arrSkuAmount as $intSkuId => $intAmount) {
+            if (0 == $intAmount) {
+                unset($arrSkuAmount[$intSkuId]);
+            }
+        }
+        return $arrSkuAmount;
     }
 }
