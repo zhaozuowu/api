@@ -45,6 +45,8 @@ class Service_Data_ShipmentOrder
         $arrRet = $this->objDaoWprcTms->signupShipmentOrder($intShipmentOrderId,$intBizType, $arrSignupSkus);
         Bd_Log::trace(sprintf("method[%s] signup arrRet[%s]", __METHOD__, json_encode($arrRet)));
         if (!empty($arrRet['errno']) || 0 != $arrRet['errno']) {
+            Bd_Log::warning(sprintf("method[%s] signup tms shipmentorder failed shipmentid[%s]",
+                            __METHOD__, $intShipmentOrderId));
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_TMS_SIGNUP_SHIPMENT_ORDER_FAILED);
         }
         $intSignupStatus = Orderui_Define_ShipmentOrder::SHIPMENT_SIGINUP_ACCEPT_ALL;
