@@ -85,6 +85,25 @@ class Model_Orm_BusinessFormOrder extends Orderui_Base_Orm
     }
 
     /**
+     * 根据业态订单号获取业态订单信息
+     * @param $strOrderId 业态订单号
+     * @return array
+     */
+    public static function getBusinessFormOrderByBusinessOrderId($strOrderId)
+    {
+        $strOrderId = empty($strOrderId) ? 0 : intval($strOrderId);
+        if (empty($strOrderId)) {
+            return [];
+        }
+        $condition = ['business_form_order_id' => $strOrderId, 'is_delete' => Orderui_Define_Const::NOT_DELETE];
+        $objOrder = self::findOne($condition);
+        if (empty($objOrder)) {
+            return [];
+        }
+        return $objOrder;
+    }
+
+    /**
      * 通过上游订单号获取业态订单信息
      * @param  integer $intSourceOrderId
      * @return Model_Orm_BusinessFormOrder
@@ -96,5 +115,24 @@ class Model_Orm_BusinessFormOrder extends Orderui_Base_Orm
             'is_delete' => Orderui_Define_Const::NOT_DELETE,
         ];
         return self::findRow(self::getAllColumns(), $arrCondition);
+    }
+
+    /**
+     * 通过源订单号获取关联订单号
+     * @param $intSourceOrderId
+     * @param $intOrderType
+     * @return array
+     */
+    public static function getMapOrderIdBySourceOrderId($intSourceOrderId, $intOrderType) {
+        $arrOrderInfo = self::getOrderInfoBySourceOrderId($intSourceOrderId);
+        if (empty($arrOrderInfo['business_form_order_id'])) {
+            return [];
+        }
+        $intBusinessFormOrderId = intval($arrOrderInfo['business_form_order_id']);
+        $arrMapOrderInfo = Model_Orm_OrderSystemDetail::getOrderInfoByBusinessFormOrderIdAndType($intBusinessFormOrderId, $intOrderType);
+        if (empty($arrMapOrderInfo[0]['order_id'])) {
+            return [];
+        }
+        return $arrMapOrderInfo[0]['order_id'];
     }
 }
