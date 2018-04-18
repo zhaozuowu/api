@@ -19,8 +19,14 @@ struct EventInfo {
     2:required string event_key,
     3:required string data
 }
+struct typeExample1 {
+    1:required string paramExample1
+    2:required i32 paramExample2
+}
 #服务定义
 service EventService {
     Data triggerEvent(1:required EventInfo objEventInfo)
+        throws (1: OrderUserException userException)
+    Data funcExample1(1:required typeExample1 objData)
         throws (1: OrderUserException userException)
 }
