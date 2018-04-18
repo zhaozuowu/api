@@ -195,6 +195,7 @@ class Service_Data_BusinessFormOrder
         $arrCreateParams['customer_address'] = empty($arrInput['customer_address']) ?
                                                         '' : strval($arrInput['customer_address']);
         $arrCreateParams['business_form_ext'] = json_encode($this->getBusinessFormExt($arrInput));
+        $arrCreateParams['supply_type']       = intval($arrInput['shelf_info']['supply_type']);
         $arrCreateParams['business_form_order_exception'] = empty($arrInput['business_form_order_exception']) ?
                                                         '' : strval($arrInput['business_form_order_exception']);
         $arrCreateParams['process_time'] = Orderui_Util::getNowUnixDateTime();
