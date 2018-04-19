@@ -12,6 +12,7 @@ class Controller_EventService extends Orderui_Base_ServiceController {
      */
     public $arrMap = [
         'Action_Service_TriggerEvent' => 'actions/service/TriggerEvent.php',
+        'Action_Service_OutsideTriggerEvent' => 'actions/service/OutsideTriggerEvent.php',
     ];
 
     /**
@@ -23,6 +24,26 @@ class Controller_EventService extends Orderui_Base_ServiceController {
         $arrRequest = $arrRequest['objEventInfo'];
         $objAction = new Action_Service_TriggerEvent($arrRequest);
         return $objAction->execute();
+    }
+
+    public function confirmStockinOrder($arrRequest)
+    {
+        return $this->outsideCall(__FUNCTION__, $arrRequest);
+    }
+
+
+    private function outsideCall($strMethodName, $arrRequest)
+    {
+        if (isset(Orderui_Define_OutsideEvent::OUTSIDE_EVENT_VALIDATE[$strMethodName])) {
+            $arrRequest = [
+                'event_key' => $strMethodName,
+                'params' => $arrRequest['objData'],
+            ];
+            $objAction = new Action_Service_OutsideTriggerEvent($arrRequest);
+            return $objAction->execute();
+        } else {
+            header('HTTP/1.1 404 Not Found');
+        }
     }
 
     /**

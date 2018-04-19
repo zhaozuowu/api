@@ -27,6 +27,8 @@ struct typeExample1 {
 service EventService {
     Data triggerEvent(1:required EventInfo objEventInfo)
         throws (1: OrderUserException userException)
-    Data funcExample1(1:required typeExample1 objData)
+    Data confirmStockinOrder(1:required ConfirmStockinOrderInfo objData)
         throws (1: OrderUserException userException)
+
+
 }
