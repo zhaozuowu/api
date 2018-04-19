@@ -26,12 +26,22 @@ class Controller_EventService extends Orderui_Base_ServiceController {
         return $objAction->execute();
     }
 
+    /**
+     * @param $arrRequest
+     * @return array
+     */
     public function confirmStockinOrder($arrRequest)
     {
         return $this->outsideCall(__FUNCTION__, $arrRequest);
     }
 
 
+    /**
+     * outside call
+     * @param $strMethodName
+     * @param $arrRequest
+     * @return array
+     */
     private function outsideCall($strMethodName, $arrRequest)
     {
         if (isset(Orderui_Define_OutsideEvent::OUTSIDE_EVENT_VALIDATE[$strMethodName])) {
