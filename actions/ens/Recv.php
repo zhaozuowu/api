@@ -5,7 +5,7 @@
  * @author bochao.lv@ele.me
  */
 
-class Action_Recv extends Wm_Lib_Wmq_CommitAction
+class Action_Ens_Recv extends Wm_Lib_Wmq_CommitAction
 {
     /**
      * page service map
