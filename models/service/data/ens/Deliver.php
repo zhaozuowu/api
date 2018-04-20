@@ -21,7 +21,7 @@ class Service_Data_Ens_Deliver
      * @param $strEvent
      * @param $arrData
      * @param $intBranch
-     * @return array
+     * @return array|Orderui_Struct_WrpcInfo
      */
     private function formatData($strEvent, $arrData, $intBranch)
     {
@@ -51,19 +51,22 @@ class Service_Data_Ens_Deliver
     /**
      * call wrpc
      * @param string $strEvent
-     * @param array $arrData
+     * @param Orderui_Struct_WrpcInfo $objData
      * @param int $intBranch
      * @return string mixed
      */
-    private function callWrpc($strEvent, $arrData, $intBranch)
+    private function callWrpc($strEvent, $objData, $intBranch)
     {
+        if (!($objData instanceof Orderui_Struct_WrpcInfo)) {
+            trigger_error('ens wrpc call use Orderui_Struct_WrpcInfo');
+        }
         $arrConf = Orderui_Define_EventCall::BRANCH[$strEvent][$intBranch];
         $strAppId = $arrConf['app_id'];
         $strNamespace = $arrConf['namespace'];
         $strService = $arrConf['service'];
         $callableFunc = $arrConf['call'];
-        $strRouting = $arrData['_routing_key'];
-        unset($arrData['_routing_key']);
+        $strRouting = $objData->routing_key;
+        $arrData = $objData->data;
         return Dao_Wrpc_General::call($strAppId, $strNamespace, $strService, $strRouting, $callableFunc, $arrData);
     }
 
@@ -118,9 +121,9 @@ class Service_Data_Ens_Deliver
             return;
         }
         // format data
-        $arrData = $this->formatData($strEvent, $arrData, $intBranch);
+        $mixData = $this->formatData($strEvent, $arrData, $intBranch);
         // call dao deliver
-        $rawResult = $this->callDaoDeliver($strEvent, $arrData, $intBranch);
+        $rawResult = $this->callDaoDeliver($strEvent, $mixData, $intBranch);
         if (true === $rawResult) {
             Bd_Log::trace('call type error');
             return;
