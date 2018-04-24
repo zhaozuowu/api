@@ -35,6 +35,19 @@ class Controller_EventService extends Orderui_Base_ServiceController {
         return $this->outsideCall(__FUNCTION__, $arrRequest);
     }
 
+    /**
+     * @param $arrRequest
+     * @return array
+     */
+    public function deliveryOrder($arrRequest)
+    {
+        return $this->outsideCall(__FUNCTION__, $arrRequest);
+    }
+
+    public function batchPickingAmount($arrRequest)
+    {
+        return $this->outsideCall(__FUNCTION__, $arrRequest);
+    }
 
     /**
      * outside call
@@ -45,9 +58,17 @@ class Controller_EventService extends Orderui_Base_ServiceController {
     private function outsideCall($strMethodName, $arrRequest)
     {
         if (isset(Orderui_Define_OutsideEvent::OUTSIDE_EVENT_VALIDATE[$strMethodName])) {
+            if (Orderui_Define_OutsideEvent::OUTSIDE_EVENT_TRANSFORM[$strMethodName]) {
+                $arrParams = [];
+                foreach (Orderui_Define_OutsideEvent::OUTSIDE_EVENT_TRANSFORM[$strMethodName] as $strParam) {
+                    $arrParams[$strParam] = $arrRequest[$strParam];
+                }
+            } else {
+                $arrParams = $arrRequest['objData'];
+            }
             $arrRequest = [
                 'event_key' => $strMethodName,
-                'params' => $arrRequest['objData'],
+                'params' => $arrParams,
             ];
             $objAction = new Action_Service_OutsideTriggerEvent($arrRequest);
             return $objAction->execute();

@@ -47,6 +47,7 @@ class Orderui_Define_Wrpc
     /// SERVICE_NAME_*
     ////////////////////
     const SERVICE_NAME_NWMS = 'BusinessService';
+    const SERVICE_NAME_STOCKOUT = 'StockoutService';
     const SERVICE_NAME_TMS = 'ShipmentService';
     const SERVICE_NAME_OMS = 'BusinessService';
     const SERVICE_NAME_SHELF = 'ShelfService';

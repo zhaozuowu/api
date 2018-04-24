@@ -11,7 +11,7 @@ abstract class Orderui_Base_Struct
 
     protected $arrProperty;
 
-    function __construct(...$params)
+    protected function __construct(...$params)
     {
         $this->arrParams = [];
         $intCountInput = count($params);
@@ -26,6 +26,11 @@ abstract class Orderui_Base_Struct
                 $this->arrParams[$this->arrProperty[$i]] = null;
             }
         }
+    }
+
+    public static final function build(...$params)
+    {
+        return new static(...$params);
     }
 
     function __get($name)

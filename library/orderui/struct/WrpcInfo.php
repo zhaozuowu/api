@@ -7,14 +7,14 @@
 
 /**
  * Class Orderui_Struct_WrpcInfo
- * @property string routing_key
+ * @property string meta
  * @property array data
- * @method __construct(string $routing_key, array $data)
+ * @method static Orderui_Struct_WrpcInfo build(array $meta, array $data)
  */
 class Orderui_Struct_WrpcInfo extends Orderui_Base_Struct
 {
     protected $arrProperty = [
-        'routing_key',
+        'meta',
         'data',
     ];
 }

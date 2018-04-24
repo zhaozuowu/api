@@ -65,9 +65,9 @@ class Service_Data_Ens_Deliver
         $strNamespace = $arrConf['namespace'];
         $strService = $arrConf['service'];
         $callableFunc = $arrConf['call'];
-        $strRouting = $objData->routing_key;
+        $arrMeta = $objData->meta;
         $arrData = $objData->data;
-        return Dao_Wrpc_General::call($strAppId, $strNamespace, $strService, $strRouting, $callableFunc, $arrData);
+        return Dao_Wrpc_General::call($strAppId, $strNamespace, $strService, $arrMeta, $callableFunc, $arrData);
     }
 
     /**
@@ -124,6 +124,7 @@ class Service_Data_Ens_Deliver
         $mixData = $this->formatData($strEvent, $arrData, $intBranch);
         // call dao deliver
         $rawResult = $this->callDaoDeliver($strEvent, $mixData, $intBranch);
+        Bd_Log::debug('ENS_RESULT: ' . json_encode($rawResult));
         if (true === $rawResult) {
             Bd_Log::trace('call type error');
             return;
