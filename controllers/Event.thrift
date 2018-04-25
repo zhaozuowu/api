@@ -19,10 +19,14 @@ struct EventInfo {
     2:required string event_key,
     3:required string data
 }
-struct typeExample1 {
-    1:required string paramExample1
-    2:required i32 paramExample2
+
+#确认入库事件参数
+struct ConfirmStockinOrderInfo {
+    1:required i32 stockin_order_id,
+    2:optional string stockin_order_remark,
+    3:required string sku_info_list
 }
+
 #服务定义
 service EventService {
     EventData triggerEvent(1:required EventInfo objEventInfo)

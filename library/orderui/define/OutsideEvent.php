@@ -19,7 +19,7 @@ class Orderui_Define_OutsideEvent
      */
     const OUTSIDE_EVENT_VALIDATE = [
         self::EVENT_NAME_CONFIRM_STOCKIN_ORDER => [
-            'stockin_order_id' => 'regex|patern[/^((SIO)\d{13})?$/]',
+            'stockin_order_id' => 'int|required',
             'stockin_order_remark' => 'strutf8',
             'sku_info_list' => [
                 'validate' => 'json|required|decode',
