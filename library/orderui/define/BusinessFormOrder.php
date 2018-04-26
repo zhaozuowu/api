@@ -55,6 +55,9 @@ class Orderui_Define_BusinessFormOrder
      * @var integer
      */
     const ORDER_SUPPLY_TYPE_SUPPLY = 2;
+    const ORDER_SUPPLY_TYPE_RETREAT = 3;    // 撤点
+    const ORDER_SUPPLY_TYPE_ORDER   = 4;    // 订货
+    const ORDER_SUPPLY_TYPE_REJECT  = 5;    // 退货
 
     /**
      * 补货类型
@@ -63,6 +66,9 @@ class Orderui_Define_BusinessFormOrder
     const ORDER_SUPPLY_TYPE = [
         self::ORDER_SUPPLY_TYPE_CREATE => '铺货',
         self::ORDER_SUPPLY_TYPE_SUPPLY => '补货',
+        self::ORDER_SUPPLY_TYPE_RETREAT => '撤点',
+        self::ORDER_SUPPLY_TYPE_ORDER   => '订货',
+        self::ORDER_SUPPLY_TYPE_REJECT  => '退货',
     ];
 
     /**
