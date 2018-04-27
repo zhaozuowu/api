@@ -36,14 +36,4 @@ class Controller_BusinessService extends Orderui_Base_ServiceController {
         $objAction = new Action_Service_CancelLogisticsOrder($arrRequest);
         return $objAction->execute();
     }
-
-    /**
-     * 创建逆向业态单
-     * @param $arrRequest
-     * @return array
-     */
-    public function createReverseBusinessFormOrder($arrRequest) {
-        $objAction = new Action_Service_CreateReverseBusinessFormOrder($arrRequest);
-        return $objAction->execute();
-    }
 }

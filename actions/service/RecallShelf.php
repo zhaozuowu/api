@@ -1,10 +1,5 @@
 <?php
-/**
- * @name CreateReverseBusinessFormOrder.php
- * @desc CreateReverseBusinessFormOrder.php
- * @author yu.jin03@ele.me
- */
-class Action_Service_CreateReverseBusinessFormOrder extends Orderui_Base_ServiceAction
+class Action_Service_ReCallShelf extends Orderui_Base_ServiceAction
 {
     /**
      * input params
