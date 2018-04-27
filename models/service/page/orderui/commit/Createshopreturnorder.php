@@ -34,10 +34,7 @@ class Service_Page_Orderui_Commit_Createshopreturnorder extends Wm_Lib_Wmq_Commi
             $arrInput['supply_type'] = Orderui_Define_BusinessFormOrder::ORDER_SUPPLY_TYPE_SHOP_RETURN;
         }
         $arrInput['business_form_order_way'] = Orderui_Define_BusinessFormOrder::ORDER_WAY_REVERSE;
-        $arrInput['business_form_order_id'] = Orderui_Util_Utility::generateBusinessFormOrderId();
-        $arrOrderSysDetailList = $this->objDataBusinessFormOrder->splitBusinessOrder($arrInput);
-
         //创建逆向业态单
-        $this->objDataShop->createShopReturnOrder($arrOrderSysDetailList);
+        $this->objDataBusinessFormOrder->createOrder($arrInput);
     }
 }

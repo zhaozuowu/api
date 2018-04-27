@@ -52,6 +52,7 @@ class Service_Data_BusinessFormOrder
         $this->objDaoRalWarehouse = new Dao_Ral_Warehouse();
         $this->objDaoRedisBsOrder = new Dao_Redis_BusinessOrder();
         $this->objDaoWrpcIss = new Dao_Wrpc_Iss();
+        $this->objDaoWrpcNwms = new Dao_Wrpc_Nwms();
     }
 
     /**
@@ -103,9 +104,14 @@ class Service_Data_BusinessFormOrder
         //进行拆单处理
         $arrOrderSysDetailList = $this->splitBusinessOrder($arrBusinessFormOrderInfo);
         //$arrNwmsResponseList = $this->distributeOrder($arrOrderSysDetailList);
-        $arrNwmsResponseList = $this->batchCreateNwmsOrder($arrOrderSysDetailList);
+        if ($arrBusinessFormOrderInfo['business_form_order_way'] == Orderui_Define_BusinessFormOrder::ORDER_WAY_OBVERSE) {
+            $arrNwmsResponseList = $this->batchCreateNwmsOrder($arrOrderSysDetailList);
+        } elseif ($arrBusinessFormOrderInfo['business_form_order_way'] == Orderui_Define_BusinessFormOrder::ORDER_WAY_REVERSE) {
+            $arrNwmsResponseList = $this->batchCreateSaleReturnStockinOrder($arrOrderSysDetailList);
+        }
         //校验是否已经创建
-        $boolWhetherExisted = $this->checkBusinessFormOrderWhetherExisted($arrBusinessFormOrderInfo['logistics_order_id']);
+        $boolWhetherExisted = $this->checkBusinessFormOrderIsExisted($arrBusinessFormOrderInfo['logistics_order_id']
+            , $arrBusinessFormOrderInfo['business_form_order_type'], $arrBusinessFormOrderInfo['supply_type']);
         if ($boolWhetherExisted) {
             return $arrNwmsResponseList;
         }
@@ -250,7 +256,7 @@ class Service_Data_BusinessFormOrder
         $arrCreateParams['customer_address'] = empty($arrInput['customer_address']) ?
                                                         '' : strval($arrInput['customer_address']);
         $arrCreateParams['business_form_ext'] = json_encode($this->getBusinessFormExt($arrInput));
-        $arrCreateParams['supply_type']       = intval($arrInput['shelf_info']['supply_type']);
+        $arrCreateParams['supply_type']       = intval($arrInput['supply_type']);
         $arrCreateParams['business_form_order_exception'] = empty($arrInput['business_form_order_exception']) ?
                                                         '' : strval($arrInput['business_form_order_exception']);
         $arrCreateParams['process_time'] = Orderui_Util::getNowUnixDateTime();
@@ -540,6 +546,41 @@ class Service_Data_BusinessFormOrder
     }
 
     /**
+     * 批量创建销退入库单
+     * @param $arrOrderList
+     * @return array
+     * @throws Orderui_BusinessError
+     */
+    public function batchCreateSaleReturnStockinOrder($arrOrderList)
+    {
+        $arrRet = [];
+        $arrBatchReturnsInfo = [];
+        foreach ($arrOrderList as $arrOrder) {
+            $arrRequestInfo = $arrOrder['request_info'];
+            $arrBatchReturnsInfo[] = [
+                'business_form_order_id' => $arrOrder['business_form_order_id'],
+                'warehouse_id' => $arrRequestInfo['warehouse_id'],
+                'warehouse_name' => $arrRequestInfo['warehouse_name'],
+                'stockin_order_source' => $arrRequestInfo['business_form_order_type'],
+                'stockin_order_remark' => $arrRequestInfo['business_form_order_remark'],
+                'sku_info_list' => $arrRequestInfo['skus'],
+            ];
+        }
+        $arrNwmsOrders = $this->objDaoWrpcNwms->batchCreateStockinOrder($arrBatchReturnsInfo);
+        $arrMapNwmsOrders = Orderui_Util_Utility::arrayToKeyValue($arrNwmsOrders, 'logistics_order_id');
+        foreach ((array)$arrOrderList as $arrOrderInfo) {
+            $intOrderSysId = $arrOrderInfo['order_system_id'];
+            $arrRet[] = [
+                'result' => $arrMapNwmsOrders[$intOrderSysId],
+                'order_system_id' => $intOrderSysId,
+                'business_form_order_id' => $arrOrderInfo['business_form_order_id'],
+                'order_type' => Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_ORDER,
+            ];
+        }
+        return $arrRet;
+    }
+
+    /**
      * 通过上游订单号验证是否存在业态订单信息
      * @param  integer $intSourceOrderId
      * @return bool
@@ -629,5 +670,38 @@ class Service_Data_BusinessFormOrder
     public function setReverseSourceOrderFlag($intSourceOrderId)
     {
         $this->objDaoRedisBsOrder->setReverseSourceOrderKey($intSourceOrderId);
+    }
+
+    /**
+     * 获取创建退货单标识
+     * @param $intSourceOrderId
+     * @return mixed
+     */
+    public function getShopReturnOrderFlag($intSourceOrderId)
+    {
+        return $this->objDaoRedisBsOrder->getShopReturnOrderKey($intSourceOrderId);
+    }
+
+    /**
+     * 设置创建退货单标识
+     * @param $intSourceOrderId
+     */
+    public function setShopReturnOrderFlag($intSourceOrderId)
+    {
+        $this->objDaoRedisBsOrder->setShopReturnOrderKey($intSourceOrderId);
+    }
+
+    /**
+     * 通过上游订单号验证是否存在业态订单信息
+     * @param  integer $intSourceOrderId
+     * @return bool
+     */
+    public function checkBusinessFormOrderIsExisted($intSourceOrderId, $intOrderType, $intSupplyType)
+    {
+        $arrBusinessOrderInfo = Model_Orm_BusinessFormOrder::getOrderInfoBySourceOrderIdAndType($intSourceOrderId, $intOrderType, $intSupplyType);
+        if (empty($arrBusinessOrderInfo)) {
+            return false;
+        }
+        return true;
     }
 }
