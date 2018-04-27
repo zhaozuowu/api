@@ -23,6 +23,7 @@ class Service_Page_CancelLogisticsOrder implements Orderui_Base_Page
      * @param array $arrInput
      * @return bool
      * @throws Nscm_Exception_Error
+     * @throws Orderui_BusinessError
      */
     public function execute($arrInput)
     {

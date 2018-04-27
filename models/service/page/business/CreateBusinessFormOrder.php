@@ -42,20 +42,9 @@ class Service_Page_Business_CreateBusinessFormOrder
      * @throws Exception
      */
     public function execute($arrInput) {
-        //$this->objDsBusinessFormOrder->checkAuthority($arrInput['business_form_key'], $arrInput['business_form_token']);
-        $arrInput['business_form_order_id'] = Orderui_Util_Utility::generateBusinessFormOrderId();
-        $arrOrderSysDetailList = $this->objDsBusinessFormOrder->splitBusinessOrder($arrInput);
-        $arrResponseList = $this->objDsBusinessFormOrder->distributeOrder($arrOrderSysDetailList);
-        //判断是否已经存储上游单号
-        $boolBusinessFormOrderWhetherExisted = $this->objDsBusinessFormOrder->checkBusinessFormOrderWhetherExisted($arrInput['logistics_order_id']);
-        if (!$boolBusinessFormOrderWhetherExisted) {
-            $arrBusinessOrderInfo = $this->objDsNwmsOrder->dealNwmsOrderException($arrResponseList, $arrInput);
-            $arrOrderSysListDb = $this->objDsOmsSys->assembleOrderSystemDbData($arrResponseList);
-            $arrOrderSysDetailListDb = $this->objDsOmsDetail->assembleOrderSysDetailDBData($arrResponseList, $arrBusinessOrderInfo['skus']);
-            $arrBusinessFormOrderDb = $this->objDsBusinessFormOrder->assembleBusinessFormOrder($arrBusinessOrderInfo);
-            $this->objDsBusinessFormOrder->createOrder($arrBusinessOrderInfo['business_form_order_create_status'],
-                $arrOrderSysListDb, $arrOrderSysDetailListDb, $arrBusinessFormOrderDb);
-        }
+        $this->objDsBusinessFormOrder->checkAuthority($arrInput['business_form_key'], $arrInput['business_form_token']);
+        $arrInput['business_form_order_way'] = Orderui_Define_BusinessFormOrder::ORDER_WAY_OBVERSE;
+        $arrResponseList = $this->objDsBusinessFormOrder->createOrder($arrInput);
         if (0 != $arrResponseList[0]['result']['error_no']) {
             Orderui_BusinessError::throwException($arrResponseList[0]['result']['error_no'], $arrResponseList[0]['result']['error_msg']);
         }

@@ -118,4 +118,13 @@ class Dao_Wrpc_Tms
         }
         return $arrRetSkus;
     }
+
+    /**
+     * 批量创建运单
+     * @param $arrParams
+     * @return array
+     */
+    public function createBatchShipmentOrders($arrParams) {
+        return [12202202,122,3,2,3];
+    }
 }

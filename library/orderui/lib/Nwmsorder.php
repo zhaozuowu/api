@@ -1,51 +1,18 @@
 <?php
 /**
- * @name Service_Data_NWmsOrder
- * @desc Service_Data_NWmsOrder
- * @author hang.song02@ele.me
+ * @name Nwmsorder.php
+ * @desc Nwmsorder.php
+ * @author yu.jin03@ele.me
  */
-
-class Service_Data_NWmsOrder
+class Orderui_Lib_Nwmsorder
 {
     /**
-     * @var Dao_Ral_NWmsOrder
-     */
-    protected $objDao;
-
-    public function __construct()
-    {
-        $this->objDao = new Dao_Ral_NWmsOrder();
-    }
-
-    /**
-     * 创建NWms订单
+     * 格式化沧海异常信息
+     * @param $arrResponseList
      * @param $arrBusinessOrderInfo
-     * @return array
-     * @throws Nscm_Exception_Error
+     * @return mixed
      */
-    public function createNWmsOrder($arrBusinessOrderInfo)
-    {
-        return $this->objDao->createNWmsOrder($arrBusinessOrderInfo);
-    }
-
-    /**
-     * 确认取消出库单
-     * @param $intStockoutOrderId
-     * @param $strRemark
-     * @return array
-     * @throws Nscm_Exception_Error
-     */
-    public function confirmCancelNWmsOrder($intStockoutOrderId, $strRemark) {
-        return $this->objDao->confirmCancelStockoutOrder($intStockoutOrderId, $strRemark);
-    }
-
-    /**
-     * 处理nwms返回的异常信息
-     * @param  array $arrResponseList
-     * @param  array $arrBusinessOrderInfo
-     * @return array
-     */
-    public function dealNwmsOrderException($arrResponseList, $arrBusinessOrderInfo)
+    public static function formatNwmsOrderException($arrResponseList, $arrBusinessOrderInfo)
     {
         foreach ($arrResponseList as $arrResponse) {
             $arrSkuExceptionMap = [];
@@ -68,19 +35,18 @@ class Service_Data_NWmsOrder
             } else {
                 $arrBusinessOrderInfo['business_form_order_create_status'] = Orderui_Define_Const::OMS_ORDER_DEAL_SUCCESS;
             }
-            $arrBusinessOrderInfo['skus'] = $this->dealNwmsOrderSkuException($arrBusinessOrderInfo['skus'], $arrSkuExceptionMap);
+            $arrBusinessOrderInfo['skus'] = self::formatNwmsOrderSkuException($arrBusinessOrderInfo['skus'], $arrSkuExceptionMap);
         }
         return $arrBusinessOrderInfo;
     }
 
     /**
-     * 处理nwms返回的skuy异常信息
-     * @param  array $arrSkuList
-     * @param  array $arrSkuExceptionMap
+     * 格式化sku维度的异常信息
+     * @param $arrSkuList
+     * @param $arrSkuExceptionMap
      * @return array
      */
-    public function dealNwmsOrderSkuException($arrSkuList, $arrSkuExceptionMap)
-    {
+    public static function formatNwmsOrderSkuException($arrSkuList, $arrSkuExceptionMap) {
         $arrDealSkuInfo = [];
         foreach ($arrSkuList as $arrSkuInfo) {
             $arrSkuInfoItem = $arrSkuInfo;
@@ -95,14 +61,5 @@ class Service_Data_NWmsOrder
             $arrDealSkuInfo[] = $arrSkuInfoItem;
         }
         return $arrDealSkuInfo;
-    }
-
-    /**
-     * 创建销退入库单
-     * @param $arrData
-     * @return array
-     */
-    public function createSalesReturnStockinOrder($arrData) {
-        return $this->objDaoRalNWmsOrder->createNWmsOrder($arrData);
     }
 }

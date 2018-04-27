@@ -11,10 +11,23 @@ class  Orderui_Define_Const
      * 未删除
      */
     const NOT_DELETE = 1;
+
     /**
      * 已删除
      */
     const IS_DELETE = 2;
+
+    /**
+     * sku is active
+     * @var integer
+     */
+    const IS_ACTIVE = 1;
+
+    /**
+     * sku is not active
+     * @var integer
+     */
+    const NOT_ACTIVE = 2;
 
     /**
      * 取消物流单成功

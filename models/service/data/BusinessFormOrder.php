@@ -17,9 +17,19 @@ class Service_Data_BusinessFormOrder
     protected $objDaoRalNWmsOrder;
 
     /**
+     * @var Dao_Ral_Warehouse
+     */
+    protected $objDaoRalWarehouse;
+
+    /**
      * @var Dao_Wrpc_Tms
      */
     protected $objDaoWrpcTms;
+
+    /**
+     * @var Dao_Redis_BusinessOrder
+     */
+    protected $objDaoRedisBsOrder;
 
     /**
      * init object
@@ -29,6 +39,8 @@ class Service_Data_BusinessFormOrder
         $this->objDaoRalSku = new Dao_Ral_Sku();
         $this->objDaoRalNWmsOrder = new Dao_Ral_NWmsOrder();
         $this->objDaoWrpcTms = new Dao_Wrpc_Tms();
+        $this->objDaoRalWarehouse = new Dao_Ral_Warehouse();
+        $this->objDaoRedisBsOrder = new Dao_Redis_BusinessOrder();
     }
 
     /**
@@ -36,7 +48,7 @@ class Service_Data_BusinessFormOrder
      * @param $strBusinessFormKey
      * @param $strBusinessFormToken
      * @return void
-     * @throws Orderui_Error
+     * @throws Orderui_BusinessError
      */
     public function checkAuthority($strBusinessFormKey, $strBusinessFormToken) {
         $strGenKey = md5($strBusinessFormKey . Orderui_Define_BusinessFormOrder::SALT_VAL);
@@ -50,7 +62,7 @@ class Service_Data_BusinessFormOrder
      * @param $arrInput
      * @return void
      * @throws Nscm_Exception_Error
-     * @throws Orderui_Error
+     * @throws Orderui_BusinessError
      * @throws Wm_Error
      */
     public function createBusinessFormOrder($arrInput) {
@@ -66,14 +78,31 @@ class Service_Data_BusinessFormOrder
     }
 
     /**
-     * @param  integer $intBusinessCreateStatus
-     * @param  array $arrOrderSysListDb
-     * @param  array $arrOrderSysDetailListDb
-     * @param  array $arrBusinessFormOrderDb
+     * 创建oms订单以子单
+     * @param $arrBusinessFormOrderInfo
+     * @return array
      * @throws Exception
+     * @throws Nscm_Exception_Error
+     * @throws Orderui_BusinessError
+     * @throws Wm_Error
      */
-    public function createOrder($intBusinessCreateStatus, $arrOrderSysListDb, $arrOrderSysDetailListDb, $arrBusinessFormOrderDb)
+    public function createOrder($arrBusinessFormOrderInfo)
     {
+        $arrBusinessFormOrderInfo['business_form_order_id'] = Orderui_Util_Utility::generateBusinessFormOrderId();
+        //进行拆单处理
+        $arrOrderSysDetailList = $this->splitBusinessOrder($arrBusinessFormOrderInfo);
+        $arrNwmsResponseList = $this->distributeOrder($arrOrderSysDetailList);
+        //校验是否已经创建
+        $boolWhetherExisted = $this->checkBusinessFormOrderWhetherExisted($arrBusinessFormOrderInfo['logistics_order_id']);
+        if ($boolWhetherExisted) {
+            return $arrNwmsResponseList;
+        }
+        //拼接oms创建需要的参数
+        list($arrBusinessFormOrderInfo, $arrOrderSysListDb, $arrOrderSysDetailListDb) =
+            Orderui_Lib_BusinessFormOrder::formatBusinessInfo($arrNwmsResponseList, $arrBusinessFormOrderInfo);
+        $arrBusinessFormOrderDb = $this->assembleBusinessFormOrder($arrBusinessFormOrderInfo);
+        $intBusinessCreateStatus = $arrBusinessFormOrderInfo['business_form_order_create_status'];
+        //创建oms订单及子单
         Model_Orm_BusinessFormOrder::getConnection()->transaction(function () use ($arrOrderSysListDb,
                                         $arrOrderSysDetailListDb, $arrBusinessFormOrderDb, $intBusinessCreateStatus) {
             Model_Orm_BusinessFormOrder::insert($arrBusinessFormOrderDb['order_info']);
@@ -89,7 +118,9 @@ class Service_Data_BusinessFormOrder
         if (Orderui_Define_Const::NWMS_ORDER_CREATE_STATUS_FAILED == $intBusinessCreateStatus) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_CREATE_ERROR);
         }
+        return $arrNwmsResponseList;
     }
+
     /**
      * 组建业态订单信息
      * @param  array $arrBusinessOrderInfo
@@ -300,7 +331,6 @@ class Service_Data_BusinessFormOrder
     public function splitBusinessOrder($arrBusinessOrderInfo)
     {
         $intBusinessOrderId = $arrBusinessOrderInfo['business_form_order_id'];
-
         if (empty($intBusinessOrderId)) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR, 'business_order_id invalid');
         }
@@ -308,16 +338,120 @@ class Service_Data_BusinessFormOrder
         if (!$this->checkBusinessOrderWhetherSplit($intBusinessOrderId)) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::BUSINESS_ORDER_IS_SPLIT, 'business_order_id is already split');
         }
-        $intOrderSystemId = Orderui_Util_Utility::generateOmsOrderCode();
-        $arrOrderSysDetailList = [
-            [
-                'order_system_id' => $intOrderSystemId,
-                'order_system_type' => Orderui_Define_Const::ORDER_SYS_NWMS,
-                'business_form_order_id' => $intBusinessOrderId,
-                'request_info' => $arrBusinessOrderInfo,
-            ],
-        ];
+        $arrSkuIds = array_column($arrBusinessOrderInfo['skus'], 'sku_id');
+        $arrSkuInfos = $this->objDaoRalSku->getSkuInfos($arrSkuIds);
+        $arrBusinessOrderInfo['skus'] = $this->filterSkusByInfos($arrBusinessOrderInfo['skus'],
+                                                                    $arrSkuInfos, $arrBusinessOrderInfo['business_form_order_type']);
+        //split skus by sku temp
+        $arrMapTmpSkus = $this->splitSkusBySkuTemp($arrBusinessOrderInfo['skus'], $arrSkuInfos);
+        //get warehouse info
+        $arrWarehouseInfo = $this->getWarehouseInfoByDistrictId($arrBusinessOrderInfo['customer_region_id']);
+        $arrOrderSysDetailList = [];
+        foreach ((array)$arrMapTmpSkus as $intSkuTmpType => $arrTmpSkus) {
+            $intOrderSystemId = Orderui_Util_Utility::generateOmsOrderCode();
+            $arrBusinessOrderInfo['skus'] = $arrTmpSkus;
+            $arrBusinessOrderInfo['warehouse_id'] = $arrWarehouseInfo['warehouse_id'];
+            $arrBusinessOrderInfo['warehouse_name'] = $arrWarehouseInfo['warehouse_name'];
+            $arrOrderSysDetailList = [
+                [
+                    'order_system_id' => $intOrderSystemId,
+                    'order_system_type' => Orderui_Define_Const::ORDER_SYS_NWMS,
+                    'business_form_order_id' => $intBusinessOrderId,
+                    'request_info' => $arrBusinessOrderInfo,
+                ],
+            ];
+        }
         return $arrOrderSysDetailList;
+    }
+
+    /**
+     * 根据sku温控类型拆单
+     * @param $arrSkus
+     * @param $arrSkuInfos
+     * @return array
+     */
+    protected function splitSkusBySkuTemp($arrSkus, $arrSkuInfos)
+    {
+        if (empty($arrSkus)) {
+            return [];
+        }
+        $arrMapTmpSkus = [];
+        foreach ((array)$arrSkus as $arrSkuItem) {
+            $intSkuId = $arrSkuItem['sku_id'];
+            $intSkuTmpType = $arrSkuInfos[$intSkuId]['sku_temperature_control_type'];
+            $arrMapTmpSkus[$intSkuTmpType][] = $arrSkuItem;
+        }
+        return $arrMapTmpSkus;
+    }
+
+    /**
+     * 过滤无效的sku
+     * @param $arrSkus
+     * @param $arrSkuInfos
+     * @param $intBusinessFormType
+     * @return mixed
+     * @throws Orderui_BusinessError
+     */
+    protected function filterSkusByInfos($arrSkus, $arrSkuInfos, $intBusinessFormType) {
+        if (empty($arrSkuInfos) || empty($arrSkus)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_SKU_INFO_PARAMS_ERROR);
+        }
+        //校验sku是否有效
+        foreach ((array)$arrSkus as $intKey => $arrSkuItem) {
+            $intSkuId = $arrSkuItem['sku_id'];
+            if (empty($intSkuId)) {
+                continue;
+            }
+            $arrSkuInfoItem = $arrSkuInfos[$intSkuId];
+            if ($arrSkuInfoItem['is_active'] != Orderui_Define_Const::IS_ACTIVE) {
+                unset($arrSkus[$intKey]);
+            }
+            $arrSkuBusinessForm = json_decode($arrSkuInfoItem['sku_business_form'], true);
+            if (in_array($intBusinessFormType, $arrSkuBusinessForm)) {
+                unset($arrSkus[$intKey]);
+            }
+        }
+        if (empty($arrSkus)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_SKU_INFO_INVALID);
+        }
+        return $arrSkus;
+    }
+
+    /**
+     * 根据sku温控类型和区域id分配仓库
+     * @param $arrMapTmpSkus
+     * @param $intDistrictId
+     * @return array
+     * @throws Nscm_Exception_Error
+     */
+    protected function distributeWarehouseForSkus($arrMapTmpSkus, $intDistrictId)
+    {
+        $arrMapWarehouseIdSkus = [];
+        $arrWarehouseInfos = $this->objDaoRalWarehouse->getWarehouseListByDistrictId($intDistrictId);
+        if (empty($arrWarehouseInfos)) {
+            return $arrMapWarehouseIdSkus;
+        }
+        foreach ((array)$arrWarehouseInfos as $arrWarehouseInfoItem) {
+            $intWarehouseId = $arrWarehouseInfoItem['warehouse_id'];
+            $intTmpType = $arrWarehouseInfos['warehouse_type'];
+            $arrMapWarehouseIdSkus[$intWarehouseId] = $arrMapTmpSkus[$intTmpType];
+        }
+        return $arrMapWarehouseIdSkus;
+    }
+
+    /**
+     * 根据区域id选择仓库
+     * @param $intDistrictId
+     * @return array
+     * @throws Nscm_Exception_Error
+     */
+    protected function getWarehouseInfoByDistrictId($intDistrictId)
+    {
+        $arrWarehouseInfos = $this->objDaoRalWarehouse->getWarehouseListByDistrictId($intDistrictId);
+        if (empty($arrWarehouseInfos)) {
+            return [];
+        }
+        return $arrWarehouseInfos[0];
     }
 
     /**
@@ -430,5 +564,25 @@ class Service_Data_BusinessFormOrder
             Orderui_BusinessError::throwException($arrRet['error_no'], $strErrorMsg);
         }
         return Orderui_Define_Const::CANCEL_SUCCESS;
+    }
+
+    /**
+     * 获取逆向订单创建标识
+     * @param $intSourceOrderId
+     * @return mixed
+     */
+    public function getReverseSourceOrderFlag($intSourceOrderId)
+    {
+        return $this->objDaoRedisBsOrder->getReverseSourceOrder($intSourceOrderId);
+    }
+
+    /**
+     * 设置逆向订单创建标识
+     * @param integer $intSourceOrderId
+     * @return void
+     */
+    public function setReverseSourceOrderFlag($intSourceOrderId)
+    {
+        $this->objDaoRedisBsOrder->setReverseSourceOrderKey($intSourceOrderId);
     }
 }

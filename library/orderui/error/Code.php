@@ -175,4 +175,16 @@ class Orderui_Error_Code extends Wm_Error_Code
      * 找不到关联订单
      */
     const OMS_MAP_ORDER_NOT_FOUND = 370001;
+
+    /**
+     * sku参数错误
+     * @var integer
+     */
+    const OMS_SKU_INFO_PARAMS_ERROR = 370002;
+
+    /**
+     * 无效的sku信息
+     * @var integer
+     */
+    const OMS_SKU_INFO_INVALID = 370003;
 }

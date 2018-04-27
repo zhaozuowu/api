@@ -39,6 +39,12 @@ class Orderui_Define_Cmd
     const CMD_CREATE_RETURN_STOCKIN_ORDER = 'create_sales_return_stockin_order';
 
     /**
+     * 创建逆向订单
+     * @var string
+     */
+    const CMD_CREATE_REVERSE_OMS_ORDER = 'create_reverse_oms_order';
+
+    /**
      * cmd trigger event
      * @var string
      */
