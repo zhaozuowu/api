@@ -27,9 +27,19 @@ class Service_Data_BusinessFormOrder
     protected $objDaoWrpcTms;
 
     /**
+     * @var Dao_Wrpc_Nwms
+     */
+    protected $objDaoWrpcNwms;
+
+    /**
      * @var Dao_Redis_BusinessOrder
      */
     protected $objDaoRedisBsOrder;
+
+    /**
+     * @var Dao_Wrpc_Iss
+     */
+    protected $objDaoWrpcIss;
 
     /**
      * init object
@@ -41,6 +51,7 @@ class Service_Data_BusinessFormOrder
         $this->objDaoWrpcTms = new Dao_Wrpc_Tms();
         $this->objDaoRalWarehouse = new Dao_Ral_Warehouse();
         $this->objDaoRedisBsOrder = new Dao_Redis_BusinessOrder();
+        $this->objDaoWrpcIss = new Dao_Wrpc_Iss();
     }
 
     /**
@@ -91,7 +102,8 @@ class Service_Data_BusinessFormOrder
         $arrBusinessFormOrderInfo['business_form_order_id'] = Orderui_Util_Utility::generateBusinessFormOrderId();
         //进行拆单处理
         $arrOrderSysDetailList = $this->splitBusinessOrder($arrBusinessFormOrderInfo);
-        $arrNwmsResponseList = $this->distributeOrder($arrOrderSysDetailList);
+        //$arrNwmsResponseList = $this->distributeOrder($arrOrderSysDetailList);
+        $arrNwmsResponseList = $this->batchCreateNwmsOrder($arrOrderSysDetailList);
         //校验是否已经创建
         $boolWhetherExisted = $this->checkBusinessFormOrderWhetherExisted($arrBusinessFormOrderInfo['logistics_order_id']);
         if ($boolWhetherExisted) {
@@ -118,7 +130,19 @@ class Service_Data_BusinessFormOrder
         if (Orderui_Define_Const::NWMS_ORDER_CREATE_STATUS_FAILED == $intBusinessCreateStatus) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_CREATE_ERROR);
         }
+        //异步通知门店创建结果
+        Orderui_Wmq_Commit::sendWmqCmd(Orderui_Define_Cmd::CMD_NOTIFY_ISS_OMS_ORDER_CREATE,
+                                        $arrNwmsResponseList, $arrBusinessFormOrderInfo['business_form_order_id']);
         return $arrNwmsResponseList;
+    }
+
+    /**
+     * 通知门店订单创建信息
+     * @param $arrOrderList
+     * @return void
+     */
+    public function notifyIssOrderCreate($arrOrderList) {
+        $this->objDaoWrpcIss->notifyNwmsOrderCreate($arrOrderList);
     }
 
     /**
@@ -351,15 +375,13 @@ class Service_Data_BusinessFormOrder
             $intOrderSystemId = Orderui_Util_Utility::generateOmsOrderCode();
             $arrBusinessOrderInfo['skus'] = $arrTmpSkus;
             $arrBusinessOrderInfo['warehouse_id'] = $arrWarehouseInfo['warehouse_id'];
-            $arrBusinessOrderInfo['warehouse_name'] = $arrWarehouseInfo['warehouse_name'];
-            $arrOrderSysDetailList = [
-                [
+            $arrOrderSysDetail = [
                     'order_system_id' => $intOrderSystemId,
                     'order_system_type' => Orderui_Define_Const::ORDER_SYS_NWMS,
                     'business_form_order_id' => $intBusinessOrderId,
                     'request_info' => $arrBusinessOrderInfo,
-                ],
-            ];
+                ];
+            $arrOrderSysDetailList[] = $arrOrderSysDetail;
         }
         return $arrOrderSysDetailList;
     }
@@ -492,6 +514,29 @@ class Service_Data_BusinessFormOrder
             }
         }
         return $ret;
+    }
+
+    /**
+     * 批量创建nwms订单
+     * @param $arrOrderList
+     * @return array
+     * @throws Orderui_BusinessError
+     */
+    public function batchCreateNwmsOrder($arrOrderList)
+    {
+        $arrRet = [];
+        $arrNwmsOrders = $this->objDaoWrpcNwms->batchCreateBusinessOrder($arrOrderList);
+        $arrMapNwmsOrders = Orderui_Util_Utility::arrayToKeyValue($arrNwmsOrders, 'logistics_order_id');
+        foreach ((array)$arrOrderList as $arrOrderInfo) {
+            $intOrderSysId = $arrOrderInfo['order_system_id'];
+            $arrRet[] = [
+                'result' => $arrMapNwmsOrders[$intOrderSysId],
+                'order_system_id' => $intOrderSysId,
+                'business_form_order_id' => $arrOrderInfo['business_form_order_id'],
+                'order_type' => Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_ORDER,
+            ];
+        }
+        return $arrRet;
     }
 
     /**
