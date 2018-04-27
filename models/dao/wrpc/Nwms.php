@@ -42,4 +42,24 @@ class Dao_Wrpc_Nwms
         }
         return $arrRet;
     }
+
+    /**
+     * 创建NWms订单
+     * @param  array $arrBusinessOrderInfo
+     * @return array
+     * @throws Orderui_BusinessError
+     */
+    public function batchCreateStockinOrder($arrBusinessOrderInfo)
+    {
+        $strRoutingKey = sprintf("loc=%s", $arrBusinessOrderInfo['business_form_order_id']);
+        $this->objWrpcService->setMeta(["routing-key"=>$strRoutingKey]);
+        $arrRet = $this->objWrpcService->batchCreateStockInOrder($arrBusinessOrderInfo);
+        Bd_Log::trace(sprintf("method[%s] batch create nwms sale return stockin order[%s]", __METHOD__, json_encode($arrRet)));
+        if (0 != $arrRet['errno']) {
+            Bd_Log::warning(sprintf("method[%s] arrRet[%s] routing-key[%s]",
+                __METHOD__, json_encode($arrRet), $strRoutingKey));
+            Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_CREATE_ERROR);
+        }
+        return $arrRet;
+    }
 }

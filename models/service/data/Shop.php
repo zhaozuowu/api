@@ -11,18 +11,19 @@ class Service_Data_Shop
     /*
      * @var object
      */
-    protected $objDaoRalNwmsOrder;
+    protected $objDaoWprcNwms;
     /*
      * @var object
      */
-    protected $objDaoWprcTms;
+    protected $objDaoRedis;
+
     /*
      * init object
      */
     public function __construct()
     {
-        $this->objDaoRalNwmsOrder = new Dao_Ral_NWmsOrder();
-        $this->objDaoWprcTms = new Dao_Wrpc_Tms();
+        $this->objDaoWprcNwms = new Dao_Wrpc_Nwms();
+        $this->objDaoRedis = new Dao_Redis_BusinessOrder();
     }
 
     /**
@@ -138,4 +139,43 @@ class Service_Data_Shop
         return true;
     }
 
+    /**
+     * 获取创建退货单标识
+     * @param $intSourceOrderId
+     * @return mixed
+     */
+    public function getShopReturnOrderFlag($intSourceOrderId)
+    {
+        return $this->objDaoRedis->getShopReturnOrderKey($intSourceOrderId);
+    }
+
+    /**
+     * 设置创建退货单标识
+     * @param $intSourceOrderId
+     */
+    public function setShopReturnOrderFlag($intSourceOrderId)
+    {
+        $this->objDaoRedis->setShopReturnOrderKey($intSourceOrderId);
+    }
+
+    /**
+     * 创建门店退货单
+     * @param $arrOrderInfo
+     */
+    public function createShopReturnOrder($arrOrderInfo)
+    {
+        $arrBatchReturnsInfo = [];
+        foreach ($arrOrderInfo as $arrOrder) {
+            $arrRequestInfo = $arrOrder['request_info'];
+            $arrBatchReturnsInfo[] = [
+                'business_form_order_id' => $arrOrder['business_form_order_id'],
+                'warehouse_id' => $arrRequestInfo['warehouse_id'],
+                'warehouse_name' => $arrRequestInfo['warehouse_name'],
+                'stockin_order_source' => $arrRequestInfo['business_form_order_type'],
+                'stockin_order_remark' => $arrRequestInfo['business_form_order_remark'],
+                'sku_info_list' => $arrRequestInfo['skus'],
+            ];
+        }
+        $arrNwmsResponseList = $this->objDaoWprcNwms->batchCreateStockinOrder($arrBatchReturnsInfo);
+    }
 }

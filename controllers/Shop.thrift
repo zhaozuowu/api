@@ -33,6 +33,6 @@ struct ShipmentOrderInfo {
 service ShipmentService {
     Data signup(1:required SignupInfo objSignupInfo)
         throws (1: OrderUserException userException),
-    Data createReverseBusinessFormOrder(1:required ShipmentOrderInfo objShipmentOrderInfo)
+    Data createShopReturnOrder(1:required ShipmentOrderInfo objShipmentOrderInfo)
         throws (1: OrderUserException userException)
 }
