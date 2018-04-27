@@ -170,6 +170,10 @@ class Orderui_Error_Code extends Wm_Error_Code
      * 创建销退入库单失败
      */
     const OMS_CREATE_SALE_RETURN_STOCKIN_ORDER_FAIL = 360006;
+    /**
+     * 批量创建销退入库单失败
+     */
+    const OMS_BATCH_CREATE_SALE_RETURN_STOCKIN_ORDER_FAIL = 360007;
 
     /**
      * 找不到关联订单

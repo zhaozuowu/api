@@ -44,7 +44,7 @@ class Dao_Wrpc_Nwms
     }
 
     /**
-     * 创建NWms订单
+     * 批量创建NWms销退入库单
      * @param  array $arrBusinessOrderInfo
      * @return array
      * @throws Orderui_BusinessError
@@ -52,14 +52,57 @@ class Dao_Wrpc_Nwms
     public function batchCreateStockinOrder($arrBusinessOrderInfo)
     {
         $strRoutingKey = sprintf("loc=%s", $arrBusinessOrderInfo['business_form_order_id']);
-        $this->objWrpcService->setMeta(["routing-key"=>$strRoutingKey]);
+        $this->objWrpcService->setMeta(["routing-key" => $strRoutingKey]);
         $arrRet = $this->objWrpcService->batchCreateStockInOrder($arrBusinessOrderInfo);
         Bd_Log::trace(sprintf("method[%s] batch create nwms sale return stockin order[%s]", __METHOD__, json_encode($arrRet)));
-        if (0 != $arrRet['errno']) {
+        if (empty($arrRet) || 0 != $arrRet['errno']) {
             Bd_Log::warning(sprintf("method[%s] arrRet[%s] routing-key[%s]",
                 __METHOD__, json_encode($arrRet), $strRoutingKey));
-            Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_CREATE_ERROR);
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_BATCH_CREATE_SALE_RETURN_STOCKIN_ORDER_FAIL);
         }
         return $arrRet;
+    }
+
+    /*
+     * 批量创建nwms订单
+     * @param $arrOrderList
+     * @return
+     * @throws Orderui_BusinessError
+     */
+    public function batchCreateBusinessOrder($arrOrderList)
+    {
+        $arrBatchCreateParams = $this->getBatchCreateParams($arrOrderList);
+        $arrRet = $this->objWrpcService->batchCreateBusinessOrder($arrBatchCreateParams);
+        if (empty($arrRet) || 0 != $arrRet['errno']) {
+            Bd_Log::warning(sprintf("method[%s] params[%s] arrRet[%s]",
+                __METHOD__, json_encode($arrBatchCreateParams), json_encode($arrRet)));
+            Orderui_BusinessError::throwException($arrRet['errno'], $arrRet['errmsg']);
+        }
+        return $arrRet['data'];
+    }
+
+    /**
+     * 拼接批量创建出库单的参数
+     * @param $arrOrderList
+     * @return array
+     */
+    protected function getBatchCreateParams($arrOrderList)
+    {
+        $arrBatchCreateParams = [];
+        $arrOrderInfos = [];
+        if (empty($arrOrderList)) {
+            return [];
+        }
+        foreach ((array)$arrOrderList as $arrOrderItem) {
+            $arrBusinessOrderInfo = $arrOrderItem['request_info'];
+            $arrBatchCreateParams = $arrBusinessOrderInfo;
+            $arrOrderInfoItem = [];
+            $arrOrderInfoItem['logistics_order_id'] = $arrBusinessOrderInfo['order_system_id'];
+            $arrOrderInfoItem['skus'] = $arrBusinessOrderInfo['skus'];
+            $arrOrderInfoItem['warehouse_id'] = $arrBusinessOrderInfo['warehouse_id'];
+            $arrOrderInfos[] = $arrOrderInfoItem;
+        }
+        $arrBatchCreateParams['order_info'] = $arrOrderInfos;
+        return $arrBatchCreateParams;
     }
 }

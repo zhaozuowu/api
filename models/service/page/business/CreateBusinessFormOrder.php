@@ -42,7 +42,7 @@ class Service_Page_Business_CreateBusinessFormOrder
      * @throws Exception
      */
     public function execute($arrInput) {
-        $this->objDsBusinessFormOrder->checkAuthority($arrInput['business_form_key'], $arrInput['business_form_token']);
+        //$this->objDsBusinessFormOrder->checkAuthority($arrInput['business_form_key'], $arrInput['business_form_token']);
         $arrInput['business_form_order_way'] = Orderui_Define_BusinessFormOrder::ORDER_WAY_OBVERSE;
         $arrResponseList = $this->objDsBusinessFormOrder->createOrder($arrInput);
         if (0 != $arrResponseList[0]['result']['error_no']) {
