@@ -437,8 +437,8 @@ class Service_Data_BusinessFormOrder
             if ($arrSkuInfoItem['is_active'] != Orderui_Define_Const::IS_ACTIVE) {
                 unset($arrSkus[$intKey]);
             }
-            $arrSkuBusinessForm = json_decode($arrSkuInfoItem['sku_business_form'], true);
-            if (in_array($intBusinessFormType, $arrSkuBusinessForm)) {
+            $arrSkuBusinessForm = $arrSkuInfoItem['sku_business_form'];
+            if (empty($arrSkuBusinessForm) || in_array($intBusinessFormType, $arrSkuBusinessForm)) {
                 unset($arrSkus[$intKey]);
             }
             //校验sku业态详情
