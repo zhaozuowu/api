@@ -49,6 +49,7 @@ class Service_Data_BusinessFormOrder
         $this->objDaoRalSku = new Dao_Ral_Sku();
         $this->objDaoRalNWmsOrder = new Dao_Ral_NWmsOrder();
         $this->objDaoWrpcTms = new Dao_Wrpc_Tms();
+//        $this->objDaoWrpcNwms = new Dao_Wrpc_Nwms();
         $this->objDaoRalWarehouse = new Dao_Ral_Warehouse();
         $this->objDaoRedisBsOrder = new Dao_Redis_BusinessOrder();
         $this->objDaoWrpcIss = new Dao_Wrpc_Iss();
@@ -102,8 +103,8 @@ class Service_Data_BusinessFormOrder
         $arrBusinessFormOrderInfo['business_form_order_id'] = Orderui_Util_Utility::generateBusinessFormOrderId();
         //进行拆单处理
         $arrOrderSysDetailList = $this->splitBusinessOrder($arrBusinessFormOrderInfo);
-        //$arrNwmsResponseList = $this->distributeOrder($arrOrderSysDetailList);
-        $arrNwmsResponseList = $this->batchCreateNwmsOrder($arrOrderSysDetailList);
+        $arrNwmsResponseList = $this->distributeOrder($arrOrderSysDetailList);
+        //$arrNwmsResponseList = $this->batchCreateNwmsOrder($arrOrderSysDetailList);
         //校验是否已经创建
         $boolWhetherExisted = $this->checkBusinessFormOrderWhetherExisted($arrBusinessFormOrderInfo['logistics_order_id']);
         if ($boolWhetherExisted) {
@@ -375,6 +376,7 @@ class Service_Data_BusinessFormOrder
             $intOrderSystemId = Orderui_Util_Utility::generateOmsOrderCode();
             $arrBusinessOrderInfo['skus'] = $arrTmpSkus;
             $arrBusinessOrderInfo['warehouse_id'] = $arrWarehouseInfo['warehouse_id'];
+            $arrBusinessOrderInfo['warehouse_name'] = $arrWarehouseInfo['warehouse_name'];
             $arrOrderSysDetail = [
                     'order_system_id' => $intOrderSystemId,
                     'order_system_type' => Orderui_Define_Const::ORDER_SYS_NWMS,
@@ -432,11 +434,46 @@ class Service_Data_BusinessFormOrder
             if (in_array($intBusinessFormType, $arrSkuBusinessForm)) {
                 unset($arrSkus[$intKey]);
             }
+            //校验sku业态详情
+            $boolIsSupportSplit = $this->checkSkuBusinessFormDetail($intBusinessFormType,
+                                                $arrSkuInfoItem['sku_business_form_detail']);
+            if (!$boolIsSupportSplit) {
+                unset($arrSkus[$intKey]);
+            }
         }
         if (empty($arrSkus)) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_SKU_INFO_INVALID);
         }
         return $arrSkus;
+    }
+
+    /**
+     * 校验sku业态详情信息,返回false代表不支持拆单需要过滤
+     * @param $intBusinessFormType
+     * @param $arrSkuBusinessFormDetail
+     * @return bool
+     */
+    protected function checkSkuBusinessFormDetail($intBusinessFormType, $arrSkuBusinessFormDetail)
+    {
+        if (empty($arrSkuBusinessFormDetail)) {
+            return false;
+        }
+        $arrCurrSkuBizFormDetailInfo = [];
+        foreach ((array)$arrSkuBusinessFormDetail as $arrSkuBizFormDetailItem) {
+            if ($arrSkuBizFormDetailItem['type'] == $intBusinessFormType) {
+                $arrCurrSkuBizFormDetailInfo = $arrSkuBizFormDetailItem;
+                break;
+            }
+        }
+        if (empty($arrCurrSkuBizFormDetailInfo)) {
+            return false;
+        }
+        //校验仓配作业类型
+        if (Nscm_Define_Sku::WAREHOUSE_OP_TYPE_UNIFIED
+            == $arrCurrSkuBizFormDetailInfo['warehouse_op_type']) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -546,6 +583,7 @@ class Service_Data_BusinessFormOrder
      */
     public function checkBusinessFormOrderWhetherExisted($intSourceOrderId)
     {
+
         $arrBusinessOrderInfo = Model_Orm_BusinessFormOrder::getOrderInfoBySourceOrderId($intSourceOrderId);
         if (empty($arrBusinessOrderInfo)) {
             return false;
