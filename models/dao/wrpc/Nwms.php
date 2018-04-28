@@ -61,7 +61,8 @@ class Dao_Wrpc_Nwms
     {
         $strRoutingKey = sprintf("loc=%s", $arrBusinessOrderInfo['business_form_order_id']);
         $this->objWrpcStockinService->setMeta(["routing-key" => $strRoutingKey]);
-        $arrRet = $this->objWrpcStockinService->batchCreateStockInOrder($arrBusinessOrderInfo);
+        $arrParams = $this->formatBatchCreateStockinParams($arrBusinessOrderInfo);
+        $arrRet = $this->objWrpcStockinService->batchCreateStockInOrder($arrParams);
         Bd_Log::trace(sprintf("method[%s] batch create nwms sale return stockin order[%s]", __METHOD__, json_encode($arrRet)));
         if (empty($arrRet) || 0 != $arrRet['errno']) {
             Bd_Log::warning(sprintf("method[%s] arrRet[%s] routing-key[%s]",
@@ -114,6 +115,11 @@ class Dao_Wrpc_Nwms
         return $arrBatchCreateParams;
     }
 
+    /**
+     * 拼装批量创建销退入库单参数
+     * @param $arrOrderList
+     * @return array
+     */
     public function formatBatchCreateStockinParams($arrOrderList)
     {
         $arrBatchReturnsInfo = [];
@@ -137,13 +143,15 @@ class Dao_Wrpc_Nwms
             $arrBatchReturnsInfo[] = [
                 'business_form_order_id' => $arrOrder['business_form_order_id'],
                 'order_system_id' => $arrOrder['order_system_id'],
+                'logistics_order_id' => $arrRequestInfo['logistics_order_id'],
                 'warehouse_id' => $arrRequestInfo['warehouse_id'],
                 'warehouse_name' => $arrRequestInfo['warehouse_name'],
                 'stockin_order_source' => $arrRequestInfo['business_form_order_type'],
                 'stockin_order_remark' => $arrRequestInfo['business_form_order_remark'],
                 'sku_info_list' => $arrSkus,
+                'customer_info' => $arrCustomerInfo,
             ];
         }
-        return $arrBatchReturnsInfo;
+        return ['batch_returns_info' => $arrBatchReturnsInfo];
     }
 }
