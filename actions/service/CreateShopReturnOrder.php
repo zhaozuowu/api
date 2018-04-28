@@ -24,7 +24,7 @@ class Action_Service_CreateShopReturnOrder extends Orderui_Base_ServiceAction
             'type' => 'array',
             'params' => [
                 'sku_id' => 'int|required',
-                'sku_amount' => 'int|required',
+                'order_amount' => 'int|required',
             ],
         ],
         'customer_id' => 'str|required|len[32]',

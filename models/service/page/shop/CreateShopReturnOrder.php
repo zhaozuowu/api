@@ -17,7 +17,7 @@ class Service_Page_Shop_CreateShopReturnOrder
      */
     public function __construct()
     {
-        $this->objData = new Service_Data_Shop();
+        $this->objData = new Service_Data_BusinessFormOrder();
     }
 
     /*

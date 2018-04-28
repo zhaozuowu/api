@@ -24,6 +24,7 @@ class Orderui_Define_Wrpc
      * @var string
      */
     const NWMS_SERVICE_NAME = 'BusinessService';
+    const NWMS_SERVICE_NAME_STOCKIN = 'StockinService';
 
     ////////////////////
     /// APP_ID_*

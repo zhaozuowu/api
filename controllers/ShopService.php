@@ -12,7 +12,7 @@ class Controller_ShopService extends Orderui_Base_ServiceController {
      */
     public $arrMap = [
         'Action_Service_ShopSignup'     => 'actions/service/ShopSignup.php',
-        'Action_Service_CreateShopReturnOrder' => 'actions/service/createShopReturnOrder.php',
+        'Action_Service_CreateShopReturnOrder' => 'actions/service/CreateShopReturnOrder.php',
     ];
 
     /**

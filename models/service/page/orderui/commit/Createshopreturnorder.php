@@ -31,7 +31,7 @@ class Service_Page_Orderui_Commit_Createshopreturnorder extends Wm_Lib_Wmq_Commi
         //根据业态设置补货类型
         if (Orderui_Define_BusinessFormOrder::BUSINESS_FORM_ORDER_TYPE_SHOP
             == $arrInput['business_form_order_type']) {
-            $arrInput['supply_type'] = Orderui_Define_BusinessFormOrder::ORDER_SUPPLY_TYPE_SHOP_RETURN;
+            $arrInput['supply_type'] = Orderui_Define_BusinessFormOrder::ORDER_SUPPLY_TYPE_REJECT;
         }
         $arrInput['business_form_order_way'] = Orderui_Define_BusinessFormOrder::ORDER_WAY_REVERSE;
         //创建逆向业态单

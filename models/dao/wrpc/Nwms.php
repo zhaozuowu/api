@@ -14,6 +14,12 @@ class Dao_Wrpc_Nwms
     private $objWrpcService;
 
     /**
+     * wrcp service
+     * @var Bd_Wrpc_Client
+     */
+    private $objWrpcStockinService;
+
+    /**
      * init
      */
     public function __construct()
@@ -21,6 +27,8 @@ class Dao_Wrpc_Nwms
         $this->objWrpcService = new Bd_Wrpc_Client(Orderui_Define_Wrpc::NWMS_APP_ID,
             Orderui_Define_Wrpc::NWMS_NAMESPACE,
             Orderui_Define_Wrpc::NWMS_SERVICE_NAME);
+        $this->objWrpcStockinService = new Bd_Wrpc_Client(Orderui_Define_Wrpc::NWMS_APP_ID,
+            Orderui_Define_Wrpc::NWMS_NAMESPACE, Orderui_Define_Wrpc::NWMS_SERVICE_NAME_STOCKIN);
     }
 
     /**
@@ -52,8 +60,8 @@ class Dao_Wrpc_Nwms
     public function batchCreateStockinOrder($arrBusinessOrderInfo)
     {
         $strRoutingKey = sprintf("loc=%s", $arrBusinessOrderInfo['business_form_order_id']);
-        $this->objWrpcService->setMeta(["routing-key" => $strRoutingKey]);
-        $arrRet = $this->objWrpcService->batchCreateStockInOrder($arrBusinessOrderInfo);
+        $this->objWrpcStockinService->setMeta(["routing-key" => $strRoutingKey]);
+        $arrRet = $this->objWrpcStockinService->batchCreateStockInOrder($arrBusinessOrderInfo);
         Bd_Log::trace(sprintf("method[%s] batch create nwms sale return stockin order[%s]", __METHOD__, json_encode($arrRet)));
         if (empty($arrRet) || 0 != $arrRet['errno']) {
             Bd_Log::warning(sprintf("method[%s] arrRet[%s] routing-key[%s]",
@@ -104,5 +112,38 @@ class Dao_Wrpc_Nwms
         }
         $arrBatchCreateParams['order_info'] = $arrOrderInfos;
         return $arrBatchCreateParams;
+    }
+
+    public function formatBatchCreateStockinParams($arrOrderList)
+    {
+        $arrBatchReturnsInfo = [];
+        foreach ($arrOrderList as $arrOrder) {
+            $arrRequestInfo = $arrOrder['request_info'];
+            $arrSkus = [];
+            foreach ($arrRequestInfo['skus'] as $skus) {
+                $arrSkus[] = [
+                    'sku_id' => $skus['sku_id'],
+                    'sku_amount' => $skus['order_amount'],
+                ];
+            }
+            $arrCustomerInfo = [
+                'customer_id' => $arrRequestInfo['customer_id'],
+                'customer_name' => $arrRequestInfo['customer_name'],
+                'customer_contactor' => $arrRequestInfo['customer_contactor'],
+                'customer_contact' => $arrRequestInfo['customer_contact'],
+                'customer_adress' => $arrRequestInfo['customer_adress'],
+            ];
+
+            $arrBatchReturnsInfo[] = [
+                'business_form_order_id' => $arrOrder['business_form_order_id'],
+                'order_system_id' => $arrOrder['order_system_id'],
+                'warehouse_id' => $arrRequestInfo['warehouse_id'],
+                'warehouse_name' => $arrRequestInfo['warehouse_name'],
+                'stockin_order_source' => $arrRequestInfo['business_form_order_type'],
+                'stockin_order_remark' => $arrRequestInfo['business_form_order_remark'],
+                'sku_info_list' => $arrSkus,
+            ];
+        }
+        return $arrBatchReturnsInfo;
     }
 }

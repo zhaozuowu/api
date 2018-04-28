@@ -554,19 +554,7 @@ class Service_Data_BusinessFormOrder
     public function batchCreateSaleReturnStockinOrder($arrOrderList)
     {
         $arrRet = [];
-        $arrBatchReturnsInfo = [];
-        foreach ($arrOrderList as $arrOrder) {
-            $arrRequestInfo = $arrOrder['request_info'];
-            $arrBatchReturnsInfo[] = [
-                'business_form_order_id' => $arrOrder['business_form_order_id'],
-                'warehouse_id' => $arrRequestInfo['warehouse_id'],
-                'warehouse_name' => $arrRequestInfo['warehouse_name'],
-                'stockin_order_source' => $arrRequestInfo['business_form_order_type'],
-                'stockin_order_remark' => $arrRequestInfo['business_form_order_remark'],
-                'sku_info_list' => $arrRequestInfo['skus'],
-            ];
-        }
-        $arrNwmsOrders = $this->objDaoWrpcNwms->batchCreateStockinOrder($arrBatchReturnsInfo);
+        $arrNwmsOrders = $this->objDaoWrpcNwms->batchCreateStockinOrder($arrOrderList);
         $arrMapNwmsOrders = Orderui_Util_Utility::arrayToKeyValue($arrNwmsOrders, 'logistics_order_id');
         foreach ((array)$arrOrderList as $arrOrderInfo) {
             $intOrderSysId = $arrOrderInfo['order_system_id'];
