@@ -16,8 +16,12 @@ class Action_Service_UpdateStockInOrderSkuPlanAmount extends Orderui_Base_Servic
     protected $arrInputParams = [
         'stockin_order_id' => 'str|required',
         'sku_info_list' => [
-            'sku_id' => 'int|required|min[0]',
-            'sku_amount' => 'int|required|min[0]',
+            'validate' => 'arr|required',
+            'type' => 'array',
+            'params' => [
+                    'sku_id' => 'int|required|min[0]',
+                    'sku_amount' => 'int|required|min[0]',
+                ],
             ],
     ];
 
