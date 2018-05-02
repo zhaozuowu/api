@@ -14,7 +14,6 @@ class Orderui_Lib_Omssys
      */
     public static function formatOmsSysInfo($arrResponseList) {
         $arrOrderSysList = [];
-        Bd_Log::trace('$arrResponseList :'. json_encode($arrResponseList));
         foreach ($arrResponseList as $arrResponse) {
             $arrOrderSysList[] = [
                 'order_system_id' => $arrResponse['order_system_id'],

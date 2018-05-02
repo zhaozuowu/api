@@ -30,7 +30,7 @@ class Service_Page_Shop_CreateShopReturnOrder
         //悲观锁校验
         $intOrderFlag = $this->objData->getShopReturnOrderFlag($arrInput['logistics_order_id']);
         if ($intOrderFlag) {
-            //return true;
+            return true;
         }
         $strCmd = Orderui_Define_Cmd::CMD_CREATE_SHOP_RETURN_ORDER;
         $wmqRet = Orderui_Wmq_Commit::sendWmqCmd($strCmd, $arrInput, $arrInput['logistics_order_id']);
