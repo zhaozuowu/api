@@ -47,7 +47,7 @@ class Controller_ShopService extends Orderui_Base_ServiceController {
      */
     public function updateStockInOrderSkuPlanAmount($arrRequest) {
         $arrRequest = $arrRequest['objStockinPlanInAmountInfo'];
-        $objAction = new Action_Service_updateStockInOrderSkuPlanAmount($arrRequest);
+        $objAction = new Action_Service_UpdateStockInOrderSkuPlanAmount($arrRequest);
         return $objAction->execute();
     }
 
