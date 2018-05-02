@@ -35,6 +35,7 @@ class Service_Page_Orderui_Commit_Createshopreturnorder extends Wm_Lib_Wmq_Commi
         }
         $arrInput['business_form_order_way'] = Orderui_Define_BusinessFormOrder::ORDER_WAY_REVERSE;
         //创建逆向业态单
-        $this->objDataBusinessFormOrder->createOrder($arrInput);
+        $res = $this->objDataBusinessFormOrder->createReverseOrder($arrInput);
+        Bd_Log::trace(sprintf('method[%s] res %s', __METHOD__, json_encode($res)));
     }
 }

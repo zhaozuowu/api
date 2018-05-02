@@ -84,14 +84,15 @@ class Dao_Wrpc_Nwms
         $strRoutingKey = sprintf("loc=%s", $arrBusinessOrderInfo['business_form_order_id']);
         $this->objWrpcStockinService->setMeta(["routing-key" => $strRoutingKey]);
         $arrParams = $this->formatBatchCreateStockinParams($arrBusinessOrderInfo);
+        Bd_Log::trace(sprintf('method[%s] parameters %s', __METHOD__, json_encode($arrParams)));
         $arrRet = $this->objWrpcStockinService->batchCreateStockInOrder($arrParams);
         Bd_Log::trace(sprintf("method[%s] batch create nwms sale return stockin order[%s]", __METHOD__, json_encode($arrRet)));
-        if (empty($arrRet) || 0 != $arrRet['errno']) {
+        if (empty($arrRet['data']) || 0 != $arrRet['errno']) {
             Bd_Log::warning(sprintf("method[%s] arrRet[%s] routing-key[%s]",
                 __METHOD__, json_encode($arrRet), $strRoutingKey));
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_BATCH_CREATE_SALE_RETURN_STOCKIN_ORDER_FAIL);
         }
-        return $arrRet;
+        return $arrRet['data'];
     }
 
     /*
@@ -165,6 +166,7 @@ class Dao_Wrpc_Nwms
             $arrBatchReturnsInfo[] = [
                 'business_form_order_id' => $arrOrder['business_form_order_id'],
                 'order_system_id' => $arrOrder['order_system_id'],
+                'order_system_type' => $arrOrder['order_system_type'],
                 'logistics_order_id' => $arrRequestInfo['logistics_order_id'],
                 'warehouse_id' => $arrRequestInfo['warehouse_id'],
                 'warehouse_name' => $arrRequestInfo['warehouse_name'],

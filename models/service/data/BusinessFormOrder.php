@@ -424,6 +424,7 @@ class Service_Data_BusinessFormOrder
      * @throws Orderui_BusinessError
      */
     protected function filterSkusByInfos($arrSkus, $arrSkuInfos, $intBusinessFormType) {
+        return $arrSkus;
         if (empty($arrSkuInfos) || empty($arrSkus)) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_SKU_INFO_PARAMS_ERROR);
         }
@@ -593,14 +594,15 @@ class Service_Data_BusinessFormOrder
     {
         $arrRet = [];
         $arrNwmsOrders = $this->objDaoWrpcNwms->batchCreateStockinOrder($arrOrderList);
-        $arrMapNwmsOrders = Orderui_Util_Utility::arrayToKeyValue($arrNwmsOrders, 'logistics_order_id');
+        $arrMapNwmsOrders = Orderui_Util_Utility::arrayToKeyValue($arrNwmsOrders, 'order_system_id');
         foreach ((array)$arrOrderList as $arrOrderInfo) {
             $intOrderSysId = $arrOrderInfo['order_system_id'];
             $arrRet[] = [
                 'result' => $arrMapNwmsOrders[$intOrderSysId],
                 'order_system_id' => $intOrderSysId,
                 'business_form_order_id' => $arrOrderInfo['business_form_order_id'],
-                'order_type' => Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_ORDER,
+                'order_system_type' => $arrOrderInfo['order_system_type'],
+                'order_type' => Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_STOCK_IN,
             ];
         }
         return $arrRet;
@@ -729,5 +731,54 @@ class Service_Data_BusinessFormOrder
             return false;
         }
         return true;
+    }
+
+    /**
+     * 创建oms订单以子单
+     * @param $arrBusinessFormOrderInfo
+     * @return array
+     * @throws Exception
+     * @throws Nscm_Exception_Error
+     * @throws Orderui_BusinessError
+     * @throws Wm_Error
+     */
+    public function createReverseOrder($arrBusinessFormOrderInfo)
+    {
+        $arrBusinessFormOrderInfo['business_form_order_id'] = Orderui_Util_Utility::generateBusinessFormOrderId();
+        //进行拆单处理
+        $arrOrderSysDetailList = $this->splitBusinessOrder($arrBusinessFormOrderInfo);
+        $arrNwmsResponseList = $this->batchCreateSaleReturnStockinOrder($arrOrderSysDetailList);
+
+        //校验是否已经创建
+        $boolWhetherExisted = $this->checkBusinessFormOrderIsExisted($arrBusinessFormOrderInfo['logistics_order_id']
+            , $arrBusinessFormOrderInfo['business_form_order_type'], $arrBusinessFormOrderInfo['supply_type']);
+        if ($boolWhetherExisted) {
+            return $arrNwmsResponseList;
+        }
+        //拼接oms创建需要的参数
+        list($arrBusinessFormOrderInfo, $arrOrderSysListDb, $arrOrderSysDetailListDb) =
+            Orderui_Lib_BusinessFormOrder::formatBusinessInfoForReverse($arrNwmsResponseList, $arrBusinessFormOrderInfo);
+        $arrBusinessFormOrderDb = $this->assembleBusinessFormOrder($arrBusinessFormOrderInfo);
+        $intBusinessCreateStatus = $arrBusinessFormOrderInfo['business_form_order_create_status'];
+        //创建oms订单及子单
+        Model_Orm_BusinessFormOrder::getConnection()->transaction(function () use ($arrOrderSysListDb,
+            $arrOrderSysDetailListDb, $arrBusinessFormOrderDb, $intBusinessCreateStatus) {
+            Model_Orm_BusinessFormOrder::insert($arrBusinessFormOrderDb['order_info']);
+            Model_Orm_BusinessFormOrderSku::batchInsert($arrBusinessFormOrderDb['sku_info']);
+            if (Orderui_Define_Const::NWMS_ORDER_CREATE_STATUS_SUCCESS == $intBusinessCreateStatus) {
+                Model_Orm_OrderSystem::batchInsert($arrOrderSysListDb);
+            }
+            if (Orderui_Define_Const::NWMS_ORDER_CREATE_STATUS_SUCCESS == $intBusinessCreateStatus) {
+                Model_Orm_OrderSystemDetail::batchInsert($arrOrderSysDetailListDb['detail_list']);
+                Model_Orm_OrderSystemDetailSku::batchInsert($arrOrderSysDetailListDb['sku_list']);
+            }
+        });
+        if (Orderui_Define_Const::NWMS_ORDER_CREATE_STATUS_FAILED == $intBusinessCreateStatus) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_CREATE_ERROR);
+        }
+        //异步通知门店创建结果
+        Orderui_Wmq_Commit::sendWmqCmd(Orderui_Define_Cmd::CMD_NOTIFY_ISS_OMS_ORDER_CREATE,
+            $arrNwmsResponseList, $arrBusinessFormOrderInfo['business_form_order_id']);
+        return $arrNwmsResponseList;
     }
 }
