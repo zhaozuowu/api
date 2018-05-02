@@ -35,7 +35,7 @@ class Dao_Ral_Warehouse
         if (empty($intDistrictId)) {
             return $ret;
         }
-        $req[self::API_RALER_GET_WAREHOUSE_LIST] = $intDistrictId;
+        $req[self::API_RALER_GET_WAREHOUSE_LIST]['district_id'] = $intDistrictId;
         $ret = $this->objApiRal->getData($req);
         $ret = !empty($ret[self::API_RALER_GET_WAREHOUSE_LIST]['query_result']) ?
             $ret[self::API_RALER_GET_WAREHOUSE_LIST]['query_result'] : [];

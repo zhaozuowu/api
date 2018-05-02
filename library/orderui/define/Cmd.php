@@ -45,6 +45,23 @@ class Orderui_Define_Cmd
     const CMD_CREATE_REVERSE_OMS_ORDER = 'create_reverse_oms_order';
 
     /**
+     * 创建门店退货订单
+     * @var string
+     */
+    const CMD_CREATE_SHOP_RETURN_ORDER = 'create_shop_return_order';
+    /**
+     * oms订单创建
+     * @var string
+     */
+    const CMD_CREATE_OMS_ORDER = 'create_oms_order';
+
+    /**
+     * 通知门店oms订单创建结果
+     * @var string
+     */
+    const CMD_NOTIFY_ISS_OMS_ORDER_CREATE = 'notify_iss_oms_order_create';
+
+    /**
      * cmd trigger event
      * @var string
      */

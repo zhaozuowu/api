@@ -11,18 +11,19 @@ class Service_Data_Shop
     /*
      * @var object
      */
-    protected $objDaoRalNwmsOrder;
+    protected $objDaoWprcNwms;
     /*
      * @var object
      */
-    protected $objDaoWprcTms;
+    protected $objDaoRedis;
+
     /*
      * init object
      */
     public function __construct()
     {
-        $this->objDaoRalNwmsOrder = new Dao_Ral_NWmsOrder();
-        $this->objDaoWprcTms = new Dao_Wrpc_Tms();
+        $this->objDaoWprcNwms = new Dao_Wrpc_Nwms();
+        $this->objDaoRedis = new Dao_Redis_BusinessOrder();
     }
 
     /**

@@ -43,6 +43,7 @@ class Orderui_Error_Message extends Wm_Error_Message
         Orderui_Error_Code::OMS_UPDATE_SHOP_STOCKOUT_SKU_PICKUP_AMOUNT_FAIL => 'OMS调用SHOP更新出库单拣货商品数失败',
         Orderui_Error_Code::OMS_SKU_INFO_PARAMS_ERROR => 'sku参数错误',
         Orderui_Error_Code::OMS_SKU_INFO_INVALID => '无效的sku',
+        Orderui_Error_Code::OMS_BATCH_CREATE_SALE_RETURN_STOCKIN_ORDER_FAIL => '批量创建销退入库单失败',
     ];
 
 }

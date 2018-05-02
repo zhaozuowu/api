@@ -18,6 +18,12 @@ class Dao_Redis_BusinessOrder extends Orderui_Base_Redis
      */
     const REVERSE_SOURCE_ORDER_KEY_PREFIX = 'oms:order:reverse:sourceorderid:';
 
+    /**
+     * shop return order
+     * @var string
+     */
+    const SHOP_RETURN_ORDER_KEY_PREFIX = 'oms:order:shop:return:sourceorderid:';
+
     const REVERSE_SOURCE_ORDER_KEY_EXPIRE_TIME = 3600;
     /**
      * set business order info
@@ -82,6 +88,27 @@ class Dao_Redis_BusinessOrder extends Orderui_Base_Redis
      */
     public function getReverseSourceOrder($intSourceOrderId) {
         $strKey = self::REVERSE_SOURCE_ORDER_KEY_PREFIX . $intSourceOrderId;
+        return $this->objRedisConn->get($strKey);
+    }
+
+    /**
+     * set reverse source order
+     * @param integer $intSourceOrderId
+     * @return void
+     */
+    public function setShopReturnOrderKey($intSourceOrderId) {
+        $strKey = self::SHOP_RETURN_ORDER_KEY_PREFIX . $intSourceOrderId;
+        $this->objRedisConn->incr($strKey);
+        $this->objRedisConn->expire($strKey, self::REVERSE_SOURCE_ORDER_KEY_EXPIRE_TIME);
+    }
+
+    /**
+     * get reverse source order
+     * @param integer $intSourceOrderId
+     * @return mixed
+     */
+    public function getShopReturnOrderKey($intSourceOrderId) {
+        $strKey = self::SHOP_RETURN_ORDER_KEY_PREFIX . $intSourceOrderId;
         return $this->objRedisConn->get($strKey);
     }
 }

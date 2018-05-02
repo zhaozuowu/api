@@ -178,7 +178,10 @@ class Orderui_Error_Code extends Wm_Error_Code
      * OMS调用SHOP更新出库单拣货商品数失败
      */
     const OMS_UPDATE_SHOP_STOCKOUT_SKU_PICKUP_AMOUNT_FAIL = 360008;
-
+    /**
+     * 批量创建销退入库单失败
+     */
+    const OMS_BATCH_CREATE_SALE_RETURN_STOCKIN_ORDER_FAIL = 360009;
     /**
      * 找不到关联订单
      */

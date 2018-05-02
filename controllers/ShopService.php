@@ -15,6 +15,7 @@ class Controller_ShopService extends Orderui_Base_ServiceController {
         'Action_Service_RejectShipmentOrder' => 'actions/service/RejectShipmentOrder.php',
         'Action_Service_UpdateStockInOrderSkuPlanAmount' => 'actions/service/UpdateStockInOrderSkuPlanAmount.php',
         'Action_Service_UpdateStockoutOrderSkuPickupInfo' => 'actions/service/UpdateStockoutOrderSkuPickupInfo.php',
+        'Action_Service_CreateShopReturnOrder' => 'actions/service/CreateShopReturnOrder.php',
     ];
 
     /**
@@ -33,9 +34,9 @@ class Controller_ShopService extends Orderui_Base_ServiceController {
      * @param $arrRequest
      * @return mixed
      */
-    public function rejectShipmentOrder($arrRequest) {
-        $arrRequest = $arrRequest['objShipmentOrderInfo'];
-        $objAction = new Action_Service_RejectShipmentOrder($arrRequest);
+    public function createShopReturnOrder($arrRequest) {
+        $arrRequest = $arrRequest['objReturnOrderInfo'];
+        $objAction = new Action_Service_CreateShopReturnOrder($arrRequest);
         return $objAction->execute();
     }
 

@@ -17,17 +17,23 @@ struct SkuInfo {
     2:required i32 order_amount,
     3:required i32 event_type
 }
-#物流单签收信息
+#退货sku信息
+struct ReturnSkuInfo {
+    1:required i32 sku_id,
+    2:required i32 order_amount
+}
+#出库单签收信息
 struct SignupInfo {
     1:required i32 stockout_order_id,
     2:required list<SkuInfo> skus_event,
     3:optional i32 biz_type
 }
-#运单拒收信息
-struct ShipmentOrderInfo {
-    1:required string shipment_order_id,
-    2:required list<map<string,string>> reject_skus,
-    3:optional i32 biz_type
+#退货单信息
+struct ReturnOrderInfo {
+    1:required i32 logistics_order_id,
+    2:required i32 business_form_order_type,
+    3:optional string business_form_order_remark,
+    4:required list<ReturnSkuInfo> skus,
 }
 
 #sku_id和sku_amount信息结构体
@@ -56,9 +62,9 @@ service ShopService {
 }
 
 #服务定义
-service ShipmentService {
+service ShopService {
     Data signup(1:required SignupInfo objSignupInfo)
         throws (1: OrderUserException userException),
-    Data createReverseBusinessFormOrder(1:required ShipmentOrderInfo objShipmentOrderInfo)
+    Data createShopReturnOrder(1:required ReturnOrderInfo objReturnOrderInfo)
         throws (1: OrderUserException userException)
 }
