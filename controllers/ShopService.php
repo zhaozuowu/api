@@ -13,6 +13,8 @@ class Controller_ShopService extends Orderui_Base_ServiceController {
     public $arrMap = [
         'Action_Service_ShopSignup'     => 'actions/service/ShopSignup.php',
         'Action_Service_RejectShipmentOrder' => 'actions/service/RejectShipmentOrder.php',
+        'Action_Service_UpdateStockInOrderSkuPlanAmount' => 'actions/service/UpdateStockInOrderSkuPlanAmount.php',
+        'Action_Service_UpdateStockoutOrderSkuPickupInfo' => 'actions/service/UpdateStockoutOrderSkuPickupInfo.php',
     ];
 
     /**
@@ -34,6 +36,29 @@ class Controller_ShopService extends Orderui_Base_ServiceController {
     public function rejectShipmentOrder($arrRequest) {
         $arrRequest = $arrRequest['objShipmentOrderInfo'];
         $objAction = new Action_Service_RejectShipmentOrder($arrRequest);
+        return $objAction->execute();
+    }
+
+    /**
+     * OMS退货修正销退入库单计划入库数
+     * @param $arrRequest
+     * @return mixed
+     */
+    public function updateStockInOrderSkuPlanAmount($arrRequest) {
+        $arrRequest = $arrRequest['objStockinPlanInAmountInfo'];
+        $objAction = new Action_Service_updateStockInOrderSkuPlanAmount($arrRequest);
+        return $objAction->execute();
+    }
+
+    /**
+     * OMS接收NWMS出库单拣货信息接口
+     * NWMS调用此OMS接口，OMS通知门店修改出库商品数量
+     * @param $arrRequest
+     * @return mixed
+     */
+    public function updateStockoutOrderSkuPickupInfo($arrRequest) {
+        $arrRequest = $arrRequest['objStockoutPickupAmountInfo'];
+        $objAction = new Action_Service_UpdateStockoutOrderSkuPickupInfo($arrRequest);
         return $objAction->execute();
     }
 }

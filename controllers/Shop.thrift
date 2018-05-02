@@ -29,6 +29,32 @@ struct ShipmentOrderInfo {
     2:required list<map<string,string>> reject_skus,
     3:optional i32 biz_type
 }
+
+#sku_id和sku_amount信息结构体
+struct SkuAmountInfo {
+    1:required i32 sku_id,
+    2:required i32 sku_amount
+}
+#入库单商品计划入库数传入数据格式
+struct StockinPlanInAmountInfo {
+    1:required i32 stockin_order_id,
+    2:required list<SkuAmountInfo> sku_info_list
+}
+#出库单拣货信息传入数据格式
+struct StockoutPickupAmountInfo {
+    1:required i32 stockout_order_id,
+    2:required list<SkuAmountInfo> pickup_sku_info_list
+}
+#服务定义 - 门店
+service ShopService {
+    #服务定义 - 门店修正销退入库单计划入库数传入服务
+    Data updateStockInOrderSkuPlanAmount(1:required StockinPlanInAmountInfo objStockinPlanInAmountInfo)
+        throws(1: OrderUserException userException)
+    #服务定义 - OMS接收NWMS出库单拣货信息传入服务
+    Data updateStockoutOrderSkuPickupInfo(1:required StockoutPickupAmountInfo objStockoutPickupAmountInfo)
+        throws(1: OrderUserException userException)
+}
+
 #服务定义
 service ShipmentService {
     Data signup(1:required SignupInfo objSignupInfo)

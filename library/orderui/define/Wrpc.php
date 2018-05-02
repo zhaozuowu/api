@@ -31,6 +31,7 @@ class Orderui_Define_Wrpc
     const APP_ID_NWMS = 'bdwaimai_earthnet.nwms';
     const APP_ID_TMS = 'scm.tms_core';
     const APP_ID_OMS = 'bdwaimai_earthnet.oms';
+    const APP_ID_SHOP = 'bdwaimai_iss.base';
 
 
     ////////////////////
@@ -39,14 +40,17 @@ class Orderui_Define_Wrpc
     const NAMESPACE_NWMS = 'order';
     const NAMESPACE_TMS = 'me.ele.scm.tms.shipment.api';
     const NAMESPACE_OMS = 'orderui';
+    const NAMESPACE_SHOP = 'book';
 
 
     ////////////////////
     /// SERVICE_NAME_*
     ////////////////////
     const SERVICE_NAME_NWMS = 'BusinessService';
+    const SERVICE_NAME_NWMS_STOCKIN = 'StockinService';
     const SERVICE_NAME_TMS = 'ShipmentService';
     const SERVICE_NAME_OMS = 'BusinessService';
+    const SERVICE_NAME_SHOP = 'BookService';
 
     /**
      * tms app id

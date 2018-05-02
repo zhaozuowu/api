@@ -138,4 +138,33 @@ class Service_Data_Shop
         return true;
     }
 
+    /**
+     * 接收出库单拣货信息，通知门店
+     * @param $strStockoutOrderId
+     * @param $arrPickupSkuInfoList
+     * @return array
+     * @throws Orderui_BusinessError
+     */
+    public function updateStockoutOrderSkuPickupInfo($strStockoutOrderId, $arrPickupSkuInfoList)
+    {
+        // 门店不需要前缀，传给门店唯一识别的id
+        $intNwmsStockoutOrderId = intval(Ordermis_Util::trimStockoutOrderIdPrefix($strStockoutOrderId));
+        if (empty($intNwmsStockoutOrderId) || empty($arrPickupSkuInfoList)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR);
+        }
+        if (0 >= $intNwmsStockoutOrderId) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR);
+        }
+        // 校验数量
+        foreach ($arrPickupSkuInfoList as $skuInfo) {
+            $intSkuId = intval($skuInfo['sku_id']);
+            $intSkuAmount = intval($skuInfo['sku_amount']);
+            if( (0 >= $intSkuId) || (0 > $intSkuAmount)) {
+                Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR);
+            }
+        }
+        $objWrpcShop = new Dao_Wrpc_Shop();
+        return $objWrpcShop->updateStockoutOrderSkuPickupInfo($intNwmsStockoutOrderId, $arrPickupSkuInfoList);
+    }
+
 }

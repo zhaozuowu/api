@@ -105,4 +105,32 @@ class Service_Data_NWmsOrder
     public function createSalesReturnStockinOrder($arrData) {
         return $this->objDaoRalNWmsOrder->createNWmsOrder($arrData);
     }
+
+    /**
+     * 更新销退入库单计划入库数
+     * @param $strStockinOrderId
+     * @param $arrSkuInfoList
+     * @return array
+     * @throws Orderui_BusinessError
+     */
+    public function updateStockInOrderSkuPlanAmount($strStockinOrderId, $arrSkuInfoList)
+    {
+        $intStockinOrderId = intval($strStockinOrderId);
+        if (empty($intStockinOrderId) || empty($arrSkuInfoList)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR);
+        }
+        foreach ($arrSkuInfoList as $skuInfo) {
+            $intSkuId = intval($skuInfo['sku_id']);
+            $intSkuAmount = intval($skuInfo['sku_amount']);
+            if( (0 >= $intSkuId) || (0 > $intSkuAmount)) {
+                Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR);
+            }
+        }
+        $arrStockinOrderInfo = [
+            'stockin_order_id' => $intStockinOrderId,
+            'sku_info_list' => json_encode($arrSkuInfoList),
+        ];
+        $objWrpcNwms = new Dao_Wrpc_Nwms();
+        return $objWrpcNwms->updateNwmsStockInOrderSkuPlanAmount($arrStockinOrderInfo);
+    }
 }
