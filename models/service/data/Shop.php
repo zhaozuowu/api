@@ -149,7 +149,7 @@ class Service_Data_Shop
     public function updateStockoutOrderSkuPickupInfo($strStockoutOrderId, $arrPickupSkuInfoList)
     {
         // 门店不需要前缀，传给门店唯一识别的id
-        $intNwmsStockoutOrderId = intval(Ordermis_Util::trimStockoutOrderIdPrefix($strStockoutOrderId));
+        $intNwmsStockoutOrderId = intval(Orderui_Util::trimStockoutOrderIdPrefix($strStockoutOrderId));
         if (empty($intNwmsStockoutOrderId) || empty($arrPickupSkuInfoList)) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR);
         }
