@@ -62,6 +62,12 @@ class Orderui_Define_Cmd
     const CMD_NOTIFY_ISS_OMS_ORDER_CREATE = 'notify_iss_oms_order_create';
 
     /**
+     * 通知门店退货单创建结果
+     * @var string
+     */
+    const CMD_NOTIFY_ISS_OMS_RETURN_ORDER_CREATE = 'notify_iss_oms_return_order_create';
+
+    /**
      * cmd trigger event
      * @var string
      */
