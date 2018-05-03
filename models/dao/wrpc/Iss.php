@@ -29,7 +29,8 @@ class Dao_Wrpc_Iss
     public function notifyNwmsOrderCreate($arrOrderList)
     {
         $arrParams = $this->getNotifyNwmsOrderCreateParams($arrOrderList);
-        $arrRet = $this->objWrpcService->omsOrderGoods($arrParams);
+        $strParams = json_encode([$arrParams]);
+        $arrRet = $this->objWrpcService->omsOrderGoods($strParams);
         if (empty($arrRet['errno']) || 0 != $arrRet['errno']) {
             Bd_Log::warning(sprintf("method[%s] arrRet[%s]", __METHOD__, json_encode($arrRet)));
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_NOTIFY_ISS_CREATE_RESULT_FAILED);
@@ -38,6 +39,8 @@ class Dao_Wrpc_Iss
 
     /**
      * @param $arrOrderList
+     * @return
+     * @throws Orderui_BusinessError
      */
     public function notifyNwmsReturnOrderCreate($arrOrderList)
     {
@@ -67,6 +70,7 @@ class Dao_Wrpc_Iss
         }
         $arrNwmsOrders['parent_receipts_id'] = intval($arrOrderList[0]['logistics_order_id']);
         $arrNwmsOrders['split_child_order_list'] = $this->getChildOrderListParams($arrOrderList);
+        return $arrNwmsOrders;
     }
 
     /**
@@ -79,13 +83,13 @@ class Dao_Wrpc_Iss
         $arrChildOrders = [];
         foreach ((array)$arrOrderList as $arrOrderInfo) {
             $arrChildOrderInfo = [];
-            $arrChildOrderInfo['receipts_id'] = $arrOrderInfo['stockout_order_id'];
+            $arrChildOrderInfo['receipts_id'] = intval($arrOrderInfo['stockout_order_id']);
             $arrChildOrderInfo['order_split_time'] = time();
             $arrChildOrderInfo['receipts_type'] = 1;
-            $arrChildOrderInfo['warehouse_id'] = $arrOrderInfo['warehouse_id'];
-            $arrChildOrderInfo['warehouse_name'] = $arrOrderInfo['warehouse_name'];
-            $arrChildOrderInfo['exception_sku_list'] = $this->getChildOrderSkusException($arrOrderInfo['exceptions']);
-            $arrChildOrderInfo['receipts_details'] = [];
+            $arrChildOrderInfo['warehouse_id'] = intval($arrOrderInfo['warehouse_id']);
+            $arrChildOrderInfo['warehouse_name'] = strval($arrOrderInfo['warehouse_name']);
+            $arrChildOrderInfo['exception_sku_list'] = $this->getChildOrderSkusException($arrOrderInfo['result']['exceptions']);
+            $arrChildOrderInfo['receipts_details'] = $this->getReceiptsDetail($arrOrderInfo['result']['skus']);
             $arrChildOrders[] = $arrChildOrderInfo;
         }
         return $arrChildOrders;

@@ -104,8 +104,8 @@ class Service_Data_BusinessFormOrder
         $arrBusinessFormOrderInfo['business_form_order_id'] = Orderui_Util_Utility::generateBusinessFormOrderId();
         //进行拆单处理
         $arrOrderSysDetailList = $this->splitBusinessOrder($arrBusinessFormOrderInfo);
-        //$arrNwmsResponseList = $this->distributeOrder($arrOrderSysDetailList);
-        $arrNwmsResponseList = $this->batchCreateNwmsOrder($arrOrderSysDetailList);
+        $arrNwmsResponseList = $this->distributeOrder($arrOrderSysDetailList);
+        //$arrNwmsResponseList = $this->batchCreateNwmsOrder($arrOrderSysDetailList);
 
         //校验是否已经创建
         $boolWhetherExisted = $this->checkBusinessFormOrderIsExisted($arrBusinessFormOrderInfo['logistics_order_id']
@@ -565,6 +565,7 @@ class Service_Data_BusinessFormOrder
                     'order_system_id' => $arrOrderInfo['order_system_id'],
                     'order_system_type' => $arrOrderInfo['order_system_type'],
                     'business_form_order_id' => $arrOrderInfo['business_form_order_id'],
+                    'warehouse_id' => $arrOrderInfo['request_info']['warehouse_id'],
                     'order_type' => Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_ORDER,
                 ];
             }
@@ -590,6 +591,7 @@ class Service_Data_BusinessFormOrder
                 'order_system_id' => $intOrderSysId,
                 'business_form_order_id' => $arrOrderInfo['business_form_order_id'],
                 'order_type' => Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_ORDER,
+                'logistics_order_id' => $arrOrderInfo['request_info']['logisitcs_order_id'],
             ];
         }
         return $arrRet;
