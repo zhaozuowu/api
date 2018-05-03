@@ -10,7 +10,7 @@ class Orderui_Base_Redis
      * nscm redis connection name
      * @var string
      */
-    const REDIS_OMS = 'redis_oms';
+    const REDIS_OMS = 'redis_nscm_purchse';
 
     /**
      * redis object
