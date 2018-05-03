@@ -135,7 +135,7 @@ class Dao_Wrpc_Nwms
             $arrOrderInfos[] = $arrOrderInfoItem;
         }
         $arrBatchCreateParams['order_info'] = $arrOrderInfos;
-        return [ 'obj_data' => $arrBatchCreateParams];
+        return [ 'objData' => $arrBatchCreateParams];
     }
 
     /**
