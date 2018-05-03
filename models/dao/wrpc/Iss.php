@@ -17,9 +17,9 @@ class Dao_Wrpc_Iss
      */
     public function __construct()
     {
-        $this->objWrpcService = new Bd_Wrpc_Client(Orderui_Define_Wrpc::APP_ID_ISS,
-            Orderui_Define_Wrpc::NAMESPACE_ISS,
-            Orderui_Define_Wrpc::SERVICE_NAME_ISS);
+        $this->objWrpcService = new Bd_Wrpc_Client(Orderui_Define_Wrpc::APP_ID_SHOP,
+            Orderui_Define_Wrpc::NAMESPACE_SHOP, Orderui_Define_Wrpc::SERVICE_NAME_SHOP);
+        
     }
 
     /**
@@ -35,6 +35,24 @@ class Dao_Wrpc_Iss
             Bd_Log::warning(sprintf("method[%s] arrRet[%s]", __METHOD__, json_encode($arrRet)));
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_NOTIFY_ISS_CREATE_RESULT_FAILED);
         }
+    }
+
+    /**
+     * @param $arrOrderList
+     */
+    public function notifyNwmsReturnOrderCreate($arrOrderList)
+    {
+        $strRoutingKey = sprintf("business_form_order_id=%s", $arrOrderList[0]['business_form_order_id']);
+        $arrParams = $this->getNotifyNwmsReturnOrderCreateParams($arrOrderList);
+        Bd_Log::trace(sprintf('method[%s] call shop bookservice omsReturnOrderGoods request [%s]', __METHOD__, json_encode($arrParams)));
+        $arrRet = $this->objWrpcService->omsReturnOrderGoods($arrParams);
+        Bd_Log::trace(sprintf("method[%s] call shop bookservice omsReturnOrderGoods arrRet [%s]", __METHOD__, json_encode($arrRet)));
+        if (empty($arrRet['data']) || 0 != $arrRet['errno']) {
+            Bd_Log::warning(sprintf("method[%s] arrRet[%s] routing-key[%s]",
+                __METHOD__, json_encode($arrRet), $strRoutingKey));
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_UPDATE_SHOP_STOCKOUT_SKU_PICKUP_AMOUNT_FAIL);
+        }
+        return $arrRet['data'];
     }
 
     /**
@@ -106,5 +124,53 @@ class Dao_Wrpc_Iss
             $arrReceiptsDetail[] = $arrReceiptDetailInfo;
         }
         return $arrReceiptsDetail;
+    }
+
+    /**
+     * 拼接通知门店的参数
+     * @param $arrOrderList
+     * @return array
+     */
+    protected function getNotifyNwmsReturnOrderCreateParams($arrOrderList)
+    {
+        $arrNwmsOrders = [];
+        if (empty($arrOrderList)) {
+            return $arrNwmsOrders;
+        }
+        Bd_Log::trace('arrOrderList:%s'.json_encode($arrOrderList));
+        $arrNwmsOrders['parent_receipts_id'] = intval($arrOrderList[0]['result']['logistics_order_id']);
+        $arrChildOrders = [];
+        foreach ((array)$arrOrderList as $arrOrderInfo) {
+            $arrOrderResult = $arrOrderInfo['result'];
+            $arrRetSkusException = [];
+            foreach ((array) $arrOrderResult['exceptions'] as $arrSkusExceptionInfo) {
+                $arrRetSkusException[] = [
+                    'sku_id' => $arrSkusExceptionInfo['sku_id'],
+                    'count'  => $arrSkusExceptionInfo['order_amount'],
+                    'reason' => $arrSkusExceptionInfo['exception_info'],
+                ];
+            }
+            $arrRetSkus = [];
+            foreach ((array) $arrOrderResult['skus'] as $arrSku) {
+                $arrRetSkus[] = [
+                    'sku_id' => $arrSku['sku_id'],
+                    'count'  => $arrSku['order_amount'],
+                    'delivery_price' => $arrSku['send_price'],
+                ];
+            }
+            $arrChildOrderInfo = [];
+            $arrChildOrderInfo['receipts_id'] = $arrOrderResult['stockin_order_id'];
+            $arrChildOrderInfo['order_split_time'] = time();
+            $arrChildOrderInfo['receipts_type'] = 1;
+            $arrChildOrderInfo['warehouse_id'] = $arrOrderResult['warehouse_id'];
+            $arrChildOrderInfo['warehouse_name'] = $arrOrderResult['warehouse_name'];
+            $arrChildOrderInfo['exception_reason'] = $arrOrderResult['exception_reason'];
+            $arrChildOrderInfo['exception_code'] = $arrOrderResult['exception_code'];
+            $arrChildOrderInfo['exception_sku_list'] = $arrRetSkusException;
+            $arrChildOrderInfo['receipts_details'] = $arrRetSkus;
+            $arrChildOrders[] = $arrChildOrderInfo;
+        }
+        $arrNwmsOrders['split_child_order_list'] = $arrChildOrders;
+        return $arrNwmsOrders;
     }
 }

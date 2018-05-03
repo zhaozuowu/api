@@ -105,11 +105,8 @@ class Service_Data_BusinessFormOrder
         //进行拆单处理
         $arrOrderSysDetailList = $this->splitBusinessOrder($arrBusinessFormOrderInfo);
         //$arrNwmsResponseList = $this->distributeOrder($arrOrderSysDetailList);
-        if ($arrBusinessFormOrderInfo['business_form_order_way'] == Orderui_Define_BusinessFormOrder::ORDER_WAY_OBVERSE) {
-            $arrNwmsResponseList = $this->batchCreateNwmsOrder($arrOrderSysDetailList);
-        } elseif ($arrBusinessFormOrderInfo['business_form_order_way'] == Orderui_Define_BusinessFormOrder::ORDER_WAY_REVERSE) {
-            $arrNwmsResponseList = $this->batchCreateSaleReturnStockinOrder($arrOrderSysDetailList);
-        }
+        $arrNwmsResponseList = $this->batchCreateNwmsOrder($arrOrderSysDetailList);
+
         //校验是否已经创建
         $boolWhetherExisted = $this->checkBusinessFormOrderIsExisted($arrBusinessFormOrderInfo['logistics_order_id']
             , $arrBusinessFormOrderInfo['business_form_order_type'], $arrBusinessFormOrderInfo['supply_type']);
@@ -152,6 +149,16 @@ class Service_Data_BusinessFormOrder
     public function notifyIssOrderCreate($arrOrderList) {
         $this->objDaoWrpcIss->notifyNwmsOrderCreate($arrOrderList);
     }
+
+    /**
+     * 通知门店退货单创建信息
+     * @param $arrOrderList
+     * @return void
+     */
+    public function notifyIssReturnOrderCreate($arrOrderList) {
+        $this->objDaoWrpcIss->notifyNwmsReturnOrderCreate($arrOrderList);
+    }
+
 
     /**
      * 组建业态订单信息
@@ -603,6 +610,7 @@ class Service_Data_BusinessFormOrder
                 'result' => $arrMapNwmsOrders[$intOrderSysId],
                 'order_system_id' => $intOrderSysId,
                 'business_form_order_id' => $arrOrderInfo['business_form_order_id'],
+                'logistics_order_id'  => $arrOrderInfo['logistics_order_id'],
                 'order_system_type' => $arrOrderInfo['order_system_type'],
                 'order_type' => Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_STOCK_IN,
             ];
@@ -779,8 +787,8 @@ class Service_Data_BusinessFormOrder
             Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_CREATE_ERROR);
         }
         //异步通知门店创建结果
-        Orderui_Wmq_Commit::sendWmqCmd(Orderui_Define_Cmd::CMD_NOTIFY_ISS_OMS_ORDER_CREATE,
-            $arrNwmsResponseList, $arrBusinessFormOrderInfo['business_form_order_id']);
+        Orderui_Wmq_Commit::sendWmqCmd(Orderui_Define_Cmd::CMD_NOTIFY_ISS_OMS_RETURN_ORDER_CREATE,
+            $arrNwmsResponseList, strval($arrBusinessFormOrderInfo['business_form_order_id']));
         return $arrNwmsResponseList;
     }
 }
