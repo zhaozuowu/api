@@ -198,4 +198,10 @@ class Orderui_Error_Code extends Wm_Error_Code
      * @var integer
      */
     const OMS_SKU_INFO_INVALID = 370003;
+
+    /**
+     * 通知门店创建信息失败
+     * @var integer
+     */
+    const OMS_NOTIFY_ISS_CREATE_RESULT_FAILED = 370004;
 }

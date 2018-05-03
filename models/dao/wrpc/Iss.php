@@ -17,12 +17,24 @@ class Dao_Wrpc_Iss
      */
     public function __construct()
     {
-
+        $this->objWrpcService = new Bd_Wrpc_Client(Orderui_Define_Wrpc::APP_ID_ISS,
+            Orderui_Define_Wrpc::NAMESPACE_ISS,
+            Orderui_Define_Wrpc::SERVICE_NAME_ISS);
     }
 
+    /**
+     * 通知门店正向订单创建结果
+     * @param $arrOrderList
+     * @throws Orderui_BusinessError
+     */
     public function notifyNwmsOrderCreate($arrOrderList)
     {
         $arrParams = $this->getNotifyNwmsOrderCreateParams($arrOrderList);
+        $arrRet = $this->objWrpcService->omsOrderGoods($arrParams);
+        if (empty($arrRet['errno']) || 0 != $arrRet['errno']) {
+            Bd_Log::warning(sprintf("method[%s] arrRet[%s]", __METHOD__, json_encode($arrRet)));
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_NOTIFY_ISS_CREATE_RESULT_FAILED);
+        }
     }
 
     /**

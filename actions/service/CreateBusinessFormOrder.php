@@ -13,7 +13,7 @@ class Action_Service_CreateBusinessFormOrder extends Orderui_Base_ServiceAction
     protected $arrInputParams = [
         'logistics_order_id' => 'str|required',
         'business_form_order_type' => 'int|required',
-        'shelf_info' => 'arr|required',
+        'shelf_info' => 'arr',
         'business_form_order_remark' => 'str|len[255]',
         'customer_id' => 'str|required|len[32]',
         'customer_name' => 'str|required|len[128]',
