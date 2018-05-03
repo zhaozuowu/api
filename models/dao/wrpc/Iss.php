@@ -19,7 +19,6 @@ class Dao_Wrpc_Iss
     {
         $this->objWrpcService = new Bd_Wrpc_Client(Orderui_Define_Wrpc::APP_ID_SHOP,
             Orderui_Define_Wrpc::NAMESPACE_SHOP, Orderui_Define_Wrpc::SERVICE_NAME_SHOP);
-        
     }
 
     /**
@@ -50,7 +49,7 @@ class Dao_Wrpc_Iss
         if (empty($arrRet['data']) || 0 != $arrRet['errno']) {
             Bd_Log::warning(sprintf("method[%s] arrRet[%s] routing-key[%s]",
                 __METHOD__, json_encode($arrRet), $strRoutingKey));
-            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_UPDATE_SHOP_STOCKOUT_SKU_PICKUP_AMOUNT_FAIL);
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_NOTIFY_CREATE_SHOP_RETURN_ORDER_FAIL);
         }
         return $arrRet['data'];
     }
@@ -159,7 +158,7 @@ class Dao_Wrpc_Iss
                 ];
             }
             $arrChildOrderInfo = [];
-            $arrChildOrderInfo['receipts_id'] = $arrOrderResult['stockin_order_id'];
+            $arrChildOrderInfo['receipts_id'] = intval($arrOrderResult['stockin_order_id']);
             $arrChildOrderInfo['order_split_time'] = time();
             $arrChildOrderInfo['receipts_type'] = 1;
             $arrChildOrderInfo['warehouse_id'] = $arrOrderResult['warehouse_id'];

@@ -145,14 +145,15 @@ class Dao_Wrpc_Nwms
      */
     public function formatBatchCreateStockinParams($arrOrderList)
     {
+        Bd_Log::trace('$arrOrderList'.json_encode($arrOrderList));
         $arrBatchReturnsInfo = [];
         foreach ($arrOrderList as $arrOrder) {
             $arrRequestInfo = $arrOrder['request_info'];
             $arrSkus = [];
             foreach ($arrRequestInfo['skus'] as $skus) {
                 $arrSkus[] = [
-                    'sku_id' => $skus['sku_id'],
-                    'sku_amount' => $skus['order_amount'],
+                    'sku_id' => intval($skus['sku_id']),
+                    'sku_amount' => intval($skus['order_amount']),
                 ];
             }
             $arrCustomerInfo = [

@@ -33,7 +33,7 @@ class Service_Page_Shop_CreateShopReturnOrder
             return true;
         }
         $strCmd = Orderui_Define_Cmd::CMD_CREATE_SHOP_RETURN_ORDER;
-        $wmqRet = Orderui_Wmq_Commit::sendWmqCmd($strCmd, $arrInput, $arrInput['logistics_order_id']);
+        $wmqRet = Orderui_Wmq_Commit::sendWmqCmd($strCmd, $arrInput, strval($arrInput['logistics_order_id']));
         if (false == $wmqRet) {
             Bd_Log::warning(sprintf("method[%s] cmd[%s] error", __METHOD__, $strCmd));
         }

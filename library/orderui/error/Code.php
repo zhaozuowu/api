@@ -183,6 +183,10 @@ class Orderui_Error_Code extends Wm_Error_Code
      */
     const OMS_BATCH_CREATE_SALE_RETURN_STOCKIN_ORDER_FAIL = 360009;
     /**
+     * 通知门店退货单创建结果失败
+     */
+    const OMS_NOTIFY_CREATE_SHOP_RETURN_ORDER_FAIL = 360010;
+    /**
      * 找不到关联订单
      */
     const OMS_MAP_ORDER_NOT_FOUND = 370001;

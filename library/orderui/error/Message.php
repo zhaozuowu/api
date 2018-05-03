@@ -45,6 +45,7 @@ class Orderui_Error_Message extends Wm_Error_Message
         Orderui_Error_Code::OMS_SKU_INFO_INVALID => '无效的sku',
         Orderui_Error_Code::OMS_BATCH_CREATE_SALE_RETURN_STOCKIN_ORDER_FAIL => '批量创建销退入库单失败',
         Orderui_Error_Code::OMS_NOTIFY_ISS_CREATE_RESULT_FAILED => '通知门店正向单创建结果失败',
+        Orderui_Error_Code::OMS_NOTIFY_CREATE_SHOP_RETURN_ORDER_FAIL => '通知门店退货单创建结果失败',
     ];
 
 }

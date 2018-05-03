@@ -410,6 +410,7 @@ class Service_Data_BusinessFormOrder
      */
     protected function splitSkusBySkuTemp($arrSkus, $arrSkuInfos)
     {
+        //return $arrSkus;
         if (empty($arrSkus)) {
             return [];
         }
@@ -434,6 +435,7 @@ class Service_Data_BusinessFormOrder
      * @throws Orderui_BusinessError
      */
     protected function filterSkusByInfos($arrSkus, $arrSkuInfos, $intBusinessFormType) {
+        //return $arrSkus;
         if (empty($arrSkuInfos) || empty($arrSkus)) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_SKU_INFO_PARAMS_ERROR);
         }
