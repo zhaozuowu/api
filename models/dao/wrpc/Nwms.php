@@ -105,6 +105,7 @@ class Dao_Wrpc_Nwms
     {
         $arrBatchCreateParams = $this->getBatchCreateParams($arrOrderList);
         $arrRet = $this->objWrpcService->batchCreateBusinessOrder($arrBatchCreateParams);
+        Bd_Log::trace(sprintf("method[%s] params[%s]", __METHOD__, json_encode($arrBatchCreateParams)));
         if (empty($arrRet) || 0 != $arrRet['errno']) {
             Bd_Log::warning(sprintf("method[%s] params[%s] arrRet[%s]",
                 __METHOD__, json_encode($arrBatchCreateParams), json_encode($arrRet)));
@@ -135,7 +136,7 @@ class Dao_Wrpc_Nwms
             $arrOrderInfos[] = $arrOrderInfoItem;
         }
         $arrBatchCreateParams['order_info'] = $arrOrderInfos;
-        return [ 'obj_data' => $arrBatchCreateParams];
+        return [ 'objData' => $arrBatchCreateParams];
     }
 
     /**
