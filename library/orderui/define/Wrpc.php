@@ -51,7 +51,6 @@ class Orderui_Define_Wrpc
     const SERVICE_NAME_NWMS_STOCKIN = 'StockinService';
     const SERVICE_NAME_TMS = 'ShipmentService';
     const SERVICE_NAME_OMS = 'BusinessService';
-    const SERVICE_NAME_SHOP = 'BookService';
 
     /**
      * tms app id

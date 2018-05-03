@@ -49,7 +49,7 @@ class Service_Data_BusinessFormOrder
         $this->objDaoRalSku = new Dao_Ral_Sku();
         $this->objDaoRalNWmsOrder = new Dao_Ral_NWmsOrder();
         $this->objDaoWrpcTms = new Dao_Wrpc_Tms();
-//        $this->objDaoWrpcNwms = new Dao_Wrpc_Nwms();
+        $this->objDaoWrpcNwms = new Dao_Wrpc_Nwms();
         $this->objDaoRalWarehouse = new Dao_Ral_Warehouse();
         $this->objDaoRedisBsOrder = new Dao_Redis_BusinessOrder();
         $this->objDaoWrpcIss = new Dao_Wrpc_Iss();
@@ -144,6 +144,7 @@ class Service_Data_BusinessFormOrder
      * 通知门店订单创建信息
      * @param $arrOrderList
      * @return void
+     * @throws Orderui_BusinessError
      */
     public function notifyIssOrderCreate($arrOrderList) {
         $this->objDaoWrpcIss->notifyNwmsOrderCreate($arrOrderList);
@@ -413,6 +414,9 @@ class Service_Data_BusinessFormOrder
             return [];
         }
         $arrMapTmpSkus = [];
+        //mock数据
+        $arrSkuInfos[1025517]['sku_temperature_control_type'] = 1;
+        $arrSkuInfos[1028197]['sku_temperature_control_type'] = 2;
         foreach ((array)$arrSkus as $arrSkuItem) {
             $intSkuId = $arrSkuItem['sku_id'];
             $intSkuTmpType = $arrSkuInfos[$intSkuId]['sku_temperature_control_type'];
@@ -430,7 +434,6 @@ class Service_Data_BusinessFormOrder
      * @throws Orderui_BusinessError
      */
     protected function filterSkusByInfos($arrSkus, $arrSkuInfos, $intBusinessFormType) {
-        //return $arrSkus;
         if (empty($arrSkuInfos) || empty($arrSkus)) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_SKU_INFO_PARAMS_ERROR);
         }

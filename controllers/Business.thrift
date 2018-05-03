@@ -110,7 +110,7 @@ struct ShelfRecallOrderInfo {
 struct BusinessFormBackOrderCheckInfo {
     1:required string logistics_order_id,
     2:required ShelfDeviceInfo shelf_info,
-    3:required list<ShelfRecallSkuInfo> skus,
+    3:required list<ShelfRecallSkuInfo> skus
 }
 
 #服务定义
