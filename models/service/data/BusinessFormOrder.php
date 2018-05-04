@@ -104,9 +104,9 @@ class Service_Data_BusinessFormOrder
         $arrBusinessFormOrderInfo['business_form_order_id'] = Orderui_Util_Utility::generateBusinessFormOrderId();
         //进行拆单处理
         $arrOrderSysDetailList = $this->splitBusinessOrder($arrBusinessFormOrderInfo);
-        $arrNwmsResponseList = $this->distributeOrder($arrOrderSysDetailList);
-        $arrNwmsResponseList = $this->batchCreateNwmsOrder($arrOrderSysDetailList);
-
+        //$arrNwmsResponseList = $this->distributeOrder($arrOrderSysDetailList);
+        $arrNwmsResponseList = $this->batchCreateNwmsOrder($arrOrderSysDetailList,
+                                                            $arrBusinessFormOrderInfo['logistics_order_id']);
         //校验是否已经创建
         $boolWhetherExisted = $this->checkBusinessFormOrderIsExisted($arrBusinessFormOrderInfo['logistics_order_id']
             , $arrBusinessFormOrderInfo['business_form_order_type'], $arrBusinessFormOrderInfo['supply_type']);
@@ -137,9 +137,6 @@ class Service_Data_BusinessFormOrder
         //异步通知门店创建结果
         $this->notifyIssOrderCreate($arrNwmsResponseList);
         return $arrNwmsResponseList;
-        Orderui_Wmq_Commit::sendWmqCmd(Orderui_Define_Cmd::CMD_NOTIFY_ISS_OMS_ORDER_CREATE,
-                                        $arrNwmsResponseList, $arrBusinessFormOrderInfo['business_form_order_id']);
-        return $arrNwmsResponseList;
     }
 
     /**
@@ -156,6 +153,7 @@ class Service_Data_BusinessFormOrder
      * 通知门店退货单创建信息
      * @param $arrOrderList
      * @return void
+     * @throws Orderui_BusinessError
      */
     public function notifyIssReturnOrderCreate($arrOrderList) {
         $this->objDaoWrpcIss->notifyNwmsReturnOrderCreate($arrOrderList);
@@ -578,18 +576,26 @@ class Service_Data_BusinessFormOrder
 
     /**
      * 批量创建nwms订单
-     * @param $arrOrderList
+     * @param array $arrOrderList
+     * @param integer $intSourceOrderId
      * @return array
      */
-    public function batchCreateNwmsOrder($arrOrderList)
+    public function batchCreateNwmsOrder($arrOrderList, $intSourceOrderId)
     {
         $arrRet = [];
+        //检查批量创建参数缓存
+        $arrCacheOrderList = $this->objDaoRedisBsOrder->getBatchCreateOrderParams($intSourceOrderId);
+        if (!empty($arrCacheOrderList)) {
+            $arrOrderList = $arrCacheOrderList;
+        }
+        //调用沧海批量创建订单
         $arrNwmsOrders = $this->objDaoWrpcNwms->batchCreateBusinessOrder($arrOrderList);
         $arrMapNwmsOrders = [];
         foreach ((array)$arrNwmsOrders as $arrNwmsOrderItem) {
             $intOrderSysId = $arrNwmsOrderItem['result']['logistics_order_id'];
             $arrMapNwmsOrders[$intOrderSysId] = $arrNwmsOrderItem;
         }
+        //格式化返回结果
         foreach ((array)$arrOrderList as $arrOrderInfo) {
             $intOrderSysId = $arrOrderInfo['order_system_id'];
             $arrRet[] = [
@@ -601,6 +607,8 @@ class Service_Data_BusinessFormOrder
                 'warehouse_id' => $arrOrderInfo['request_info']['warehouse_id'],
             ];
         }
+        //缓存参数
+        $this->objDaoRedisBsOrder->setBatchCreateOrderParams($intSourceOrderId, $arrOrderList);
         return $arrRet;
     }
 

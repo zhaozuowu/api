@@ -30,6 +30,8 @@ class Service_Page_Orderui_Commit_Createomsorder extends Wm_Lib_Wmq_CommitPageSe
     public function myExecute($arrInput)
     {
         $arrInput['business_form_order_way'] = Orderui_Define_BusinessFormOrder::ORDER_WAY_OBVERSE;
-        $this->objDsBusinessFormOrder->createOrder($arrInput);
+        $arrNwmsResponseList = $this->objDsBusinessFormOrder->createOrder($arrInput);
+        Orderui_Wmq_Commit::sendWmqCmd(Orderui_Define_Cmd::CMD_NOTIFY_ISS_OMS_ORDER_CREATE,
+            $arrNwmsResponseList, $arrInput['business_form_order_id']);
     }
 }
