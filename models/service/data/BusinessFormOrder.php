@@ -105,7 +105,7 @@ class Service_Data_BusinessFormOrder
         //进行拆单处理
         $arrOrderSysDetailList = $this->splitBusinessOrder($arrBusinessFormOrderInfo);
         $arrNwmsResponseList = $this->distributeOrder($arrOrderSysDetailList);
-        //$arrNwmsResponseList = $this->batchCreateNwmsOrder($arrOrderSysDetailList);
+        $arrNwmsResponseList = $this->batchCreateNwmsOrder($arrOrderSysDetailList);
 
         //校验是否已经创建
         $boolWhetherExisted = $this->checkBusinessFormOrderIsExisted($arrBusinessFormOrderInfo['logistics_order_id']
@@ -580,13 +580,16 @@ class Service_Data_BusinessFormOrder
      * 批量创建nwms订单
      * @param $arrOrderList
      * @return array
-     * @throws Orderui_BusinessError
      */
     public function batchCreateNwmsOrder($arrOrderList)
     {
         $arrRet = [];
         $arrNwmsOrders = $this->objDaoWrpcNwms->batchCreateBusinessOrder($arrOrderList);
-        $arrMapNwmsOrders = Orderui_Util_Utility::arrayToKeyValue($arrNwmsOrders, 'logistics_order_id');
+        $arrMapNwmsOrders = [];
+        foreach ((array)$arrNwmsOrders as $arrNwmsOrderItem) {
+            $intOrderSysId = $arrNwmsOrderItem['result']['logistics_order_id'];
+            $arrMapNwmsOrders[$intOrderSysId] = $arrNwmsOrderItem;
+        }
         foreach ((array)$arrOrderList as $arrOrderInfo) {
             $intOrderSysId = $arrOrderInfo['order_system_id'];
             $arrRet[] = [
@@ -595,6 +598,7 @@ class Service_Data_BusinessFormOrder
                 'business_form_order_id' => $arrOrderInfo['business_form_order_id'],
                 'order_type' => Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_ORDER,
                 'logistics_order_id' => $arrOrderInfo['request_info']['logisitcs_order_id'],
+                'warehouse_id' => $arrOrderInfo['request_info']['warehouse_id'],
             ];
         }
         return $arrRet;
