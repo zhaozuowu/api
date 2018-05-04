@@ -26,6 +26,7 @@ class Orderui_Lib_Ordersystemdetail
             $strOrderException = '';
             $strOrderExceptionTime = '';
             $intOrderSystemDetailId = $re['result']['result']['logistics_order_id'];
+            $intOrderSystemDetailIdStockOutOrder = Orderui_Util_Utility::generateOmsOrderCode();
             foreach ($re['result']['exceptions'] as $arrSkuException) {
                 if ($arrSkuException['sku_id'] == 0) {
                     $strOrderException = $arrSkuException['exception_info'];
@@ -33,6 +34,13 @@ class Orderui_Lib_Ordersystemdetail
                 } else {
                     $arrOrderSysDetailSkuListDb[] = [
                         'order_system_detail_id' => $intOrderSystemDetailId,
+                        'order_id' => $re['result']['result']['business_form_order_id'],
+                        'sku_id' => $arrSkuException['sku_id'] ,
+                        'sku_amount' => $arrSkuInfoMap[$arrSkuException['sku_id']],
+                        'sku_exception' => $arrSkuException['exception_info'],
+                    ];
+                    $arrOrderSysDetailSkuListDb[] = [
+                        'order_system_detail_id' => $intOrderSystemDetailIdStockOutOrder,
                         'order_id' => $re['result']['result']['business_form_order_id'],
                         'sku_id' => $arrSkuException['sku_id'] ,
                         'sku_amount' => $arrSkuInfoMap[$arrSkuException['sku_id']],
@@ -65,6 +73,15 @@ class Orderui_Lib_Ordersystemdetail
                 'parent_order_id' => $re['order_system_id'],
                 'order_id' => $re['result']['result']['business_form_order_id'],
                 'order_exception' => $strOrderException,
+            ];
+            $arrOrderSysDetailListDb[] = [
+                'order_system_detail_id' => $intOrderSystemDetailIdStockOutOrder,
+                'order_system_id' => $re['order_system_id'],
+                'order_type' => Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_STOCK_OUT,
+                'business_form_order_id' => $re['business_form_order_id'],
+                'parent_order_id' => $re['result']['result']['business_form_order_id'],
+                'order_id' => $re['result']['result']['stockout_order_id'],
+                'order_exception' => '',
             ];
         }
 
