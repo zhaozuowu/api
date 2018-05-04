@@ -597,7 +597,7 @@ class Service_Data_BusinessFormOrder
                 'order_system_id' => $intOrderSysId,
                 'business_form_order_id' => $arrOrderInfo['business_form_order_id'],
                 'order_type' => Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_ORDER,
-                'logistics_order_id' => $arrOrderInfo['request_info']['logisitcs_order_id'],
+                'logistics_order_id' => $arrOrderInfo['request_info']['logistics_order_id'],
                 'warehouse_id' => $arrOrderInfo['request_info']['warehouse_id'],
             ];
         }
