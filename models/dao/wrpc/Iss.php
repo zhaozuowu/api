@@ -88,7 +88,7 @@ class Dao_Wrpc_Iss
             $arrChildOrderInfo['warehouse_id'] = intval($arrOrderInfo['warehouse_id']);
             $arrChildOrderInfo['warehouse_name'] = strval($arrOrderInfo['warehouse_name']);
             $arrChildOrderInfo['exception_sku_list'] = $this->getChildOrderSkusException($arrOrderInfo['result']['exceptions']);
-            $arrChildOrderInfo['receipts_details'] = $this->getReceiptsDetail($arrOrderInfo['result']['result']['skus']);
+            $arrChildOrderInfo['receipts_detail'] = $this->getReceiptsDetail($arrOrderInfo['result']['result']['skus']);
             $arrChildOrders[] = $arrChildOrderInfo;
         }
         return $arrChildOrders;
