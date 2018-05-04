@@ -418,8 +418,9 @@ class Service_Data_BusinessFormOrder
         }
         $arrMapTmpSkus = [];
         //mock数据
-        $arrSkuInfos[1025517]['sku_temperature_control_type'] = 1;
-        $arrSkuInfos[1028197]['sku_temperature_control_type'] = 2;
+        $arrSkuInfos[1000047]['sku_temperature_control_type'] = 1;
+        $arrSkuInfos[1000046]['sku_temperature_control_type'] = 1;
+        $arrSkuInfos[1000003]['sku_temperature_control_type'] = 2;
         foreach ((array)$arrSkus as $arrSkuItem) {
             $intSkuId = $arrSkuItem['sku_id'];
             $intSkuTmpType = $arrSkuInfos[$intSkuId]['sku_temperature_control_type'];
@@ -631,6 +632,7 @@ class Service_Data_BusinessFormOrder
             $arrRet[] = [
                 'result' => $arrMapNwmsOrders[$intOrderSysId],
                 'order_system_id' => $intOrderSysId,
+                'order_system_detail_id' => $arrOrderInfo['order_system_detail_id'],
                 'business_form_order_id' => $arrOrderInfo['business_form_order_id'],
                 'logistics_order_id'  => $arrOrderInfo['logistics_order_id'],
                 'order_system_type' => $arrOrderInfo['order_system_type'],
@@ -779,6 +781,7 @@ class Service_Data_BusinessFormOrder
         $arrBusinessFormOrderInfo['business_form_order_id'] = Orderui_Util_Utility::generateBusinessFormOrderId();
         //进行拆单处理
         $arrOrderSysDetailList = $this->splitBusinessOrder($arrBusinessFormOrderInfo);
+        Bd_Log::trace('$arrOrderSysDetailList '.json_encode($arrOrderSysDetailList));
         $arrNwmsResponseList = $this->batchCreateSaleReturnStockinOrder($arrOrderSysDetailList);
         //校验是否已经创建
         $boolWhetherExisted = $this->checkBusinessFormOrderIsExisted($arrBusinessFormOrderInfo['logistics_order_id']

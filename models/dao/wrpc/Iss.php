@@ -161,7 +161,7 @@ class Dao_Wrpc_Iss
                 ];
             }
             $arrChildOrderInfo = [];
-            $arrChildOrderInfo['receipts_id'] = intval($arrOrderResult['stockin_order_id']);
+            $arrChildOrderInfo['receipts_id'] = intval($arrOrderInfo['order_system_detail_id']);
             $arrChildOrderInfo['order_split_time'] = time();
             $arrChildOrderInfo['receipts_type'] = 1;
             $arrChildOrderInfo['warehouse_id'] = $arrOrderResult['warehouse_id'];

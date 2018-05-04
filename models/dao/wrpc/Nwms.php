@@ -148,8 +148,10 @@ class Dao_Wrpc_Nwms
     {
         Bd_Log::trace('$arrOrderList'.json_encode($arrOrderList));
         $arrBatchReturnsInfo = [];
+        $intLogisticsOrderId = 0;
         foreach ($arrOrderList as $arrOrder) {
             $arrRequestInfo = $arrOrder['request_info'];
+            $intLogisticsOrderId = $arrRequestInfo['logistics_order_id'];
             $arrSkus = [];
             foreach ($arrRequestInfo['skus'] as $skus) {
                 $arrSkus[] = [
@@ -168,6 +170,7 @@ class Dao_Wrpc_Nwms
             $arrBatchReturnsInfo[] = [
                 'business_form_order_id' => $arrOrder['business_form_order_id'],
                 'order_system_id' => $arrOrder['order_system_id'],
+                'order_system_detail_id' => $arrOrder['order_system_detail_id'],
                 'order_system_type' => $arrOrder['order_system_type'],
                 'logistics_order_id' => $arrRequestInfo['logistics_order_id'],
                 'warehouse_id' => $arrRequestInfo['warehouse_id'],
@@ -178,6 +181,9 @@ class Dao_Wrpc_Nwms
                 'customer_info' => $arrCustomerInfo,
             ];
         }
-        return ['batch_returns_info' => $arrBatchReturnsInfo];
+        return [
+            'batch_returns_info' => $arrBatchReturnsInfo,
+            'logistics_order_id' => $intLogisticsOrderId,
+        ];
     }
 }
