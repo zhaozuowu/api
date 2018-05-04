@@ -104,7 +104,7 @@ class Service_Data_BusinessFormOrder
         $arrBusinessFormOrderInfo['business_form_order_id'] = Orderui_Util_Utility::generateBusinessFormOrderId();
         //进行拆单处理
         $arrOrderSysDetailList = $this->splitBusinessOrder($arrBusinessFormOrderInfo);
-        //$arrNwmsResponseList = $this->distributeOrder($arrOrderSysDetailList);
+        $arrNwmsResponseList = $this->distributeOrder($arrOrderSysDetailList);
         $arrNwmsResponseList = $this->batchCreateNwmsOrder($arrOrderSysDetailList,
                                                             $arrBusinessFormOrderInfo['logistics_order_id']);
         //校验是否已经创建
@@ -386,13 +386,15 @@ class Service_Data_BusinessFormOrder
         //get warehouse info
         $arrWarehouseInfo = $this->getWarehouseInfoByDistrictId($arrBusinessOrderInfo['customer_region_id']);
         $arrOrderSysDetailList = [];
+        $intOrderSystemId = Orderui_Util_Utility::generateOmsOrderCode();
         foreach ((array)$arrMapTmpSkus as $intSkuTmpType => $arrTmpSkus) {
-            $intOrderSystemId = Orderui_Util_Utility::generateOmsOrderCode();
+            $intOrderSystemDetailId = Orderui_Util_Utility::generateOmsOrderCode();
             $arrBusinessOrderInfo['skus'] = $arrTmpSkus;
             $arrBusinessOrderInfo['warehouse_id'] = $arrWarehouseInfo['warehouse_id'];
             $arrBusinessOrderInfo['warehouse_name'] = $arrWarehouseInfo['warehouse_name'];
             $arrOrderSysDetail = [
                     'order_system_id' => $intOrderSystemId,
+                    'order_system_detail_id' => $intOrderSystemDetailId,
                     'order_system_type' => Orderui_Define_Const::ORDER_SYS_NWMS,
                     'business_form_order_id' => $intBusinessOrderId,
                     'request_info' => $arrBusinessOrderInfo,
@@ -603,6 +605,7 @@ class Service_Data_BusinessFormOrder
                 'order_system_id' => $intOrderSysId,
                 'business_form_order_id' => $arrOrderInfo['business_form_order_id'],
                 'order_type' => Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_ORDER,
+                'order_system_type' => $arrOrderInfo['order_system_type'],
                 'logistics_order_id' => $arrOrderInfo['request_info']['logistics_order_id'],
                 'warehouse_id' => $arrOrderInfo['request_info']['warehouse_id'],
             ];
