@@ -39,13 +39,15 @@ class Orderui_Lib_Ordersystemdetail
                         'sku_amount' => $arrSkuInfoMap[$arrSkuException['sku_id']],
                         'sku_exception' => $arrSkuException['exception_info'],
                     ];
-                    $arrOrderSysDetailSkuListDb[] = [
-                        'order_system_detail_id' => $intOrderSystemDetailIdStockOutOrder,
-                        'order_id' => $re['result']['result']['business_form_order_id'],
-                        'sku_id' => $arrSkuException['sku_id'] ,
-                        'sku_amount' => $arrSkuInfoMap[$arrSkuException['sku_id']],
-                        'sku_exception' => $arrSkuException['exception_info'],
-                    ];
+                    if (!empty($re['result']['result']['stockout_order_id'])) {
+                        $arrOrderSysDetailSkuListDb[] = [
+                            'order_system_detail_id' => $intOrderSystemDetailIdStockOutOrder,
+                            'order_id' => $re['result']['result']['business_form_order_id'],
+                            'sku_id' => $arrSkuException['sku_id'] ,
+                            'sku_amount' => $arrSkuInfoMap[$arrSkuException['sku_id']],
+                            'sku_exception' => $arrSkuException['exception_info'],
+                        ];
+                    }
                 }
             }
             if (!empty($re['result']['result']['skus'])) {
