@@ -134,8 +134,6 @@ class Service_Data_BusinessFormOrder
         if (Orderui_Define_Const::NWMS_ORDER_CREATE_STATUS_FAILED == $intBusinessCreateStatus) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_CREATE_ERROR);
         }
-        //异步通知门店创建结果
-        $this->notifyIssOrderCreate($arrNwmsResponseList);
         return $arrNwmsResponseList;
     }
 
