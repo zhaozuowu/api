@@ -626,13 +626,14 @@ class Service_Data_BusinessFormOrder
     {
         $arrRet = [];
         $arrNwmsOrders = $this->objDaoWrpcNwms->batchCreateStockinOrder($arrOrderList);
-        $arrMapNwmsOrders = Orderui_Util_Utility::arrayToKeyValue($arrNwmsOrders, 'order_system_id');
+        $arrMapNwmsOrders = Orderui_Util_Utility::arrayToKeyValue($arrNwmsOrders, 'order_system_detail_id');
         foreach ((array)$arrOrderList as $arrOrderInfo) {
             $intOrderSysId = $arrOrderInfo['order_system_id'];
+            $intOrderSysDetailId = $arrOrderInfo['order_system_detail_id'];
             $arrRet[] = [
-                'result' => $arrMapNwmsOrders[$intOrderSysId],
+                'result' => $arrMapNwmsOrders[$intOrderSysDetailId],
                 'order_system_id' => $intOrderSysId,
-                'order_system_detail_id' => $arrOrderInfo['order_system_detail_id'],
+                'order_system_detail_id' => $intOrderSysDetailId,
                 'business_form_order_id' => $arrOrderInfo['business_form_order_id'],
                 'logistics_order_id'  => $arrOrderInfo['logistics_order_id'],
                 'order_system_type' => $arrOrderInfo['order_system_type'],
