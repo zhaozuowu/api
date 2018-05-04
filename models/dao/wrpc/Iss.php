@@ -48,12 +48,12 @@ class Dao_Wrpc_Iss
         Bd_Log::trace(sprintf('method[%s] call shop bookservice omsReturnOrderGoods request [%s]', __METHOD__, json_encode($arrParams)));
         $arrRet = $this->objWrpcService->omsReturnOrderGoods($arrParams);
         Bd_Log::trace(sprintf("method[%s] call shop bookservice omsReturnOrderGoods arrRet [%s]", __METHOD__, json_encode($arrRet)));
-        if (empty($arrRet['data']) || 0 != $arrRet['errno']) {
+        if (!isset($arrRet['errno']) || 0 != $arrRet['errno']) {
             Bd_Log::warning(sprintf("method[%s] arrRet[%s] routing-key[%s]",
                 __METHOD__, json_encode($arrRet), $strRoutingKey));
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_NOTIFY_CREATE_SHOP_RETURN_ORDER_FAIL);
         }
-        return $arrRet['data'];
+        return $arrRet;
     }
 
     /**
