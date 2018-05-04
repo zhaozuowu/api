@@ -30,7 +30,7 @@ class Dao_Wrpc_Iss
     {
         $arrParams = $this->getNotifyNwmsOrderCreateParams($arrOrderList);
         $arrRet = $this->objWrpcService->omsOrderGoods($arrParams);
-        if (empty($arrRet['errno']) || 0 != $arrRet['errno']) {
+        if (!isset($arrRet['errno']) || 0 != $arrRet['errno']) {
             Bd_Log::warning(sprintf("method[%s] arrRet[%s]", __METHOD__, json_encode($arrRet)));
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_NOTIFY_ISS_CREATE_RESULT_FAILED);
         }
@@ -48,12 +48,12 @@ class Dao_Wrpc_Iss
         Bd_Log::trace(sprintf('method[%s] call shop bookservice omsReturnOrderGoods request [%s]', __METHOD__, json_encode($arrParams)));
         $arrRet = $this->objWrpcService->omsReturnOrderGoods($arrParams);
         Bd_Log::trace(sprintf("method[%s] call shop bookservice omsReturnOrderGoods arrRet [%s]", __METHOD__, json_encode($arrRet)));
-        if (empty($arrRet['data']) || 0 != $arrRet['errno']) {
-            Bd_Log::warning(sprintf("method[%s] arrRet[%s] routing-key[%s]",
-                __METHOD__, json_encode($arrRet), $strRoutingKey));
+        if (!isset($arrRet['errno']) || 0 != $arrRet['errno']) {
+            Bd_Log::warning(sprintf("notify_shop_create_return_order_fail, logistics_order_id[%s], error_no[%s], error_msg[%s]"
+                , $arrParams['parent_receipts_id'], $arrRet['errno'], $arrRet['errmsg']));
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_NOTIFY_CREATE_SHOP_RETURN_ORDER_FAIL);
         }
-        return $arrRet['data'];
+        return $arrRet;
     }
 
     /**
@@ -122,6 +122,7 @@ class Dao_Wrpc_Iss
         foreach ((array)$arrSkus as $arrSkuInfo) {
             $arrReceiptDetailInfo = [];
             $arrReceiptDetailInfo['sku_id'] = $arrSkuInfo['sku_id'];
+            $arrReceiptDetailInfo['delivery_price'] = $arrSkuInfo['send_price_tax'];
             $arrReceiptDetailInfo['count'] = $arrSkuInfo['distribute_amount'];
             $arrReceiptsDetail[] = $arrReceiptDetailInfo;
         }

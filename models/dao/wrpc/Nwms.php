@@ -88,8 +88,8 @@ class Dao_Wrpc_Nwms
         $arrRet = $this->objWrpcStockinService->batchCreateStockInOrder($arrParams);
         Bd_Log::trace(sprintf("method[%s] batch create nwms sale return stockin order[%s]", __METHOD__, json_encode($arrRet)));
         if (empty($arrRet['data']) || 0 != $arrRet['errno']) {
-            Bd_Log::warning(sprintf("method[%s] arrRet[%s] routing-key[%s]",
-                __METHOD__, json_encode($arrRet), $strRoutingKey));
+            Bd_Log::warning(sprintf("batch_create_stockin_order_fail, logistics_order_id[%s], error_no[%s], error_msg[%s]"
+                , $arrParams['logistics_order_id'], $arrRet['errno'], $arrRet['errmsg']));
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_BATCH_CREATE_SALE_RETURN_STOCKIN_ORDER_FAIL);
         }
         return $arrRet['data'];
