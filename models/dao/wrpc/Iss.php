@@ -30,7 +30,7 @@ class Dao_Wrpc_Iss
     {
         $arrParams = $this->getNotifyNwmsOrderCreateParams($arrOrderList);
         $arrRet = $this->objWrpcService->omsOrderGoods($arrParams);
-        if (empty($arrRet['errno']) || 0 != $arrRet['errno']) {
+        if (!isset($arrRet['errno']) || 0 != $arrRet['errno']) {
             Bd_Log::warning(sprintf("method[%s] arrRet[%s]", __METHOD__, json_encode($arrRet)));
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_NOTIFY_ISS_CREATE_RESULT_FAILED);
         }
@@ -122,6 +122,7 @@ class Dao_Wrpc_Iss
         foreach ((array)$arrSkus as $arrSkuInfo) {
             $arrReceiptDetailInfo = [];
             $arrReceiptDetailInfo['sku_id'] = $arrSkuInfo['sku_id'];
+            $arrReceiptDetailInfo['delivery_price'] = $arrSkuInfo['send_price_tax'];
             $arrReceiptDetailInfo['count'] = $arrSkuInfo['distribute_amount'];
             $arrReceiptsDetail[] = $arrReceiptDetailInfo;
         }

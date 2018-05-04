@@ -104,7 +104,7 @@ class Service_Data_BusinessFormOrder
         $arrBusinessFormOrderInfo['business_form_order_id'] = Orderui_Util_Utility::generateBusinessFormOrderId();
         //进行拆单处理
         $arrOrderSysDetailList = $this->splitBusinessOrder($arrBusinessFormOrderInfo);
-        $arrNwmsResponseList = $this->distributeOrder($arrOrderSysDetailList);
+        //$arrNwmsResponseList = $this->distributeOrder($arrOrderSysDetailList);
         $arrNwmsResponseList = $this->batchCreateNwmsOrder($arrOrderSysDetailList,
                                                             $arrBusinessFormOrderInfo['logistics_order_id']);
         //校验是否已经创建
@@ -137,6 +137,15 @@ class Service_Data_BusinessFormOrder
         //异步通知门店创建结果
         $this->notifyIssOrderCreate($arrNwmsResponseList);
         return $arrNwmsResponseList;
+    }
+
+    /**
+     * 校验仓配作业类型
+     * @param $arrBusinessFormOrderInfo
+     * @return array
+     */
+    public function checkSkuWarehouseOpType($arrBusinessFormOrderInfo) {
+
     }
 
     /**
@@ -379,8 +388,6 @@ class Service_Data_BusinessFormOrder
         }
         $arrSkuIds = array_column($arrBusinessOrderInfo['skus'], 'sku_id');
         $arrSkuInfos = $this->objDaoRalSku->getSkuInfos($arrSkuIds);
-        $arrBusinessOrderInfo['skus'] = $this->filterSkusByInfos($arrBusinessOrderInfo['skus'],
-                                                                    $arrSkuInfos, $arrBusinessOrderInfo['business_form_order_type']);
         //split skus by sku temp
         $arrMapTmpSkus = $this->splitSkusBySkuTemp($arrBusinessOrderInfo['skus'], $arrSkuInfos);
         //get warehouse info
@@ -418,9 +425,6 @@ class Service_Data_BusinessFormOrder
         }
         $arrMapTmpSkus = [];
         //mock数据
-        $arrSkuInfos[1000047]['sku_temperature_control_type'] = 1;
-        $arrSkuInfos[1000046]['sku_temperature_control_type'] = 1;
-        $arrSkuInfos[1000003]['sku_temperature_control_type'] = 2;
         foreach ((array)$arrSkus as $arrSkuItem) {
             $intSkuId = $arrSkuItem['sku_id'];
             $intSkuTmpType = $arrSkuInfos[$intSkuId]['sku_temperature_control_type'];
@@ -438,7 +442,6 @@ class Service_Data_BusinessFormOrder
      * @throws Orderui_BusinessError
      */
     protected function filterSkusByInfos($arrSkus, $arrSkuInfos, $intBusinessFormType) {
-        return $arrSkus;
         if (empty($arrSkuInfos) || empty($arrSkus)) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_SKU_INFO_PARAMS_ERROR);
         }
@@ -449,13 +452,6 @@ class Service_Data_BusinessFormOrder
                 continue;
             }
             $arrSkuInfoItem = $arrSkuInfos[$intSkuId];
-            if ($arrSkuInfoItem['is_active'] != Orderui_Define_Const::IS_ACTIVE) {
-                unset($arrSkus[$intKey]);
-            }
-            $arrSkuBusinessForm = $arrSkuInfoItem['sku_business_form'];
-            if (empty($arrSkuBusinessForm) || in_array($intBusinessFormType, $arrSkuBusinessForm)) {
-                unset($arrSkus[$intKey]);
-            }
             //校验sku业态详情
             $boolIsSupportSplit = $this->checkSkuBusinessFormDetail($intBusinessFormType,
                                                 $arrSkuInfoItem['sku_business_form_detail']);
