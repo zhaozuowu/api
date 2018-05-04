@@ -435,7 +435,7 @@ class Service_Data_BusinessFormOrder
      * @throws Orderui_BusinessError
      */
     protected function filterSkusByInfos($arrSkus, $arrSkuInfos, $intBusinessFormType) {
-        //return $arrSkus;
+        return $arrSkus;
         if (empty($arrSkuInfos) || empty($arrSkus)) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_SKU_INFO_PARAMS_ERROR);
         }
@@ -760,7 +760,6 @@ class Service_Data_BusinessFormOrder
         //进行拆单处理
         $arrOrderSysDetailList = $this->splitBusinessOrder($arrBusinessFormOrderInfo);
         $arrNwmsResponseList = $this->batchCreateSaleReturnStockinOrder($arrOrderSysDetailList);
-
         //校验是否已经创建
         $boolWhetherExisted = $this->checkBusinessFormOrderIsExisted($arrBusinessFormOrderInfo['logistics_order_id']
             , $arrBusinessFormOrderInfo['business_form_order_type'], $arrBusinessFormOrderInfo['supply_type']);

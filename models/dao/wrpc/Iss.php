@@ -145,7 +145,7 @@ class Dao_Wrpc_Iss
             foreach ((array) $arrOrderResult['exceptions'] as $arrSkusExceptionInfo) {
                 $arrRetSkusException[] = [
                     'sku_id' => $arrSkusExceptionInfo['sku_id'],
-                    'count'  => $arrSkusExceptionInfo['order_amount'],
+                    //'count'  => $arrSkusExceptionInfo['order_amount'],
                     'reason' => $arrSkusExceptionInfo['exception_info'],
                 ];
             }
@@ -154,7 +154,7 @@ class Dao_Wrpc_Iss
                 $arrRetSkus[] = [
                     'sku_id' => $arrSku['sku_id'],
                     'count'  => $arrSku['order_amount'],
-                    'delivery_price' => $arrSku['send_price'],
+                    'delivery_price' => $arrSku['send_price'] * 100000,
                 ];
             }
             $arrChildOrderInfo = [];
@@ -166,7 +166,7 @@ class Dao_Wrpc_Iss
             $arrChildOrderInfo['exception_reason'] = $arrOrderResult['exception_reason'];
             $arrChildOrderInfo['exception_code'] = $arrOrderResult['exception_code'];
             $arrChildOrderInfo['exception_sku_list'] = $arrRetSkusException;
-            $arrChildOrderInfo['receipts_details'] = $arrRetSkus;
+            $arrChildOrderInfo['receipts_detail'] = $arrRetSkus;
             $arrChildOrders[] = $arrChildOrderInfo;
         }
         $arrNwmsOrders['split_child_order_list'] = $arrChildOrders;
