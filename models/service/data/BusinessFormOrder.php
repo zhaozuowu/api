@@ -599,7 +599,7 @@ class Service_Data_BusinessFormOrder
         }
         //格式化返回结果
         foreach ((array)$arrOrderList as $arrOrderInfo) {
-            $intOrderSysId = $arrOrderInfo['order_system_id'];
+            $intOrderSysId = $arrOrderInfo['order_system_detail_id'];
             $arrRet[] = [
                 'result' => $arrMapNwmsOrders[$intOrderSysId],
                 'order_system_id' => $intOrderSysId,
