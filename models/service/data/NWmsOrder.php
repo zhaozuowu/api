@@ -108,15 +108,15 @@ class Service_Data_NWmsOrder
 
     /**
      * 更新销退入库单计划入库数
-     * @param $strStockinOrderId
+     * @param $strOrderSystemDetailId
      * @param $arrSkuInfoList
      * @return array
      * @throws Orderui_BusinessError
      */
-    public function updateStockInOrderSkuPlanAmount($strStockinOrderId, $arrSkuInfoList)
+    public function updateStockInOrderSkuPlanAmount($strOrderSystemDetailId, $arrSkuInfoList)
     {
-        $intStockinOrderId = intval($strStockinOrderId);
-        if (empty($intStockinOrderId) || empty($arrSkuInfoList)) {
+        $intOrderSystemDetailId = intval($strOrderSystemDetailId);
+        if (empty($intOrderSystemDetailId) || empty($arrSkuInfoList)) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR);
         }
         foreach ($arrSkuInfoList as $skuInfo) {
@@ -125,6 +125,14 @@ class Service_Data_NWmsOrder
             if( (0 >= $intSkuId) || (0 > $intSkuAmount)) {
                 Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR);
             }
+        }
+        $condition = [
+            'order_system_detail_id' => $intOrderSystemDetailId,
+            'is_delete' => Nscm_Define_Const::ENABLE,
+        ];
+        $intStockinOrderId = Model_Orm_OrderSystemDetail::findOne($condition)->order_id;
+        if (empty($intStockinOrderId)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::ORDER_SYS_DETAIL_NOT_EXITED);
         }
         $arrStockinOrderInfo = [
             'stockin_order_id' => $intStockinOrderId,
