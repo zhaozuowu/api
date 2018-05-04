@@ -386,13 +386,15 @@ class Service_Data_BusinessFormOrder
         //get warehouse info
         $arrWarehouseInfo = $this->getWarehouseInfoByDistrictId($arrBusinessOrderInfo['customer_region_id']);
         $arrOrderSysDetailList = [];
+        $intOrderSystemId = Orderui_Util_Utility::generateOmsOrderCode();
         foreach ((array)$arrMapTmpSkus as $intSkuTmpType => $arrTmpSkus) {
-            $intOrderSystemId = Orderui_Util_Utility::generateOmsOrderCode();
+            $intOrderSystemDetailId = Orderui_Util_Utility::generateOmsOrderCode();
             $arrBusinessOrderInfo['skus'] = $arrTmpSkus;
             $arrBusinessOrderInfo['warehouse_id'] = $arrWarehouseInfo['warehouse_id'];
             $arrBusinessOrderInfo['warehouse_name'] = $arrWarehouseInfo['warehouse_name'];
             $arrOrderSysDetail = [
                     'order_system_id' => $intOrderSystemId,
+                    'order_system_detail_id' => $intOrderSystemDetailId,
                     'order_system_type' => Orderui_Define_Const::ORDER_SYS_NWMS,
                     'business_form_order_id' => $intBusinessOrderId,
                     'request_info' => $arrBusinessOrderInfo,
