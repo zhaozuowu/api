@@ -14,11 +14,12 @@ class Orderui_Lib_Omssys
      */
     public static function formatOmsSysInfo($arrResponseList) {
         $arrOrderSysList = [];
-        foreach ($arrResponseList as $arrResponse) {
+        $arrResults = Orderui_Util_Utility::arrayToKeyValues($arrResponseList, 'order_system_id');
+        foreach ($arrResults as $arrResponse) {
             $arrOrderSysList[] = [
-                'order_system_id' => $arrResponse['order_system_id'],
-                'order_system_type' => $arrResponse['order_system_type'],
-                'business_form_order_id' => $arrResponse['business_form_order_id'],
+                'order_system_id' => $arrResponse[0]['order_system_id'],
+                'order_system_type' => $arrResponse[0]['order_system_type'],
+                'business_form_order_id' => $arrResponse[0]['business_form_order_id'],
             ];
         }
         return $arrOrderSysList;
