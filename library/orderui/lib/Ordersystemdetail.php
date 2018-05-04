@@ -39,7 +39,6 @@ class Orderui_Lib_Ordersystemdetail
                         'sku_amount' => $arrSkuInfoMap[$arrSkuException['sku_id']],
                         'sku_exception' => $arrSkuException['exception_info'],
                     ];
-                    if (!empty($re['result']['result']['stockout_order_id'])) {
                         $arrOrderSysDetailSkuListDb[] = [
                             'order_system_detail_id' => $intOrderSystemDetailIdStockOutOrder,
                             'order_id' => $re['result']['result']['business_form_order_id'],
@@ -47,7 +46,6 @@ class Orderui_Lib_Ordersystemdetail
                             'sku_amount' => $arrSkuInfoMap[$arrSkuException['sku_id']],
                             'sku_exception' => $arrSkuException['exception_info'],
                         ];
-                    }
                 }
             }
             if (!empty($re['result']['result']['skus'])) {
@@ -76,15 +74,17 @@ class Orderui_Lib_Ordersystemdetail
                 'order_id' => $re['result']['result']['business_form_order_id'],
                 'order_exception' => $strOrderException,
             ];
-            $arrOrderSysDetailListDb[] = [
-                'order_system_detail_id' => $intOrderSystemDetailIdStockOutOrder,
-                'order_system_id' => $re['order_system_id'],
-                'order_type' => Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_STOCK_OUT,
-                'business_form_order_id' => $re['business_form_order_id'],
-                'parent_order_id' => $re['result']['result']['business_form_order_id'],
-                'order_id' => $re['result']['result']['stockout_order_id'],
-                'order_exception' => '',
-            ];
+            if (!empty($re['result']['result']['stockout_order_id'])) {
+                $arrOrderSysDetailListDb[] = [
+                    'order_system_detail_id' => $intOrderSystemDetailIdStockOutOrder,
+                    'order_system_id' => $re['order_system_id'],
+                    'order_type' => Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_STOCK_OUT,
+                    'business_form_order_id' => $re['business_form_order_id'],
+                    'parent_order_id' => $re['result']['result']['business_form_order_id'],
+                    'order_id' => $re['result']['result']['stockout_order_id'],
+                    'order_exception' => '',
+                ];
+            }
         }
 
         return [
