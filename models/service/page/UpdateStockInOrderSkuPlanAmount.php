@@ -27,8 +27,9 @@ class Service_Page_UpdateStockInOrderSkuPlanAmount
      */
     public function execute($arrInput)
     {
-        $strStockinOrderId = strval($arrInput['stockin_order_id']);
+        //orderSystemDetailId
+        $strOrderSystemDetailId = strval($arrInput['stockin_order_id']);
         $arrSkuInfoList = $arrInput['sku_info_list'];
-        return $this->objData->updateStockInOrderSkuPlanAmount($strStockinOrderId, $arrSkuInfoList);
+        return $this->objData->updateStockInOrderSkuPlanAmount($strOrderSystemDetailId, $arrSkuInfoList);
     }
 }

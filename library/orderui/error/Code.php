@@ -102,6 +102,12 @@ class Orderui_Error_Code extends Wm_Error_Code
     const ORDER_SYS_DETAIL_IS_EXITED = 350034;
 
     /**
+     * order system detail订单不存在
+     * @var integer
+     */
+    const ORDER_SYS_DETAIL_NOT_EXITED = 350035;
+
+    /**
      * oms权限校验失败
      * @var integer
      */
