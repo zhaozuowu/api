@@ -16,7 +16,7 @@ class Orderui_Lib_Nwmsorder
     {
         foreach ($arrResponseList as $arrResponse) {
             $arrSkuExceptionMap = [];
-            foreach ($arrResponse['result']['exceptions'] as $arrException) {
+            foreach ((array)$arrResponse['result']['exceptions'] as $arrException) {
                 if (0 == $arrException['sku_id']) {
                     $strOrderException = $arrException['exception_info'];
                 } else {
