@@ -29,7 +29,9 @@ class Dao_Wrpc_Iss
     public function notifyNwmsOrderCreate($arrOrderList)
     {
         $arrParams = $this->getNotifyNwmsOrderCreateParams($arrOrderList);
+        Bd_Log::trace(sprintf('method[%s] call shop bookservice omsOrderCreate request [%s]', __METHOD__, json_encode($arrParams)));
         $arrRet = $this->objWrpcService->omsOrderGoods($arrParams);
+        Bd_Log::trace(sprintf("method[%s] call shop bookservice omsOrderCreate arrRet [%s]", __METHOD__, json_encode($arrRet)));
         if (!isset($arrRet['errno']) || 0 != $arrRet['errno']) {
             Bd_Log::warning(sprintf("method[%s] arrRet[%s]", __METHOD__, json_encode($arrRet)));
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_NOTIFY_ISS_CREATE_RESULT_FAILED);
