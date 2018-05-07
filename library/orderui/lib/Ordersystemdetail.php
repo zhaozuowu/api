@@ -57,7 +57,7 @@ class Orderui_Lib_Ordersystemdetail
                     ];
                     //沧海出库单
                     $arrStockoutOrderSkuItem = [
-                        'order_system_detail_id' => $intOrderSystemDetailId,
+                        'order_system_detail_id' => $intOrderSystemDetailIdStockOutOrder,
                         'order_id' => $re['result']['result']['stockout_order_id'],
                         'sku_id' => $arrSku['sku_id'],
                         'sku_amount' => $arrSkuInfoMap[$arrSku['sku_id']],
