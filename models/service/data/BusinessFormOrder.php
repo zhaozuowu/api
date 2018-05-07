@@ -104,9 +104,9 @@ class Service_Data_BusinessFormOrder
         $arrBusinessFormOrderInfo['business_form_order_id'] = Orderui_Util_Utility::generateBusinessFormOrderId();
         //进行拆单处理
         $arrOrderSysDetailList = $this->splitBusinessOrder($arrBusinessFormOrderInfo);
-        //$arrNwmsResponseList = $this->distributeOrder($arrOrderSysDetailList);
-        $arrNwmsResponseList = $this->batchCreateNwmsOrder($arrOrderSysDetailList,
-                                                            $arrBusinessFormOrderInfo['logistics_order_id']);
+        $arrNwmsResponseList = $this->distributeOrder($arrOrderSysDetailList,
+                                        $arrBusinessFormOrderInfo['logistics_order_id'],
+                                        $arrBusinessFormOrderInfo['business_form_order_type']);
         //校验是否已经创建
         $boolWhetherExisted = $this->checkBusinessFormOrderIsExisted($arrBusinessFormOrderInfo['logistics_order_id']
             , $arrBusinessFormOrderInfo['business_form_order_type'], $arrBusinessFormOrderInfo['supply_type']);
@@ -396,6 +396,45 @@ class Service_Data_BusinessFormOrder
         if (!$this->checkBusinessOrderWhetherSplit($intBusinessOrderId)) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::BUSINESS_ORDER_IS_SPLIT, 'business_order_id is already split');
         }
+        if (Orderui_Define_BusinessFormOrder::BUSINESS_FORM_ORDER_TYPE_SHOP
+            == $arrBusinessOrderInfo['business_form_order_type']) {
+            return $this->splitShopOrder($arrBusinessOrderInfo, $intBusinessOrderId);
+        }
+        return $this->splitShelfOrder($arrBusinessOrderInfo, $intBusinessOrderId);
+
+    }
+
+    /**
+     * 拆分货架业态单
+     * @param $arrBusinessOrderInfo
+     * @param $intBusinessOrderId
+     * @return array
+     * @throws Wm_Error
+     */
+    protected function splitShelfOrder($arrBusinessOrderInfo, $intBusinessOrderId)
+    {
+        $intOrderSystemId = Orderui_Util_Utility::generateOmsOrderCode();
+        $arrOrderSysDetailList = [
+            [
+                'order_system_id' => $intOrderSystemId,
+                'order_system_type' => Orderui_Define_Const::ORDER_SYS_NWMS,
+                'business_form_order_id' => $intBusinessOrderId,
+                'request_info' => $arrBusinessOrderInfo,
+            ],
+        ];
+        return $arrOrderSysDetailList;
+    }
+
+    /**
+     * 拆分门店业态单
+     * @param $arrBusinessOrderInfo
+     * @param $intBusinessOrderId
+     * @return array
+     * @throws Nscm_Exception_Error
+     * @throws Wm_Error
+     */
+    protected function splitShopOrder($arrBusinessOrderInfo, $intBusinessOrderId)
+    {
         $arrSkuIds = array_column($arrBusinessOrderInfo['skus'], 'sku_id');
         $arrSkuInfos = $this->objDaoRalSku->getSkuInfos($arrSkuIds);
         //split skus by sku temp
@@ -410,16 +449,17 @@ class Service_Data_BusinessFormOrder
             $arrBusinessOrderInfo['warehouse_id'] = $arrWarehouseInfo['warehouse_id'];
             $arrBusinessOrderInfo['warehouse_name'] = $arrWarehouseInfo['warehouse_name'];
             $arrOrderSysDetail = [
-                    'order_system_id' => $intOrderSystemId,
-                    'order_system_detail_id' => $intOrderSystemDetailId,
-                    'order_system_type' => Orderui_Define_Const::ORDER_SYS_NWMS,
-                    'business_form_order_id' => $intBusinessOrderId,
-                    'request_info' => $arrBusinessOrderInfo,
-                ];
+                'order_system_id' => $intOrderSystemId,
+                'order_system_detail_id' => $intOrderSystemDetailId,
+                'order_system_type' => Orderui_Define_Const::ORDER_SYS_NWMS,
+                'business_form_order_id' => $intBusinessOrderId,
+                'request_info' => $arrBusinessOrderInfo,
+            ];
             $arrOrderSysDetailList[] = $arrOrderSysDetail;
         }
         return $arrOrderSysDetailList;
     }
+
 
     /**
      * 根据sku温控类型拆单
@@ -557,13 +597,19 @@ class Service_Data_BusinessFormOrder
     }
 
     /**
-     * 按订单系统类型分发订单
-     * @param  array $arrOrderList
+     * 生成不同系统的子单
+     * @param $arrOrderList
+     * @param $intSourceOrderId
+     * @param $intBizOrderType
      * @return array
      * @throws Nscm_Exception_Error
      */
-    public function distributeOrder($arrOrderList)
+    public function distributeOrder($arrOrderList, $intSourceOrderId, $intBizOrderType)
     {
+        if (Orderui_Define_BusinessFormOrder::BUSINESS_FORM_ORDER_TYPE_SHOP
+            == $intBizOrderType) {
+            return $this->batchCreateNwmsOrder($arrOrderList, $intSourceOrderId);
+        }
         $ret = [];
         $objNwmsOrder = new Service_Data_NWmsOrder();
         foreach ($arrOrderList as $arrOrderInfo) {
