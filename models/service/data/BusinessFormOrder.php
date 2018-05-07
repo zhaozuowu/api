@@ -195,28 +195,9 @@ class Service_Data_BusinessFormOrder
             Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_BUSINESS_FORM_ORDER_TYPE_ERROR);
         }
         //无人货架信息校验
-        $arrShelfInfo = $arrInput['shelf_info'];
-        if (empty($arrShelfInfo)) {
-            Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_STOCKOUT_SKU_BUSINESS_SHELF_INFO_ERROR);
-        }
-        if (!isset(Orderui_Define_BusinessFormOrder::ORDER_SUPPLY_TYPE[$arrShelfInfo['supply_type']])) {
-            Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_STOCKOUT_SKU_BUSINESS_SHELF_INFO_ERROR);
-        }
-        if (Orderui_Define_BusinessFormOrder::ORDER_SUPPLY_TYPE_CREATE == $arrShelfInfo['supply_type']
-            && empty($arrShelfInfo['devices'])) {
-            Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_STOCKOUT_SHELF_ERROR);
-        }
-        foreach ((array)$arrShelfInfo['devices'] as $intKey => $intAmount) {
-            $intKey = intval($intKey);
-            $intAmount = intval($intAmount);
-            if (!isset(Orderui_Define_BusinessFormOrder::ORDER_DEVICE_MAP[$intKey])
-                || $intAmount <= 0) {
-                Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_STOCKOUT_SHELF_ERROR);
-            }
-        }
-        $arrShelfInfo['devices'] = (object)$arrShelfInfo;
-        if (count(json_encode($arrShelfInfo)) > 128) {
-            Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR);
+        if (Orderui_Define_BusinessFormOrder::BUSINESS_FORM_ORDER_TYPE_SHELF
+            == $arrInput['business_form_order_type']) {
+            $this->checkShelfInfo($arrInput['shelf_info']);
         }
         //校验预计送达时间
         $arrExpectArriveTime = $arrInput['expect_arrive_time'];
@@ -237,6 +218,37 @@ class Service_Data_BusinessFormOrder
         }
         if (!isset(Order_Define_BusinessFormOrder::CUSTOMER_LOCATION_SOURCE_TYPE[$arrInput['customer_location_source']])) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_CUSTOMER_LOCATION_SOURCE_ERROR);
+        }
+    }
+
+    /**
+     * 校验无人货架信息
+     * @param $arrShelfInfo
+     * @throws Orderui_BusinessError
+     */
+    protected function checkShelfInfo($arrShelfInfo)
+    {
+        if (empty($arrShelfInfo)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_STOCKOUT_SKU_BUSINESS_SHELF_INFO_ERROR);
+        }
+        if (!isset(Orderui_Define_BusinessFormOrder::ORDER_SUPPLY_TYPE[$arrShelfInfo['supply_type']])) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_STOCKOUT_SKU_BUSINESS_SHELF_INFO_ERROR);
+        }
+        if (Orderui_Define_BusinessFormOrder::ORDER_SUPPLY_TYPE_CREATE == $arrShelfInfo['supply_type']
+            && empty($arrShelfInfo['devices'])) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_STOCKOUT_SHELF_ERROR);
+        }
+        foreach ((array)$arrShelfInfo['devices'] as $intKey => $intAmount) {
+            $intKey = intval($intKey);
+            $intAmount = intval($intAmount);
+            if (!isset(Orderui_Define_BusinessFormOrder::ORDER_DEVICE_MAP[$intKey])
+                || $intAmount <= 0) {
+                Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_STOCKOUT_SHELF_ERROR);
+            }
+        }
+        $arrShelfInfo['devices'] = (object)$arrShelfInfo;
+        if (strlen(json_encode($arrShelfInfo)) > 128) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR);
         }
     }
 
