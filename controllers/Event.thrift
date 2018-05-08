@@ -27,14 +27,32 @@ struct ConfirmStockinOrderInfo {
     3:required string sku_info_list
 }
 
+# 司机信息
+struct DriverInfo {
+    1:required i8 sex,
+    2:required string name,
+    3:required string contact_phone,
+    4:required string ID
+}
+
+# 同步司机信息参数
+struct SyncDriverInfo {
+    1:required i32 shipment_order_id,
+    2:required DriverInfo driver_info,
+}
+
+
 #服务定义
 service EventService {
     EventData triggerEvent(1:required EventInfo objEventInfo)
-        throws (1: OmsException omsException)
+        throws (1: OmsException omsException),
     EventData confirmStockinOrder(1:required ConfirmStockinOrderInfo objData)
-        throws (1: OmsException omsException)
+        throws (1: OmsException omsException),
     EventData deliveryOrder(1:string stockout_order_id)
-        throws (1: OmsException omsException)
-
+        throws (1: OmsException omsException),
+    EventData syncDriverInfo(1:required SyncDriverInfo objSyncDriverInfo)
+        throws (1: OmsException omsException),
+    EventData syncShiomentOrderStatus(1:required i32 shipmentOrderId, 2:required i8 orderStatus)
+        throws (1: OmsException omsException),
 }
 
