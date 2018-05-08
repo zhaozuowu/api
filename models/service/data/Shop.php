@@ -164,6 +164,27 @@ class Service_Data_Shop
                 Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR);
             }
         }
+        $arrOrderSysDetail = Model_Orm_OrderSystemDetail::getOrderInfoByOrderIdAndType($intNwmsStockoutOrderId, Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_STOCK_OUT);
+        if (empty($arrOrderSysDetail)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::ORDER_SYS_DETAIL_NOT_EXITED);
+        }
+
+        $intOrderSysDetailId = $arrOrderSysDetail['order_system_detail_id'];
+        //修改出库单数量
+        foreach ($arrPickupSkuInfoList as $skuInfo) {
+            $intSkuId = intval($skuInfo['sku_id']);
+            $intSkuAmount = intval($skuInfo['sku_amount']);
+            $arrCondition = [
+                'sku_id' => $intSkuId,
+                'order_id' => $intNwmsStockoutOrderId,
+                'order_system_detail_id' => $intOrderSysDetailId,
+            ];
+            $objOrderSysDetailSku = Model_Orm_OrderSystemDetailSku::findOne($arrCondition);
+            if (!is_null($objOrderSysDetailSku)) {
+                $objOrderSysDetailSku->sku_amount = $intSkuAmount;
+                $objOrderSysDetailSku->update();
+            }
+        }
         $objWrpcShop = new Dao_Wrpc_Shop();
         return $objWrpcShop->updateStockoutOrderSkuPickupInfo($intNwmsStockoutOrderId, $arrPickupSkuInfoList);
     }
