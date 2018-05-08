@@ -41,7 +41,7 @@ class Orderui_Define_Wrpc
     const NAMESPACE_NWMS = 'order';
     const NAMESPACE_TMS = 'me.ele.scm.tms.shipment.api';
     const NAMESPACE_OMS = 'orderui';
-    const NAMESPACE_SHOP = 'Book';
+    const NAMESPACE_SHOP = 'book';
 
 
     ////////////////////
