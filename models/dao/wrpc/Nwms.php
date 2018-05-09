@@ -165,7 +165,7 @@ class Dao_Wrpc_Nwms
                 'customer_name' => $arrRequestInfo['customer_name'],
                 'customer_contactor' => $arrRequestInfo['customer_contactor'],
                 'customer_contact' => $arrRequestInfo['customer_contact'],
-                'customer_adress' => $arrRequestInfo['customer_adress'],
+                'customer_address' => $arrRequestInfo['customer_address'],
             ];
 
             $arrBatchReturnsInfo[] = [
