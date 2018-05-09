@@ -68,5 +68,5 @@ service BusinessService {
     Data createBusinessFormOrder(1:required BusinessFormOrderInfo objBusinessFormOrderInfo)
         throws (1: OrderUserException userException),
     i32 cancelLogisticsOrder(1:required string logistics_order_id, 2:required string cancelRemark)
-        throws (1: OrderUserException userException)，
+        throws (1: OrderUserException userException)
 }

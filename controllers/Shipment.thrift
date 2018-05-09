@@ -30,16 +30,12 @@ struct ShipmentOrderInfo {
     2:required list<map<string,string>> reject_skus,
     3:optional i32 biz_type
 }
-#运单拒收信息
-struct BusinessBackOrderInfo {
-    1:required string shipment_order_id
-}
 #服务定义
 service ShipmentService {
     Data signupShipmentOrder(1:required SignupInfo objSignupInfo)
         throws (1: OrderUserException userException),
     Data rejectShipmentOrder(1:required ShipmentOrderInfo objShipmentOrderInfo)
         throws (1: OrderUserException userException),
-    Data rejectBusinessBackOrder(1:required BusinessBackOrderInfo objBusinessBackOrderInfo)
+    Data rejectBusinessBackOrder(1:required i32 shipmentOrderId)
         throws (1: OrderUserException userException)
 }
