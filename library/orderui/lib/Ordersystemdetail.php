@@ -27,18 +27,20 @@ class Orderui_Lib_Ordersystemdetail
             $strOrderExceptionTime = '';
             $intOrderSystemDetailId = $re['result']['result']['logistics_order_id'];
             $intOrderSystemDetailIdStockOutOrder = Orderui_Util_Utility::generateOmsOrderCode();
-            foreach ($re['result']['exceptions'] as $arrSkuException) {
+            foreach ((array)$re['result']['exceptions'] as $arrSkuException) {
                 if ($arrSkuException['sku_id'] == 0) {
                     $strOrderException = $arrSkuException['exception_info'];
                     $strOrderExceptionTime = $arrSkuException['exception_time'];
                 } else {
-                    $arrOrderSysDetailSkuListDb[] = [
-                        'order_system_detail_id' => $intOrderSystemDetailId,
-                        'order_id' => $re['result']['result']['business_form_order_id'],
-                        'sku_id' => $arrSkuException['sku_id'] ,
-                        'sku_amount' => $arrSkuInfoMap[$arrSkuException['sku_id']],
-                        'sku_exception' => $arrSkuException['exception_info'],
-                    ];
+                    if (!empty($re['result']['result']['business_form_order_id'])) {
+                        $arrOrderSysDetailSkuListDb[] = [
+                            'order_system_detail_id' => $intOrderSystemDetailId,
+                            'order_id' => $re['result']['result']['business_form_order_id'],
+                            'sku_id' => $arrSkuException['sku_id'],
+                            'sku_amount' => $arrSkuInfoMap[$arrSkuException['sku_id']],
+                            'sku_exception' => $arrSkuException['exception_info'],
+                        ];
+                    }
                 }
             }
             if (!empty($re['result']['result']['skus'])) {
@@ -68,15 +70,17 @@ class Orderui_Lib_Ordersystemdetail
                 }
             }
 
-            $arrOrderSysDetailListDb[] = [
-                'order_system_detail_id' => $intOrderSystemDetailId,
-                'order_system_id' => $re['order_system_id'],
-                'order_type' => $re['order_type'],
-                'business_form_order_id' => $re['business_form_order_id'],
-                'parent_order_id' => $re['order_system_id'],
-                'order_id' => $re['result']['result']['business_form_order_id'],
-                'order_exception' => $strOrderException,
-            ];
+            if (!empty($re['result']['result']['business_form_order_id'])) {
+                $arrOrderSysDetailListDb[] = [
+                    'order_system_detail_id' => $intOrderSystemDetailId,
+                    'order_system_id' => $re['order_system_id'],
+                    'order_type' => $re['order_type'],
+                    'business_form_order_id' => $re['business_form_order_id'],
+                    'parent_order_id' => $re['order_system_id'],
+                    'order_id' => $re['result']['result']['business_form_order_id'],
+                    'order_exception' => $strOrderException,
+                ];
+            }
             if (!empty($re['result']['result']['stockout_order_id'])) {
                 $arrOrderSysDetailListDb[] = [
                     'order_system_detail_id' => $intOrderSystemDetailIdStockOutOrder,
