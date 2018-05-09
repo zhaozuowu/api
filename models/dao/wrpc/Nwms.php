@@ -130,8 +130,9 @@ class Dao_Wrpc_Nwms
         foreach ((array)$arrOrderList as $arrOrderItem) {
             $arrBusinessOrderInfo = $arrOrderItem['request_info'];
             $arrBatchCreateParams = $arrBusinessOrderInfo;
+            $arrBatchCreateParams['group_order_id'] = $arrBatchCreateParams['logistics_order_id'];
             $arrOrderInfoItem = [];
-            $arrOrderInfoItem['group_order_id'] = $arrOrderItem['order_system_detail_id'];
+            $arrOrderInfoItem['logistics_order_id'] = $arrOrderItem['order_system_detail_id'];
             $arrOrderInfoItem['skus'] = $arrBusinessOrderInfo['skus'];
             $arrOrderInfoItem['warehouse_id'] = $arrBusinessOrderInfo['warehouse_id'];
             $arrOrderInfos[] = $arrOrderInfoItem;
