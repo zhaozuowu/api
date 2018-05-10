@@ -49,7 +49,7 @@ class Service_Data_BusinessFormOrder
         $this->objDaoRalSku = new Dao_Ral_Sku();
         $this->objDaoRalNWmsOrder = new Dao_Ral_NWmsOrder();
         $this->objDaoWrpcTms = new Dao_Wrpc_Tms();
-        //$this->objDaoWrpcNwms = new Dao_Wrpc_Nwms();
+        $this->objDaoWrpcNwms = new Dao_Wrpc_Nwms();
         $this->objDaoRalWarehouse = new Dao_Ral_Warehouse();
         $this->objDaoRedisBsOrder = new Dao_Redis_BusinessOrder();
         $this->objDaoWrpcIss = new Dao_Wrpc_Iss();

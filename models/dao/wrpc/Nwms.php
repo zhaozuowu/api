@@ -24,13 +24,12 @@ class Dao_Wrpc_Nwms
      */
     public function __construct()
     {
-        /*
         $this->objWrpcService = new Bd_Wrpc_Client(Orderui_Define_Wrpc::NWMS_APP_ID,
             Orderui_Define_Wrpc::NWMS_NAMESPACE,
             Orderui_Define_Wrpc::NWMS_SERVICE_NAME);
         $this->objWrpcStockinService = new Bd_Wrpc_Client(Orderui_Define_Wrpc::NWMS_APP_ID,
             Orderui_Define_Wrpc::NWMS_NAMESPACE, Orderui_Define_Wrpc::NWMS_SERVICE_NAME_STOCKIN);
-        */
+
     }
 
     /**
