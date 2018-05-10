@@ -35,13 +35,31 @@ class Orderui_Define_BusinessFormOrder
     ];
 
     /**
+     * 无人货架
+     * @var integer
+     */
+    const BUSINESS_FORM_ORDER_TYPE_SHELF = 1;
+
+    /**
+     * 前置仓
+     * @var integer
+     */
+    const BUSINESS_FORM_ORDER_TYPE_PREPOSITION = 2;
+
+    /**
+     * 门店
+     * @var integer
+     */
+    const BUSINESS_FORM_ORDER_TYPE_SHOP = 3;
+
+    /**
      * 业态订单类型列表
      * @var array
      */
     const BUSINESS_FORM_ORDER_TYPE_LIST = [
-        '1' => '无人货架',
-        '2' => '前置仓',
-        '3' => '便利店',
+        self::BUSINESS_FORM_ORDER_TYPE_SHELF => '无人货架',
+        self::BUSINESS_FORM_ORDER_TYPE_PREPOSITION => '前置仓',
+        self::BUSINESS_FORM_ORDER_TYPE_SHOP => '便利店',
     ];
 
     /**
@@ -55,9 +73,9 @@ class Orderui_Define_BusinessFormOrder
      * @var integer
      */
     const ORDER_SUPPLY_TYPE_SUPPLY = 2;
-    const ORDER_SUPPLY_TYPE_RETREAT = 3;    // 撤点
     const ORDER_SUPPLY_TYPE_ORDER   = 4;    // 订货
-    const ORDER_SUPPLY_TYPE_REJECT  = 5;    // 退货
+    const ORDER_SUPPLY_TYPE_REJECT  = 3;    // 退货
+    const ORDER_SUPPLY_TYPE_RETREAT = 5;    // 撤点
 
     /**
      * 补货类型
@@ -165,6 +183,19 @@ class Orderui_Define_BusinessFormOrder
         self::CUSTOMER_LOCATION_SOURCE_AMAP => '高德',
         self::CUSTOMER_LOCATION_SOURCE_BAIDU => '百度',
     ];
+
+    /**
+     * 正向的
+     * @var integer
+     */
+    const ORDER_WAY_OBVERSE = 1;
+
+    /**
+     * 反向的
+     * @var integer
+     */
+    const ORDER_WAY_REVERSE = 2;
+
 
     /**
      * 取消失败文案
