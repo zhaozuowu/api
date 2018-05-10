@@ -92,6 +92,17 @@ class Orderui_Lib_Ordersystemdetail
                     'order_exception' => '',
                 ];
             }
+            if (!empty($re['result']['result']['shipment_order_id'])) {
+                $arrOrderSysDetailListDb[] = [
+                    'order_system_detail_id' => $intOrderSystemDetailIdStockOutOrder,
+                    'order_system_id' => $re['order_system_id'],
+                    'order_type' => Nscm_Define_OmsOrder::TMS_ORDER_TYPE_SHIPMENT,
+                    'business_form_order_id' => $re['business_form_order_id'],
+                    'parent_order_id' => $re['result']['result']['business_form_order_id'],
+                    'order_id' => $re['result']['result']['shipment_order_id'],
+                    'order_exception' => '',
+                ];
+            }
         }
 
         return [

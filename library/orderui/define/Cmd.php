@@ -45,6 +45,12 @@ class Orderui_Define_Cmd
     const CMD_CREATE_REVERSE_OMS_ORDER = 'create_reverse_oms_order';
 
     /**
+     * 创建撤掉单
+     * @var string
+     */
+    const CMD_CREATE_REVERSE_SHELF_ORDER = 'create_reverse_shelf_order';
+
+    /**
      * 创建门店退货订单
      * @var string
      */

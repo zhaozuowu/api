@@ -71,6 +71,50 @@ class Service_Data_BusinessFormOrder
     }
 
     /**
+     * 拼接仓库信息
+     * @param $arrInput
+     * @return mixed
+     * @throws Nscm_Exception_Error
+     * @throws Orderui_BusinessError
+     */
+    public function appendWarehouseInfoToOrder($arrInput) {
+        $arrRet = $this->objDaoRalWarehouse->getWarehouseListByDistrictId($arrInput['customer_region_id']);
+        if (empty($arrRet)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_GET_WAREHOUSE_INFO_FAILED);
+        }
+        $arrInput['warehouse_id'] = $arrRet[0]['warehouse_id'];
+        $arrInput['warehouse_name'] = $arrRet[0]['warehouse_name'];
+        $arrInput['warehouse_location'] = Order_Util_Util::transferBMapToAMap($arrRet[0]['location']);
+        return $arrInput;
+    }
+
+    /**
+     * @param $arrBatchSkuParams
+     * @return array
+     */
+    public function appendSkuInfosToShelfSkuInfo($arrBatchSkuParams) {
+        if (empty($arrBatchSkuParams)) {
+            return [];
+        }
+        $arrSkuIds = array_column($arrBatchSkuParams, 'sku_id');
+        $arrMapSkuInfos = $this->objSkuDao->getSkuInfos($arrSkuIds);
+        foreach ((array)$arrBatchSkuParams as $intKey => $arrSkuItem) {
+            $intSkuId = $arrSkuItem['sku_id'];
+            $arrBatchSkuParams[$intKey]['sku_name'] = $arrMapSkuInfos[$intSkuId]['sku_name'];
+            $arrBatchSkuParams[$intKey]['sku_net'] = $arrMapSkuInfos[$intSkuId]['sku_net'];
+            $arrBatchSkuParams[$intKey]['sku_net_unit'] = $arrMapSkuInfos[$intSkuId]['sku_net_unit'];
+            $arrBatchSkuParams[$intKey]['upc_id'] = $arrMapSkuInfos[$intSkuId]['min_upc']['upc_id'];
+            $arrBatchSkuParams[$intKey]['upc_unit'] = $arrMapSkuInfos[$intSkuId]['min_upc']['upc_unit'];
+            $arrBatchSkuParams[$intKey]['upc_unit_num'] = $arrMapSkuInfos[$intSkuId]['min_upc']['upc_unit_num'];
+            $arrBatchSkuParams[$intKey]['sku_effect_type'] = $arrMapSkuInfos[$intSkuId]['sku_effect_type'];
+            $arrBatchSkuParams[$intKey]['sku_effect_day'] = $arrMapSkuInfos[$intSkuId]['sku_effect_day'];
+            $arrBatchSkuParams[$intKey]['sku_category_text'] = $arrMapSkuInfos[$intSkuId]['sku_category_text'];
+        }
+        return $arrBatchSkuParams;
+    }
+
+
+    /**
      * 创建业态订单
      * @param $arrInput
      * @return void
@@ -91,10 +135,16 @@ class Service_Data_BusinessFormOrder
     }
 
     /**
+<<<<<<< Updated upstream
      * 创建oms订单以子单
      * @param $arrBusinessFormOrderInfo
      * @return array
      * @throws Exception
+=======
+     * 创建订单
+     * @param $arrBusinessFormOrderInfo
+     * @return array|mixed
+>>>>>>> Stashed changes
      * @throws Nscm_Exception_Error
      * @throws Orderui_BusinessError
      * @throws Wm_Error
@@ -102,11 +152,16 @@ class Service_Data_BusinessFormOrder
     public function createOrder($arrBusinessFormOrderInfo)
     {
         $arrBusinessFormOrderInfo['business_form_order_id'] = Orderui_Util_Utility::generateBusinessFormOrderId();
+<<<<<<< Updated upstream
         //进行拆单处理
         $arrOrderSysDetailList = $this->splitBusinessOrder($arrBusinessFormOrderInfo);
         $arrNwmsResponseList = $this->distributeOrder($arrOrderSysDetailList,
                                         $arrBusinessFormOrderInfo['logistics_order_id'],
                                         $arrBusinessFormOrderInfo['business_form_order_type']);
+=======
+        //进行拆单转发处理
+        $arrNwmsResponseList = Service_Data_OrderRouter::execute($arrBusinessFormOrderInfo);
+>>>>>>> Stashed changes
         //校验是否已经创建
         $boolWhetherExisted = $this->checkBusinessFormOrderIsExisted($arrBusinessFormOrderInfo['logistics_order_id']
             , $arrBusinessFormOrderInfo['business_form_order_type'], $arrBusinessFormOrderInfo['supply_type']);

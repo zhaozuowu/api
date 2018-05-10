@@ -71,6 +71,17 @@ class  Orderui_Define_Const
     const ORDER_SYS_NWMS = 1;
 
     /**
+     * oms订单下发系统类型erp
+     * @var integer
+     */
+    const ORDER_SYS_ERP = 2;
+
+    /**
+     * oms订单下发系统类型tms
+     */
+    const ORDER_SYS_TMS = 3;
+
+    /**
      * NWMS ORDER 类型范围
      */
     const ORDER_SYS_TYPE = [

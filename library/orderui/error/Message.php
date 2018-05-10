@@ -47,6 +47,8 @@ class Orderui_Error_Message extends Wm_Error_Message
         Orderui_Error_Code::OMS_NOTIFY_ISS_CREATE_RESULT_FAILED => '通知门店正向单创建结果失败',
         Orderui_Error_Code::OMS_NOTIFY_CREATE_SHOP_RETURN_ORDER_FAIL => '通知门店退货单创建结果失败',
         Orderui_Error_Code::ORDER_SYS_DETAIL_NOT_EXITED => 'oms订单不存在',
+        Orderui_Error_Code::OMS_RECALL_SHELF_CREATE_SHIPMENT_ORDER_FAILED => '轻舟系统创建撤点运单失败',
+        Orderui_Error_Code::OMS_GET_WAREHOUSE_INFO_FAILED => 'oms获取仓库信息失败',
     ];
 
 }

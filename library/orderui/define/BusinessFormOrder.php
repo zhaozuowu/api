@@ -73,9 +73,9 @@ class Orderui_Define_BusinessFormOrder
      * @var integer
      */
     const ORDER_SUPPLY_TYPE_SUPPLY = 2;
-    const ORDER_SUPPLY_TYPE_RETREAT = 3;    // 撤点
     const ORDER_SUPPLY_TYPE_ORDER   = 4;    // 订货
-    const ORDER_SUPPLY_TYPE_REJECT  = 5;    // 退货
+    const ORDER_SUPPLY_TYPE_REJECT  = 3;    // 退货
+    const ORDER_SUPPLY_TYPE_RETREAT = 5;    // 撤点
 
     /**
      * 补货类型

@@ -19,9 +19,145 @@ class Dao_Wrpc_Tms
     public function __construct()
     {
         $this->objWrpcService = new Bd_Wrpc_Client(Orderui_Define_Wrpc::TMS_APP_ID,
-            Orderui_Define_Wrpc::TMS_NAMESPACE,
-            Orderui_Define_Wrpc::TMS_SERVICE_NAME);
+            Orderui_Define_Wrpc::NAMESPACE_TMS_REFER_WMS,
+            Orderui_Define_Wrpc::TMS_REFER_WMS_SERVICE_NAME);
     }
+
+    /**
+     * 创建tms运单
+     * @param $arrInput
+     * @return mixed
+     * @throws Orderui_BusinessError
+     */
+    public function createShipmentOrder($arrInput)
+    {
+        $strRoutingKey = sprintf("loc=%s", $arrInput['warehouse_location']);
+        $this->objWrpcService->setMeta(["routing-key"=>$strRoutingKey]);
+        $arrParams = $this->getCreateShipmentParams($arrInput);
+        $arrRet = $this->objWrpcService->processWarehouseRequest($arrParams);
+        Bd_Log::trace(sprintf("method[%s] params[%s] processWarehouseRequest[%s]",
+            __METHOD__, json_encode($arrParams), json_encode($arrRet)));
+        if (empty($arrRet['data']) || 0 != $arrRet['errno']) {
+            Bd_Log::warning(sprintf("method[%s] arrRet[%s] routing-key[%s]",
+                __METHOD__, json_encode($arrRet), $strRoutingKey));
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_RECALL_SHELF_CREATE_SHIPMENT_ORDER_FAILED);
+        }
+        return $arrRet['data'];
+    }
+
+    /**
+     * 获取运单创建参数
+     * @param array $arrInput
+     * @return array
+     */
+    protected function getCreateShipmentParams($arrInput) {
+        $arrParams = [];
+        $arrParams['user'] = (object)[];
+        $arrParams['warehouseRequest'] = $this->getWarehouseRequest($arrInput);
+        return $arrParams;
+    }
+
+    /**
+     * 拼接创建运单参数
+     * @param array $arrInput
+     * @return array
+     */
+    protected function getWarehouseRequest($arrInput) {
+        $arrWarehouseRequest = [];
+        $arrShelfSkuList = $arrInput['shelf_sku_list'];
+        $arrExpectArriveTime = $arrInput['expect_arrive_time'];
+        $arrWarehouseRequest['warehouseId'] = empty($arrInput['warehouse_id']) ? '' : intval($arrInput['warehouse_id']);
+        $arrWarehouseRequest['businessType'] = empty($arrInput['business_form_order_type']) ? 0 : strval($arrInput['business_form_order_type']);
+        $arrWarehouseRequest['businessSubType'] = empty($arrInput['order_supply_type']) ? 0 : intval($arrInput['order_supply_type']);
+        $arrWarehouseRequest['businessJson'] = json_encode($arrShelfSkuList);
+        $arrWarehouseRequest['orderRemark'] = empty($arrInput['business_form_order_remark']) ? '' : strval($arrInput['business_form_order_remark']);
+        $arrWarehouseRequest['stockoutNumber'] = empty($arrInput['stockout_order_id']) ? 0 : intval($arrInput['stockout_order_id']);
+        $arrWarehouseRequest['orderNumber'] = empty($arrInput['logistics_order_id']) ? 0 : intval($arrInput['logistics_order_id']);
+        $arrWarehouseRequest['requireReceiveStartTime'] = empty($arrExpectArriveTime['start']) ? 0 : $arrExpectArriveTime['start'];
+        $arrWarehouseRequest['requireReceiveEndTime'] = empty($arrExpectArriveTime['end']) ? 0 : $arrExpectArriveTime['end'];
+        $arrWarehouseRequest['products'] = $this->getProducts($arrInput['shelf_sku_list']);
+        $arrWarehouseRequest['userInfo'] = $this->getUserInfo($arrInput['customer_info']);
+        $arrWarehouseRequest['backType'] = $arrInput['back_type'];
+        $arrWarehouseRequest['warehouseId'] = 1000025;
+        if (!empty($arrInput['orderTime'])) {
+            $arrWarehouseRequest['orderTime'] = $arrInput['orderTime'];
+        }
+        return $arrWarehouseRequest;
+    }
+
+    /**
+     *
+     * @param $arrShelfSkuList
+     * @return array
+     */
+    protected function getProducts($arrShelfSkuList) {
+        $arrProduts = [];
+        if (empty($arrShelfSkuList)) {
+            return $arrProduts;
+        }
+        $arrSkus = [];
+        foreach ((array)$arrShelfSkuList as $arrShelfSkuInfo) {
+            $arrSkus = array_merge($arrSkus, $arrShelfSkuInfo['skus']);
+        }
+        foreach ((array)$arrSkus as $arrSkuItem) {
+            $arrProdutItem = [];
+            $arrProdutItem['skuId'] = empty($arrSkuItem['sku_id']) ? 0 : $arrSkuItem['sku_id'];
+            $arrProdutItem['name'] = empty($arrSkuItem['sku_name']) ? '' : $arrSkuItem['sku_name'];
+            $arrProdutItem['amount'] = empty($arrSkuItem['return_amount']) ? 0 : $arrSkuItem['return_amount'];
+            $arrProdutItem['netWeight'] = empty($arrSkuItem['sku_net']) ? '' : intval($arrSkuItem['sku_net']);
+            $arrProdutItem['netWeightUnit'] = empty($arrSkuItem['sku_net_unit']) ? 0 : intval($arrSkuItem['sku_net_unit']);
+            $arrProdutItem['upcUnit'] = empty($arrSkuItem['upc_unit']) ? 0 : intval($arrSkuItem['upc_unit']);
+            $arrProdutItem['specifications'] = empty($arrSkuItem['upc_unit_num']) ? 0 : intval($arrSkuItem['upc_unit_num']);
+            $arrProdutItem['eventType'] = empty($arrSkuItem['event_type']) ? 0 : intval($arrSkuItem['event_type']);
+            $arrProduts[] = $arrProdutItem;
+        }
+        return $arrProduts;
+    }
+
+    /**
+     * 拼接客户信息参数
+     * @param $arrInput
+     * @return array
+     */
+    protected function getUserInfo($arrInput) {
+        $arrUserInfo = [];
+        if (empty($arrInput)) {
+            return [];
+        }
+        $arrUserInfo['npName'] = empty($arrInput['name']) ? '' : strval($arrInput['name']);
+        $arrUserInfo['npId'] = empty($arrInput['id']) ? 0 : strval($arrInput['id']);
+        $arrUserInfo['contactName'] = empty($arrInput['contactor']) ? '' : strval($arrInput['contactor']);
+        $arrUserInfo['contactPhone'] = empty($arrInput['contact']) ? '' : strval($arrInput['contact']);
+        $arrUserInfo['customerServiceName'] = empty($arrInput['executor']) ? '' : strval($arrInput['executor']);
+        $arrUserInfo['customerServicePhone'] = empty($arrInput['executor_contact']) ? '' : strval($arrInput['executor_contact']);
+        $arrUserInfo['poi'] = (object)$this->getPoi($arrInput);
+        return $arrUserInfo;
+    }
+
+    /**
+     * 拼接客户坐标信息
+     * @param $arrInput
+     * @return array
+     */
+    protected function getPoi($arrInput) {
+        $arrPoiInfo = [];
+        if (empty($arrInput)) {
+            return [];
+        }
+        $arrLocation = explode(',', $arrInput['location']);
+        $arrPoiInfo['longitude'] = empty($arrLocation[0]) ? 0 : floatval($arrLocation[0]);
+        $arrPoiInfo['latitude'] = empty($arrLocation[1]) ? 0 : floatval($arrLocation[1]);
+        $arrPoiInfo['address'] = empty($arrInput['address']) ? '' : strval($arrInput['address']);
+        $arrPoiInfo['areaCode'] = empty($arrInput['region_id']) ? '' : strval($arrInput['region_id']);
+        $arrPoiInfo['cityId'] = empty($arrInput['city_id']) ? 0 : intval($arrInput['city_id']);
+        $arrPoiInfo['cityName'] = empty($arrInput['city_name']) ? '' : strval($arrInput['city_name']);
+        $arrPoiInfo['districtId'] = empty($arrInput['region_id']) ? 0 : intval($arrInput['region_id']);
+        $arrPoiInfo['districtName'] = empty($arrInput['region_name']) ? '' : strval($arrInput['region_name']);
+        $arrPoiInfo['coordsType'] = empty($arrInput['location_source']) ? 0 : intval($arrInput['location_source']);
+        return $arrPoiInfo;
+    }
+
+
 
     /**
      * 取消运单

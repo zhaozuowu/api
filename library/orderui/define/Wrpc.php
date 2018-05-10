@@ -40,6 +40,7 @@ class Orderui_Define_Wrpc
     ////////////////////
     const NAMESPACE_NWMS = 'order';
     const NAMESPACE_TMS = 'me.ele.scm.tms.shipment.api';
+    const NAMESPACE_TMS_REFER_WMS = 'me.ele.scm.tms.oms.api.omsouter';
     const NAMESPACE_OMS = 'orderui';
     const NAMESPACE_SHOP = 'book';
 
@@ -52,6 +53,7 @@ class Orderui_Define_Wrpc
     const SERVICE_NAME_TMS = 'ShipmentService';
     const SERVICE_NAME_OMS = 'BusinessService';
     const SERVICE_NAME_SHOP = 'BookService';
+    const TMS_REFER_WMS_SERVICE_NAME = 'WmsReferService';
 
     /**
      * tms app id

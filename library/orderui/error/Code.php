@@ -214,4 +214,16 @@ class Orderui_Error_Code extends Wm_Error_Code
      * @var integer
      */
     const OMS_NOTIFY_ISS_CREATE_RESULT_FAILED = 370004;
+
+    /**
+     * 通知门店失败
+     * @var integer
+     */
+    const OMS_RECALL_SHELF_CREATE_SHIPMENT_ORDER_FAILED = 370005;
+
+    /**
+     * 获取仓库信息失败
+     * @var integer
+     */
+    const OMS_GET_WAREHOUSE_INFO_FAILED = 370006;
 }
