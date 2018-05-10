@@ -431,4 +431,63 @@ class Service_Data_BusinessFormOrder
         }
         return Orderui_Define_Const::CANCEL_SUCCESS;
     }
+
+    /**
+     * @param $intLogisticsOrderId
+     * @param $strRemark
+     * @return int
+     * @throws Orderui_BusinessError
+     */
+    public function cancelLogisticsReturnOrder($intLogisticsOrderId, $strRemark)
+    {
+        $arrBusinessOrderInfo = Model_Orm_BusinessFormOrder::getOrderInfoBySourceOrderId($intLogisticsOrderId);
+        $intBusinessFormOrderId = $arrBusinessOrderInfo['business_form_order_id'];
+
+        //取消tms运单
+        $arrShipmentOrderInfo = Model_Orm_OrderSystemDetail::getOrderInfoByBusinessFormOrderIdAndType($intBusinessFormOrderId,
+            Orderui_Define_Const::NWMS_ORDER_TYPE_SHIPMENT_ORDER);
+
+        $intShipmentOrderId = $arrShipmentOrderInfo[0]['order_id'];
+        $arrRet = $this->objDaoWrpcTms->cancelShipmentOrder($intShipmentOrderId, $strRemark);
+        if (isset($arrRet['errno']) && 0 != $arrRet['errno']) {
+            Bd_Log::warning(sprintf("method[%s] order_id[%s] arrRet[%s] cancel shipment failed",
+                __METHOD__, $intShipmentOrderId, json_encode($arrRet)));
+            Orderui_BusinessError::throwException($arrRet['errno'],
+                Orderui_Define_BusinessFormOrder::OMS_CANCEL_SHIPMENT_ORDER_FAILED);
+        }
+        return Orderui_Define_Const::CANCEL_SUCCESS;
+    }
+
+    /**
+     * @param int   $intLogisticsOrderId
+     * @param array $arrShelfInfoList
+     * @param array $arrSkuList
+     * @return bool
+     * @throws Orderui_BusinessError
+     */
+    public function checkReverseBusinessFormOrder($intLogisticsOrderId, $arrShelfInfoList, $arrSkuList)
+    {
+        if (empty($intLogisticsOrderId)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR, 'LogisticsOrderId is invalid');
+        }
+        if (empty($arrShelfInfoList)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR, 'shelf list is invalid');
+        }
+        if (empty($arrSkuList)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR, 'sku list is invalid');
+        }
+        //查询是否有相关运单
+        $arrBusinessFromOrderInfo = Model_Orm_BusinessFormOrder::getOrderInfoBySourceOrderId($intLogisticsOrderId);
+        if (empty($arrBusinessFromOrderInfo)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_ORDER_IS_NOT_EXITED);
+        }
+        //TODO
+        //发送WMQ异步创建订单
+        //拼接创建销退入库单所需参数
+        //开启事务
+        //请求沧海创建入库单
+        //拼接OMS相关表信息
+        //存入数据库
+        return true;
+    }
 }

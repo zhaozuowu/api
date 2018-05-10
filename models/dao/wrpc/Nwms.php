@@ -15,8 +15,9 @@ class Dao_Wrpc_Nwms
 
     /**
      * init
+     * @param string $strServiceName
      */
-    public function __construct()
+    public function __construct($strServiceName = Orderui_Define_Wrpc::NWMS_SERVICE_NAME)
     {
         $this->objWrpcService = new Bd_Wrpc_Client(Orderui_Define_Wrpc::NWMS_APP_ID,
             Orderui_Define_Wrpc::NWMS_NAMESPACE,

@@ -39,6 +39,8 @@ class Orderui_Error_Message extends Wm_Error_Message
         Orderui_Error_Code::OMS_MAP_ORDER_NOT_FOUND => '找不到关联订单',
         Orderui_Error_Code::OMS_SIGNUP_STOCKOUT_ORDER_FAIL => '签收出库单失败',
         Orderui_Error_Code::OMS_CREATE_SALE_RETURN_STOCKIN_ORDER_FAIL => '创建销退入库单失败',
+        Orderui_Error_Code::STOCK_IN_ORDER_CANCEL_FAILED => '取消销退入库失败',
+        Orderui_Error_Code::ORDER_SYS_DETAIL_IS_NOT_EXITED => '订单不存在',
     ];
 
 }

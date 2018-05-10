@@ -36,4 +36,24 @@ class Controller_BusinessService extends Orderui_Base_ServiceController {
         $objAction = new Action_Service_CancelLogisticsOrder($arrRequest);
         return $objAction->execute();
     }
+
+    /**
+     * 取消物流单
+     * @param $arrRequest
+     * @return array
+     */
+    public function cancelLogisticsBackOrder($arrRequest) {
+        $objAction = new Action_Service_CancelLogisticsReturnOrder($arrRequest);
+        return $objAction->execute();
+    }
+
+    /**
+     * 盘点创建销退入库单
+     * @param $arrRequest
+     * @return array
+     */
+    public function checkReverseBusinessFormOrder($arrRequest) {
+        $objAction = new Action_Service_CheckReverseBusinessFormOrder($arrRequest['objBusinessFormOrderInfo']);
+        return $objAction->execute();
+    }
 }

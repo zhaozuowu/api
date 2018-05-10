@@ -34,7 +34,7 @@ struct BusinessFormOrderSkuEvent {
 #货架信息
 struct ShelfInfo {
     1:required i32 supply_type,
-    2:required map<string, i32> devices 
+    2:required map<string, i32> devices
 }
 #业态订单信
 struct BusinessFormOrderInfo {
@@ -62,11 +62,78 @@ struct BusinessFormOrderInfo {
     22:required string business_form_key,
     23:required list<BusinessFormOrderSkuEvent> skus_event,
 }
+#货架撤点sku信息
+struct ShelfRecallSkuInfo {
+    1:required i32 sku_id,
+    2:required i32 display_x,
+    3:required i32 display_y,
+    4:required i32 return_amount
+}
+
+#货架撤点sku信息
+struct ReverseBusinessFormOrderSkus {
+    1:required i32 sku_id,
+    4:required i32 return_amount
+}
+#货架设备信息
+struct ShelfDeviceInfo {
+    1:required string device_no,
+    2:required i32 device_type
+}
+#货架撤点信息
+struct ShelfRecallInfo {
+    1:required ShelfDeviceInfo shelf_info,
+    3:required list<ShelfRecallSkuInfo> skus
+}
+#网点信息
+struct CustomerInfo {
+    1:required string id,
+    2:required string name,
+    3:required string contactor,
+    4:required string contact,
+    5:required string address,
+    6:required i32 location,
+    7:required i32 location_source,
+    8:required i32 city_id,
+    9:required string city_name,
+    10:required i32 region_id,
+    11:required string region_name,
+    12:required string executor,
+    13:required string executor_contact
+}
+#货架撤点信息
+struct ShelfRecallOrderInfo {
+    1:required string logistics_order_id,
+    2:required i32 business_form_order_type,
+    3:required string business_form_order_remark,
+    4:required i32 order_return_type,
+    5:required list<ShelfRecallInfo> shelf_sku_list,
+    6:required i32 city_id,
+    7:required string city_name,
+    8:required CustomerInfo customer_info
+}
+#业态订单盘点信息
+struct BusinessFormBackOrderCheckInfo {
+    1:required string logistics_order_id,
+    2:required list<ShelfDeviceInfo> shelf_infos,
+    3:required list<ReverseBusinessFormOrderSkus> skus,
+}
 
 #服务定义
 service BusinessService {
+    #创建正向业态订单
     Data createBusinessFormOrder(1:required BusinessFormOrderInfo objBusinessFormOrderInfo)
         throws (1: OrderUserException userException),
+    #取消物流单
     i32 cancelLogisticsOrder(1:required string logistics_order_id, 2:required string cancelRemark)
+        throws (1: OrderUserException userException),
+    #取消撤点单
+    i32 cancelLogisticsBackOrder(1:required string logistics_order_id, 2:required string cancelRemark)
+        throws (1: OrderUserException userException),
+    #创建撤点单
+    i32 recallShelf(1:required ShelfRecallOrderInfo shelf_recallorder_info)
+        throws (1: OrderUserException userException),
+    #业态订单盘点
+    i32 checkReverseBusinessFormOrder(1:required BusinessFormBackOrderCheckInfo objBusinessFormOrderInfo)
         throws (1: OrderUserException userException)
 }

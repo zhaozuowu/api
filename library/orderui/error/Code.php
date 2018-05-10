@@ -100,6 +100,11 @@ class Orderui_Error_Code extends Wm_Error_Code
      * @var integer
      */
     const ORDER_SYS_DETAIL_IS_EXITED = 350034;
+    /**
+     * order system detail订单不存在
+     * @var integer
+     */
+    const ORDER_SYS_DETAIL_IS_NOT_EXITED = 350035;
 
     /**
      * oms权限校验失败
@@ -175,4 +180,10 @@ class Orderui_Error_Code extends Wm_Error_Code
      * 找不到关联订单
      */
     const OMS_MAP_ORDER_NOT_FOUND = 370001;
+
+    /**
+     * 取消销退入库失败
+     * @var integer
+     */
+    const STOCK_IN_ORDER_CANCEL_FAILED = 380001;
 }
