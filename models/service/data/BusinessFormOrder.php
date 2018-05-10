@@ -919,6 +919,7 @@ class Service_Data_BusinessFormOrder
         $arrInput = $this->assembleSkuInfoToOrder($arrInput);
         $arrInput['skus'] = $this->appendSkuInfosToShelfSkuInfo($arrInput['skus']);
         $arrInput = $this->appendWarehouseInfoToOrder($arrInput);
+        $arrInput['new_shelf_info'] = $this->assembleShelfInfo($arrInput);
         return $arrInput;
     }
 
@@ -947,5 +948,32 @@ class Service_Data_BusinessFormOrder
         }
         $arrInput['skus'] = array_values($arrMapSkus);
         return $arrInput;
+    }
+
+    /**
+     * 拼接撤点单的货架信息
+     * @param $arrInput
+     * @return array
+     */
+    protected function assembleShelfInfo($arrInput)
+    {
+        $arrDevices = [];
+        $arrShelfNos = [];
+        foreach ((array)$arrInput['shelf_sku_list'] as $arrShelfSkuInfo) {
+            $arrTheShelfInfo = $arrShelfSkuInfo['shelf_info'];
+            $intDeviceType = $arrTheShelfInfo['device_type'];
+            $strDeviceNo = $arrTheShelfInfo['device_no'];
+            if (isset($arrDevices[$intDeviceType])) {
+                $arrDevices[$intDeviceType]++;
+            } else {
+                $arrDevices[$intDeviceType] = 1;
+            }
+            $arrShelfNos[$intDeviceType][] = $strDeviceNo;
+        }
+        return [
+            'supply_type' => $arrInput['order_supply_type'],
+            'devices' => $arrDevices,
+            'shelvesNo' => $arrShelfNos,
+        ];
     }
 }
