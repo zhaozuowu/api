@@ -1040,7 +1040,7 @@ class Service_Data_BusinessFormOrder
      * @param int   $intLogisticsOrderId
      * @param array $arrShelfInfoList
      * @param array $arrSkuList
-     * @return bool
+     * @return int
      * @throws Orderui_BusinessError
      */
     public function checkReverseBusinessFormOrder($intLogisticsOrderId, $arrShelfInfoList, $arrSkuList)
@@ -1054,18 +1054,34 @@ class Service_Data_BusinessFormOrder
         if (empty($arrSkuList)) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR, 'sku list is invalid');
         }
-        //查询是否有相关运单
+        //查询是否有相关订单
         $arrBusinessFromOrderInfo = Model_Orm_BusinessFormOrder::getOrderInfoBySourceOrderId($intLogisticsOrderId);
         if (empty($arrBusinessFromOrderInfo)) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_ORDER_IS_NOT_EXITED);
         }
-        //TODO
         //发送WMQ异步创建订单
+        $strCmd = Orderui_Define_Cmd::CMD_CREATE_SHELF_RETURN_ORDER;
+        $arrSendWmqParams = [
+            'logistics_order_id' => $intLogisticsOrderId,
+            'shelf_infos' => $arrShelfInfoList,
+            'skus' => $arrSkuList,
+        ];
+        $ret = Orderui_Wmq_Commit::sendWmqCmd($strCmd , $arrSendWmqParams, strval($intLogisticsOrderId));
+        if (false == $ret) {
+            Bd_Log::warning(sprintf("send cmd to wmq failed,cmd_%s_params_%s", $strCmd, json_encode($arrSendWmqParams)));
+            Orderui_BusinessError::throwException(Orderui_Error_Code::SEND_CMD_FAILED);
+        }
+        return 1;
+    }
+
+    public function createShelfReturnOrder($intLogisticsOrderId, $arrShelfInfoList, $arrSkuList)
+    {
+        $arrBusinessFromOrderInfo = Model_Orm_BusinessFormOrder::getOrderInfoBySourceOrderId($intLogisticsOrderId);
+        // TODO
         //拼接创建销退入库单所需参数
         //开启事务
         //请求沧海创建入库单
         //拼接OMS相关表信息
         //存入数据库
-        return true;
     }
 }

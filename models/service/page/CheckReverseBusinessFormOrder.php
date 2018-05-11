@@ -21,7 +21,7 @@ class Service_Page_CheckReverseBusinessFormOrder
 
     /**
      * @param array $arrInput
-     * @return bool
+     * @return int
      * @throws Orderui_BusinessError
      */
     public function execute($arrInput)

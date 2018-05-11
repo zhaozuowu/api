@@ -1,7 +1,7 @@
 namespace php orderui
 namespace java me.ele.orderui
 #OMS 异常
-exception OmsException {
+exception OrderuiUserException {
     1: string cl,
     2: string msg,
     3: map<string, string> fields,
@@ -45,14 +45,14 @@ struct SyncDriverInfo {
 #服务定义
 service EventService {
     EventData triggerEvent(1:required EventInfo objEventInfo)
-        throws (1: OmsException omsException),
+        throws (1: OrderuiUserException OrderuiUserException),
     EventData confirmStockinOrder(1:required ConfirmStockinOrderInfo objData)
-        throws (1: OmsException omsException),
+        throws (1: OrderuiUserException OrderuiUserException),
     EventData deliveryOrder(1:string stockout_order_id)
-        throws (1: OmsException omsException),
+        throws (1: OrderuiUserException OrderuiUserException),
     EventData syncDriverInfo(1:required SyncDriverInfo objSyncDriverInfo)
-        throws (1: OmsException omsException),
+        throws (1: OrderuiUserException OrderuiUserException),
     EventData syncShiomentOrderStatus(1:required i32 shipmentOrderId, 2:required i8 orderStatus)
-        throws (1: OmsException omsException),
+        throws (1: OrderuiUserException OrderuiUserException),
 }
 

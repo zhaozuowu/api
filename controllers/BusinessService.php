@@ -14,6 +14,8 @@ class Controller_BusinessService extends Orderui_Base_ServiceController {
         'Action_Service_CreateBusinessFormOrder' => 'actions/service/CreateBusinessFormOrder.php',
         'Action_Service_CancelLogisticsOrder' => 'actions/service/CancelLogisticsOrder.php',
         'Action_Service_RecallShelf' => 'actions/service/RecallShelf.php',
+        'Action_Service_CancelLogisticsReturnOrder' => 'actions/service/CancelLogisticsReturnOrder.php',
+        'Action_Service_CheckReverseBusinessFormOrder' => 'actions/service/CheckReverseBusinessFormOrder.php',
     ];
 
     /**

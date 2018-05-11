@@ -74,6 +74,12 @@ class Orderui_Define_Cmd
     const CMD_NOTIFY_ISS_OMS_RETURN_ORDER_CREATE = 'notify_iss_oms_return_order_create';
 
     /**
+     * 创建货架销退入库单
+     * @var string
+     */
+    const CMD_CREATE_SHELF_RETURN_ORDER = 'create_shelf_return_order';
+
+    /**
      * cmd trigger event
      * @var string
      */
