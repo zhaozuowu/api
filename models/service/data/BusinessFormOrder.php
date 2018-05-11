@@ -970,7 +970,7 @@ class Service_Data_BusinessFormOrder
         }
         $arrMapSkus = [];
         foreach ((array)$arrInput['shelf_sku_list'] as $arrShelfSkuInfo) {
-            foreach ((array)$arrShelfSkuInfo['skus'] as $arrSkuItem) {
+            foreach ((array)$arrShelfSkuInfo['shelf_info']['skus'] as $arrSkuItem) {
                 $intSkuId = $arrSkuItem['sku_id'];
                 if (isset($arrMapSkus[$intSkuId])) {
                     $arrMapSkus[$intSkuId]['return_amount'] += $arrSkuItem['return_amount'];
