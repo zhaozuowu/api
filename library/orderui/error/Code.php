@@ -198,46 +198,71 @@ class Orderui_Error_Code extends Wm_Error_Code
     const OMS_MAP_ORDER_NOT_FOUND = 370001;
 
     /**
+     * OMS通知货架更新司机信息失败
+     */
+    const OMS_NOTIFY_SHELF_DRIVER_INFO_FAIL = 370002;
+
+    /**
+     * OMS通知货架更新运单状态失败
+     */
+    const OMS_NOTIFY_SHELF_SHIPMENT_STATUS_FAIL = 370003;
+
+    /**
+     * OMS通知货架整单拒收消息失败
+     */
+    const OMS_NOTIFY_SHELF_SHIPMENT_REJECT_ALL_FAIL = 370004;
+
+    /**
+     * OMS通知货架沧海揽收信息失败
+     */
+    const OMS_NOTIFY_SHELF_NWMS_ACCEPT_ORDER_SKUS_FAIL = 370005;
+
+    /**
+     * OMS通知TMS取消运单失败
+     */
+    const OMS_NOTIFY_TMS_CANCEL_SHIPMENT_ORDER_FAIL = 370006;
+
+    /**
      * sku参数错误
      * @var integer
      */
-    const OMS_SKU_INFO_PARAMS_ERROR = 370002;
+    const OMS_SKU_INFO_PARAMS_ERROR = 370007;
 
     /**
      * 无效的sku信息
      * @var integer
      */
-    const OMS_SKU_INFO_INVALID = 370003;
+    const OMS_SKU_INFO_INVALID = 370008;
 
     /**
      * 通知门店创建信息失败
      * @var integer
      */
-    const OMS_NOTIFY_ISS_CREATE_RESULT_FAILED = 370004;
+    const OMS_NOTIFY_ISS_CREATE_RESULT_FAILED = 370009;
 
     /**
      * 通知门店失败
      * @var integer
      */
-    const OMS_RECALL_SHELF_CREATE_SHIPMENT_ORDER_FAILED = 370005;
+    const OMS_RECALL_SHELF_CREATE_SHIPMENT_ORDER_FAILED = 370010;
 
     /**
      * 获取仓库信息失败
      * @var integer
      */
-    const OMS_GET_WAREHOUSE_INFO_FAILED = 370006;
+    const OMS_GET_WAREHOUSE_INFO_FAILED = 370011;
 
     /**
      * 通知货架撤点运单创建失败
      * @var integer
      */
-    const OMS_NOTIFY_MINIMART_RECALL_SHELF_ORDER_FAILED = 370007;
+    const OMS_NOTIFY_MINIMART_RECALL_SHELF_ORDER_FAILED = 370012;
 
     /**
      * 无人货架信息错误
      * @var integer
      */
-    const OMS_SHELF_INFO_ERROR = 370008;
+    const OMS_SHELF_INFO_ERROR = 370013;
 
     /**
      * 取消销退入库失败
