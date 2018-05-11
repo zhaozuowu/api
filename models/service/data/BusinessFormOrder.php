@@ -78,26 +78,28 @@ class Service_Data_BusinessFormOrder
      * @throws Orderui_BusinessError
      */
     public function appendWarehouseInfoToOrder($arrInput) {
-        $arrRet = $this->objDaoRalWarehouse->getWarehouseListByDistrictId($arrInput['customer_region_id']);
+        $arrRet = $this->objDaoRalWarehouse->getWarehouseListByDistrictId($arrInput['customer_info']['region_id']);
         if (empty($arrRet)) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_GET_WAREHOUSE_INFO_FAILED);
         }
         $arrInput['warehouse_id'] = $arrRet[0]['warehouse_id'];
         $arrInput['warehouse_name'] = $arrRet[0]['warehouse_name'];
-        $arrInput['warehouse_location'] = Order_Util_Util::transferBMapToAMap($arrRet[0]['location']);
+        $arrInput['warehouse_location'] = Orderui_Util_Utility::transferBMapToAMap($arrRet[0]['location']);
         return $arrInput;
     }
 
     /**
+     * 拼接sku信息
      * @param $arrBatchSkuParams
      * @return array
+     * @throws Nscm_Exception_Error
      */
     public function appendSkuInfosToShelfSkuInfo($arrBatchSkuParams) {
         if (empty($arrBatchSkuParams)) {
             return [];
         }
         $arrSkuIds = array_column($arrBatchSkuParams, 'sku_id');
-        $arrMapSkuInfos = $this->objSkuDao->getSkuInfos($arrSkuIds);
+        $arrMapSkuInfos = $this->objDaoRalSku->getSkuInfos($arrSkuIds);
         foreach ((array)$arrBatchSkuParams as $intKey => $arrSkuItem) {
             $intSkuId = $arrSkuItem['sku_id'];
             $arrBatchSkuParams[$intKey]['sku_name'] = $arrMapSkuInfos[$intSkuId]['sku_name'];
@@ -267,10 +269,10 @@ class Service_Data_BusinessFormOrder
     protected function checkShelfInfo($arrShelfInfo)
     {
         if (empty($arrShelfInfo)) {
-            Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_STOCKOUT_SKU_BUSINESS_SHELF_INFO_ERROR);
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_SHELF_INFO_ERROR);
         }
         if (!isset(Orderui_Define_BusinessFormOrder::ORDER_SUPPLY_TYPE[$arrShelfInfo['supply_type']])) {
-            Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_STOCKOUT_SKU_BUSINESS_SHELF_INFO_ERROR);
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_SHELF_INFO_ERROR);
         }
         if (Orderui_Define_BusinessFormOrder::ORDER_SUPPLY_TYPE_CREATE == $arrShelfInfo['supply_type']
             && empty($arrShelfInfo['devices'])) {
@@ -321,7 +323,12 @@ class Service_Data_BusinessFormOrder
                                                         '' : strval($arrInput['customer_contact']);
         $arrCreateParams['customer_address'] = empty($arrInput['customer_address']) ?
                                                         '' : strval($arrInput['customer_address']);
-        $arrCreateParams['business_form_ext'] = json_encode($this->getBusinessFormExt($arrInput));
+        if (Orderui_Define_BusinessFormOrder::ORDER_SUPPLY_TYPE_RETREAT
+            == $arrInput['order_supply_type']) {
+            $arrCreateParams['business_form_ext'] = json_encode($this->getRecallShelfBusinessExt($arrInput));
+        } else {
+            $arrCreateParams['business_form_ext'] = json_encode($this->getBusinessFormExt($arrInput));
+        }
         $arrCreateParams['supply_type']       = intval($arrInput['order_supply_type']);
         $arrCreateParams['business_form_order_exception'] = empty($arrInput['business_form_order_exception']) ?
                                                         '' : strval($arrInput['business_form_order_exception']);
@@ -356,6 +363,32 @@ class Service_Data_BusinessFormOrder
 
         $arrBusinessFormExt['skus_event'] = empty($arrInput['skus_event']) ?
             [] : ($arrInput['skus_event']);
+        return$arrBusinessFormExt;
+    }
+
+    /**
+     * 获取撤点单的业态扩展信息
+     * @param $arrInput
+     * @return array
+     */
+    protected function getRecallShelfBusinessExt($arrInput) {
+        $arrBusinessFormExt = [];
+        if (empty($arrInput)) {
+            return $arrBusinessFormExt;
+        }
+        $arrBusinessFormExt = $arrInput['new_shelf_info'];
+        $arrBusinessFormExt['customer_location'] = empty($arrInput['customer_info']['location']) ?
+            '' : strval($arrInput['customer_info']['location']);
+        $arrBusinessFormExt['customer_location_source'] = empty($arrInput['customer_info']['location_source']) ?
+            0 : intval($arrInput['customer_info']['location_source']);
+        $arrBusinessFormExt['executor'] = empty($arrInput['customer_info']['executor']) ?
+            0 : strval($arrInput['customer_info']['executor']);
+        $arrBusinessFormExt['executor_contact'] = empty($arrInput['customer_info']['executor_contact']) ?
+            '' : strval($arrInput['customer_info']['executor_contact']);
+        $arrBusinessFormExt['expect_arrive_start_time'] = empty($arrInput['expect_arrive_time']['start']) ?
+            '' : intval($arrInput['expect_arrive_time']['start']);
+        $arrBusinessFormExt['expect_arrive_end_time'] = empty($arrInput['expect_arrive_time']['end']) ?
+            '' : intval($arrInput['expect_arrive_time']['end']);
         return$arrBusinessFormExt;
     }
 
@@ -914,7 +947,7 @@ class Service_Data_BusinessFormOrder
      * @throws Nscm_Exception_Error
      * @throws Orderui_BusinessError
      */
-    public function assembleExtraData($arrInput)
+    public function assembleExtraRecallShelfData($arrInput)
     {
         $arrInput = $this->assembleSkuInfoToOrder($arrInput);
         $arrInput['skus'] = $this->appendSkuInfosToShelfSkuInfo($arrInput['skus']);

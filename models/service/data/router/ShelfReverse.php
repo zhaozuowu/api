@@ -58,7 +58,6 @@ class Service_Data_Router_ShelfReverse extends Orderui_Base_OrderRouter
         $ret = [];
         $objWrpcTms = new Dao_Wrpc_Tms();
         foreach ($arrOrderList as $arrOrderInfo) {
-            $arrOrderInfo['request_info']['logistics_order_id'] = 2018051041477;
             $ret[] = [
                     'result' => [
                         'shipment_order_id' => $objWrpcTms->createShipmentOrder($arrOrderInfo['request_info']),
@@ -75,7 +74,7 @@ class Service_Data_Router_ShelfReverse extends Orderui_Base_OrderRouter
         foreach ((array)$ret as $retItem) {
             $intSourceOrderId = $retItem['logistics_order_id'];
             $intShipmentOrderId = $retItem['result']['shipment_order_id'];
-            $this->objDaoWrpcMiniMart->notifyMiniMartRecallShipmentOrderCreate($intSourceOrderId, $intShipmentOrderId);
+            //$this->objDaoWrpcMiniMart->notifyMiniMartRecallShipmentOrderCreate($intSourceOrderId, $intShipmentOrderId);
         }
         return $ret;
     }
