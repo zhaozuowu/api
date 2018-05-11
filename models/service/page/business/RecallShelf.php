@@ -26,7 +26,7 @@ class Service_Page_Business_RecallShelf
     public function execute($arrInput)
     {
         //悲观锁校验
-        $arrInput = $this->objDsBusinessFormOrder->assembleExtraData($arrInput);
+        $arrInput = $this->objDsBusinessFormOrder->assembleExtraRecallShelfData($arrInput);
         $intOrderFlag = $this->objDsBusinessFormOrder->getReverseSourceOrderFlag($arrInput['logistics_order_id']);
         if ($intOrderFlag) {
             return [];

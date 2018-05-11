@@ -78,7 +78,7 @@ class Dao_Wrpc_Tms
         $arrWarehouseRequest['products'] = $this->getProducts($arrInput['skus']);
         $arrWarehouseRequest['userInfo'] = $this->getUserInfo($arrInput['customer_info']);
         $arrWarehouseRequest['backType'] = $arrInput['back_type'];
-        $arrWarehouseRequest['warehouseId'] = 1000025;
+        $arrWarehouseRequest['warehouseId'] = $arrInput['warehouse_id'];
         if (!empty($arrInput['orderTime'])) {
             $arrWarehouseRequest['orderTime'] = $arrInput['orderTime'];
         }

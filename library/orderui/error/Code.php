@@ -228,10 +228,16 @@ class Orderui_Error_Code extends Wm_Error_Code
     const OMS_GET_WAREHOUSE_INFO_FAILED = 370006;
 
     /**
-     * 通知
+     * 通知货架撤点运单创建失败
      * @var integer
      */
     const OMS_NOTIFY_MINIMART_RECALL_SHELF_ORDER_FAILED = 370007;
+
+    /**
+     * 无人货架信息错误
+     * @var integer
+     */
+    const OMS_SHELF_INFO_ERROR = 370008;
 
     /**
      * 取消销退入库失败
