@@ -1007,6 +1007,7 @@ class Service_Data_BusinessFormOrder
             'supply_type' => $arrInput['order_supply_type'],
             'devices' => $arrDevices,
             'shelvesNo' => $arrShelfNos,
+            'customer_info' => $arrInput['customer_info'],
         ];
     }
 
@@ -1089,6 +1090,8 @@ class Service_Data_BusinessFormOrder
     {
         $arrBusinessFromOrderInfo = Model_Orm_BusinessFormOrder::getOrderInfoBySourceOrderId($intLogisticsOrderId);
         $intBusinessFormOrderId = $arrBusinessFromOrderInfo['business_form_order_id'];
+        $arrBusinessFormExt = $arrBusinessFromOrderInfo['business_form_ext'];
+        $arrCustomerInfo = $arrBusinessFormExt['customer_info'];
 
         //取消tms运单
         $arrShipmentOrderInfo = Model_Orm_OrderSystemDetail::getOrderInfoByBusinessFormOrderIdAndType($intBusinessFormOrderId,
@@ -1097,7 +1100,7 @@ class Service_Data_BusinessFormOrder
         $intShipmentOrderId = $arrShipmentOrderInfo[0]['order_id'];
 
         //拼接创建销退入库单所需参数
-        $arrStockInOrderInfo = $this->assembleStockInOrderInfo($intShipmentOrderId, $arrShelfInfoList, $arrSkuList, $strRemark);
+        $arrStockInOrderInfo = $this->assembleStockInOrderInfo($intShipmentOrderId, $arrShelfInfoList, $arrSkuList, $arrCustomerInfo, $strRemark);
         //开启事务
         return Model_Orm_BusinessFormOrder::getConnection()->transaction(function () use ($arrStockInOrderInfo,
                             $intShipmentOrderId, $arrShipmentOrderInfo, $arrSkuList) {
@@ -1153,12 +1156,13 @@ class Service_Data_BusinessFormOrder
      * @param $intShipmentOrderId
      * @param $arrShelfInfoList
      * @param $arrSkuList
+     * @param $arrCustomerInfo
      * @param $strRemark
      * @return mixed
      * @throws Nscm_Exception_Error
      * @throws Orderui_BusinessError
      */
-    public function assembleStockInOrderInfo($intShipmentOrderId, $arrShelfInfoList, $arrSkuList, $strRemark)
+    public function assembleStockInOrderInfo($intShipmentOrderId, $arrShelfInfoList, $arrSkuList, $arrCustomerInfo, $strRemark)
     {
         $arrParams = [
             'shipment_order_id' => $intShipmentOrderId,
@@ -1166,6 +1170,7 @@ class Service_Data_BusinessFormOrder
             'stockin_order_remark' => $strRemark,
             'asset_information' => json_encode($arrShelfInfoList),
             'sku_info_list' => $arrSkuList,
+            'customer_info' => $arrCustomerInfo,
         ];
         return $this->appendWarehouseInfoToOrder($arrParams);
     }
