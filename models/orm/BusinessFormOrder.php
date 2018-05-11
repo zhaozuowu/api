@@ -118,6 +118,22 @@ class Model_Orm_BusinessFormOrder extends Orderui_Base_Orm
     }
 
     /**
+     * 通过上游订单号获取业态订单信息
+     * @param  integer $intSourceOrderId
+     * @return Model_Orm_BusinessFormOrder
+     */
+    public static function getOrderInfoBySourceOrderIdAndType($intSourceOrderId, $intOrderType, $intSupplyType)
+    {
+        $arrCondition = [
+            'source_order_id' => $intSourceOrderId,
+            'business_form_order_type' => $intOrderType,
+            'supply_type' => $intSupplyType,
+            'is_delete' => Orderui_Define_Const::NOT_DELETE,
+        ];
+        return self::findRow(self::getAllColumns(), $arrCondition);
+    }
+
+    /**
      * 通过源订单号获取关联订单号
      * @param $intSourceOrderId
      * @param $intOrderType

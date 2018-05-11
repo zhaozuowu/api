@@ -13,6 +13,7 @@ class Controller_BusinessService extends Orderui_Base_ServiceController {
     public $arrMap = [
         'Action_Service_CreateBusinessFormOrder' => 'actions/service/CreateBusinessFormOrder.php',
         'Action_Service_CancelLogisticsOrder' => 'actions/service/CancelLogisticsOrder.php',
+        'Action_Service_RecallShelf' => 'actions/service/RecallShelf.php',
     ];
 
     /**
@@ -20,7 +21,8 @@ class Controller_BusinessService extends Orderui_Base_ServiceController {
      * @param $arrRequest
      * @return array
      */
-    public function createBusinessFormOrder($arrRequest) {
+    public function createBusinessFormOrder($arrRequest)
+    {
         $arrRequest = $arrRequest['objBusinessFormOrderInfo'];
         $objAction = new Action_Service_CreateBusinessFormOrder($arrRequest);
         return $objAction->execute();
@@ -32,13 +34,26 @@ class Controller_BusinessService extends Orderui_Base_ServiceController {
      * @param $strCancelRemark
      * @return array
      */
-    public function cancelLogisticsOrder($arrRequest) {
+    public function cancelLogisticsOrder($arrRequest)
+    {
         $objAction = new Action_Service_CancelLogisticsOrder($arrRequest);
         return $objAction->execute();
     }
 
     /**
-     * 取消物流单
+     * 货架撤点
+     * @param $arrRequest
+     * @return array
+     */
+    public function recallShelf($arrRequest)
+    {
+        $arrRequest = $arrRequest['shelf_recallorder_info'];
+        $objAction = new Action_Service_RecallShelf($arrRequest);
+        return $objAction->execute();
+    }
+
+    /**
+     * 取消撤点单
      * @param $arrRequest
      * @return array
      */

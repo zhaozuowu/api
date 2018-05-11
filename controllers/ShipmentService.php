@@ -1,7 +1,7 @@
 <?php
 /**
  * @name Controller_ShipmentService
- * @desc 签收运单
+ * @desc 签收物流单
  * @author  huabang.xue@ele.me
  */
 class Controller_ShipmentService extends Orderui_Base_ServiceController {

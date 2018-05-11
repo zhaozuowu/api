@@ -24,6 +24,7 @@ class Orderui_Define_Wrpc
      * @var string
      */
     const NWMS_SERVICE_NAME = 'BusinessService';
+    const NWMS_SERVICE_NAME_STOCKIN = 'StockinService';
 
     /**
      * nwms service name
@@ -38,6 +39,7 @@ class Orderui_Define_Wrpc
     const APP_ID_TMS = 'scm.tms_core';
     const APP_ID_OMS = 'bdwaimai_earthnet.oms';
     const APP_ID_SHELF = 'minimart.backend_service';
+    const APP_ID_SHOP = 'bdwaimai_iss.book';
 
 
     ////////////////////
@@ -45,8 +47,11 @@ class Orderui_Define_Wrpc
     ////////////////////
     const NAMESPACE_NWMS = 'order';
     const NAMESPACE_TMS = 'me.ele.scm.tms.shipment.api';
+    const NAMESPACE_TMS_REFER_WMS = 'me.ele.scm.tms.oms.api.omsouter';
+    const NAMESPACE_SHELF_BACKEND = 'me.ele.minimart.backend.oms.api.server.service.recycling';
     const NAMESPACE_OMS = 'orderui';
     const NAMESPACE_SHELF = 'shelfname';
+    const NAMESPACE_SHOP = 'book';
 
 
     ////////////////////
@@ -57,6 +62,9 @@ class Orderui_Define_Wrpc
     const SERVICE_NAME_TMS = 'ShipmentService';
     const SERVICE_NAME_OMS = 'BusinessService';
     const SERVICE_NAME_SHELF = 'ShelfService';
+    const SERVICE_NAME_SHOP = 'BookService';
+    const SERVICE_NAME_TMS_REFER_WMS = 'WmsReferService';
+    const SERVICE_NAME_SHELF_BACKEND = 'IMiniRecyclingService';
 
     /**
      * tms app id
