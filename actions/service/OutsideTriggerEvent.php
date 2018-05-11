@@ -40,6 +40,8 @@ class Action_Service_OutsideTriggerEvent extends Orderui_Base_ServiceAction
      */
     public function format($data)
     {
-        return $data;
+        return [
+            'result' => $data,
+        ];
     }
 }
