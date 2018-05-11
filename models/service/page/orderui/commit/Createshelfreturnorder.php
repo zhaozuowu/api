@@ -28,7 +28,13 @@ class Service_Page_Orderui_Commit_Createshelfreturnorder extends Wm_Lib_Wmq_Comm
     {
         Bd_Log::trace(sprintf('method[%s] request %s', __METHOD__, json_encode($arrInput)));
         //创建逆向业态单
-        $res = $this->objDataBusinessFormOrder->createShelfReturnOrder($arrInput['logistics_order_id'], $arrInput['shelf_infos'], $arrInput['skus']);
-        Bd_Log::trace(sprintf('method[%s] ret %s', __METHOD__, json_encode($res)));
+        $res = $this->objDataBusinessFormOrder->createShelfReturnOrder(
+                $arrInput['logistics_order_id'],
+                $arrInput['shelf_infos'],
+                $arrInput['skus'],
+                $arrInput['remark']
+            );
+        Bd_Log::trace(sprintf('method[%s] ret %s', __METHOD__, $res));
+        return $res;
     }
 }

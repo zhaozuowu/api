@@ -1074,14 +1074,99 @@ class Service_Data_BusinessFormOrder
         return 1;
     }
 
-    public function createShelfReturnOrder($intLogisticsOrderId, $arrShelfInfoList, $arrSkuList)
+    /**
+     * 创建销退入库单
+     * @param $intLogisticsOrderId
+     * @param $arrShelfInfoList
+     * @param $arrSkuList
+     * @param $strRemark
+     * @return bool
+     * @throws Exception
+     * @throws Nscm_Exception_Error
+     * @throws Orderui_BusinessError
+     */
+    public function createShelfReturnOrder($intLogisticsOrderId, $arrShelfInfoList, $arrSkuList, $strRemark)
     {
         $arrBusinessFromOrderInfo = Model_Orm_BusinessFormOrder::getOrderInfoBySourceOrderId($intLogisticsOrderId);
-        // TODO
+        $intBusinessFormOrderId = $arrBusinessFromOrderInfo['business_form_order_id'];
+
+        //取消tms运单
+        $arrShipmentOrderInfo = Model_Orm_OrderSystemDetail::getOrderInfoByBusinessFormOrderIdAndType($intBusinessFormOrderId,
+            Orderui_Define_Const::NWMS_ORDER_TYPE_SHIPMENT_ORDER);
+
+        $intShipmentOrderId = $arrShipmentOrderInfo[0]['order_id'];
+
         //拼接创建销退入库单所需参数
+        $arrStockInOrderInfo = $this->assembleStockInOrderInfo($intShipmentOrderId, $arrShelfInfoList, $arrSkuList, $strRemark);
         //开启事务
-        //请求沧海创建入库单
-        //拼接OMS相关表信息
-        //存入数据库
+        return Model_Orm_BusinessFormOrder::getConnection()->transaction(function () use ($arrStockInOrderInfo,
+                            $intShipmentOrderId, $arrShipmentOrderInfo, $arrSkuList) {
+            //请求沧海创建入库单
+            $arrRet = $this->objDaoRalNWmsOrder->createBusinessReturnStockinOrder($arrStockInOrderInfo);
+            if (empty($arrRet) || $arrRet['error_no'] !== 0) {
+                Bd_Log::warning(sprintf("method[%s] create sale return stockin order fail shipment_order_id[%s]", __METHOD__, $intShipmentOrderId));
+                Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_CREATE_SALE_RETURN_STOCKIN_ORDER_FAIL);
+            }
+            $intStockinOrderId = intval($arrRet['result']['stockin_order_id']);
+            if (empty($intStockinOrderId)) {
+                Bd_Log::warning(sprintf("method[%s] insert stockin order id fail stockin_order_id[%s]", __METHOD__, $intStockinOrderId));
+                return false;
+            }
+            //拼接OMS相关表信息
+            $intBusinessFormOrderId = intval($arrShipmentOrderInfo['business_form_order_id']);
+            $intOrderSystemId = Orderui_Util_Utility::generateOmsOrderCode();
+            $intOrderSystemDetailId = Orderui_Util_Utility::generateOmsOrderCode();
+            $arrOrderSysDetail = [
+                'order_system_detail_id' => $intOrderSystemDetailId,
+                'order_system_id'        => $intOrderSystemId,
+                'business_form_order_id' => $intBusinessFormOrderId,
+                'order_type'             => Nscm_Define_OmsOrder::NWMS_ORDER_TYPE_STOCK_IN,
+                'order_id'               => $intStockinOrderId,
+            ];
+            $arrOrderSysDetailSku = [];
+            foreach ($arrSkuList as $arrSkuInfo) {
+                $arrOrderSysDetailSku[] = [
+                    'order_system_detail_id' => $intOrderSystemDetailId,
+                    'order_id'        => $intStockinOrderId,
+                    'sku_amount'        => $arrSkuInfo['return_amount'],
+                    'sku_id'        => $arrSkuInfo['sku_id'],
+                ];
+            }
+
+            $arrOrderSysInfo = [
+                'order_system_id' => $intOrderSystemId,
+                'order_system_type' => Orderui_Define_Const::ORDER_SYS_NWMS,
+                'business_form_order_id' => $intBusinessFormOrderId,
+            ];
+            if (!empty($arrSkuInfo)) {
+                Model_Orm_OrderSystem::insert($arrOrderSysInfo);
+                Model_Orm_OrderSystemDetail::insert($arrOrderSysDetail);
+                Model_Orm_OrderSystemDetailSku::batchInsert($arrOrderSysDetailSku);
+            }
+            //存入数据库
+            return Orderui_Define_Const::NWMS_ORDER_CREATE_STATUS_SUCCESS;
+        });
+    }
+
+    /**
+     * 拼接创建入库单所需参数
+     * @param $intShipmentOrderId
+     * @param $arrShelfInfoList
+     * @param $arrSkuList
+     * @param $strRemark
+     * @return mixed
+     * @throws Nscm_Exception_Error
+     * @throws Orderui_BusinessError
+     */
+    public function assembleStockInOrderInfo($intShipmentOrderId, $arrShelfInfoList, $arrSkuList, $strRemark)
+    {
+        $arrParams = [
+            'shipment_order_id' => $intShipmentOrderId,
+            'stockin_order_source' => Orderui_Define_BusinessFormOrder::BUSINESS_FORM_ORDER_TYPE_SHELF,
+            'stockin_order_remark' => $strRemark,
+            'asset_information' => json_encode($arrShelfInfoList),
+            'sku_info_list' => $arrSkuList,
+        ];
+        return $this->appendWarehouseInfoToOrder($arrParams);
     }
 }
