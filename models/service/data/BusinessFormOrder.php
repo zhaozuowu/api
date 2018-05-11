@@ -389,7 +389,7 @@ class Service_Data_BusinessFormOrder
             '' : intval($arrInput['expect_arrive_time']['start']);
         $arrBusinessFormExt['expect_arrive_end_time'] = empty($arrInput['expect_arrive_time']['end']) ?
             '' : intval($arrInput['expect_arrive_time']['end']);
-        return$arrBusinessFormExt;
+        return $arrBusinessFormExt;
     }
 
     /**
