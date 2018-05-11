@@ -17,8 +17,8 @@ class Action_Service_CheckReverseBusinessFormOrder extends Orderui_Base_ServiceA
             'validate' => 'arr|required',
             'type' => 'array',
             'params' => [
-                'device_no' => 'int|required',
-                'device_type' => 'int|required|min[1]',
+                'device_no' => 'str|required',
+                'device_type' => 'int|required|min[0]',
             ],
         ],
         'skus' => [
