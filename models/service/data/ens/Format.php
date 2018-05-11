@@ -61,4 +61,26 @@ class Service_Data_Ens_Format
             'receiptProductsInfo' => $arrInput['batch_pickup_info'],
         ]);
     }
+
+    public static function formatStockinConfirmData($arrInput)
+    {
+        $arrSkuInfoList = $arrInput['sku_info_list'];
+        foreach ($arrSkuInfoList as $arrSkuInfo) {
+            $arrSkus[] = [
+                'id' => intval($arrSkuInfo['sku_id']),
+                'count' => $arrSkuInfo['sku_amount'],
+            ];
+        }
+        $arrSignRequest = [
+            'shipmentId' => $arrInput['shipment_order_id'],
+            'bizType'    => $arrInput['biz_type'],
+            'skus'       => $arrSkus,
+        ];
+        $arrParams = [
+            'shipmentId' => $arrInput['shipment_order_id'],
+            'request'    => $arrSignRequest,
+            'user'       => (object)[],
+        ];
+        return Orderui_Struct_WrpcInfo::build([], $arrParams);
+    }
 }
