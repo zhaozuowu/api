@@ -175,4 +175,29 @@ class Orderui_Error_Code extends Wm_Error_Code
      * 找不到关联订单
      */
     const OMS_MAP_ORDER_NOT_FOUND = 370001;
+
+    /**
+     * OMS通知货架更新司机信息失败
+     */
+    const OMS_NOTIFY_SHELF_DRIVER_INFO_FAIL = 370002;
+
+    /**
+     * OMS通知货架更新运单状态失败
+     */
+    const OMS_NOTIFY_SHELF_SHIPMENT_STATUS_FAIL = 370003;
+
+    /**
+     * OMS通知货架整单拒收消息失败
+     */
+    const OMS_NOTIFY_SHELF_SHIPMENT_REJECT_ALL_FAIL = 370004;
+
+    /**
+     * OMS通知货架沧海揽收信息失败
+     */
+    const OMS_NOTIFY_SHELF_NWMS_ACCEPT_ORDER_SKUS_FAIL = 370005;
+
+    /**
+     * OMS通知TMS取消运单失败
+     */
+    const OMS_NOTIFY_TMS_CANCEL_SHIPMENT_ORDER_FAIL = 370006;
 }

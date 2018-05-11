@@ -1,6 +1,6 @@
 <?php
 /**
- * @name Order_Define_Wrpc
+ * @name Orderui_Define_Wrpc
  * @desc order define wrpc
  * @author jinyu02@iwaimai.baidu.com
  */
@@ -33,15 +33,13 @@ class Orderui_Define_Wrpc
     const APP_ID_OMS = 'bdwaimai_earthnet.oms';
     const APP_ID_SHELF = 'minimart.backend_service';
 
-
     ////////////////////
     /// NAMESPACE_*
     ////////////////////
     const NAMESPACE_NWMS = 'order';
     const NAMESPACE_TMS = 'me.ele.scm.tms.shipment.api';
     const NAMESPACE_OMS = 'orderui';
-    const NAMESPACE_SHELF = 'shelfname';
-
+    const NAMESPACE_SHELF = 'minimart-backend-oms-api-server';
 
     ////////////////////
     /// SERVICE_NAME_*
@@ -50,8 +48,8 @@ class Orderui_Define_Wrpc
     const SERVICE_NAME_STOCKOUT = 'StockoutService';
     const SERVICE_NAME_TMS = 'ShipmentService';
     const SERVICE_NAME_OMS = 'BusinessService';
-    const SERVICE_NAME_SHELF = 'ShelfService';
-
+    const SERVICE_NAME_SHELF = 'IMiniDistributionService';
+    const SERVICE_NAME_SHELF_RECYCLE = 'IMiniRecyclingService';
     /**
      * tms app id
      * @var string

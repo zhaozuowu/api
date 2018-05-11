@@ -18,9 +18,9 @@ class Dao_Wrpc_Tms
      */
     public function __construct()
     {
-        $this->objWrpcService = new Bd_Wrpc_Client(Orderui_Define_Wrpc::TMS_APP_ID,
-            Orderui_Define_Wrpc::TMS_NAMESPACE,
-            Orderui_Define_Wrpc::TMS_SERVICE_NAME);
+        $this->objWrpcService = new Bd_Wrpc_Client(Orderui_Define_Wrpc::APP_ID_TMS,
+            Orderui_Define_Wrpc::NAMESPACE_TMS,
+            Orderui_Define_Wrpc::SERVICE_NAME_TMS);
     }
 
     /**
