@@ -67,8 +67,7 @@ class Service_Data_Ens_Deliver
         $callableFunc = $arrConf['call'];
         $arrMeta = $objData->meta;
         $arrData = $objData->data;
-        $arrRet = Dao_Wrpc_General::call($strAppId, $strNamespace, $strService, $arrMeta, $callableFunc, $arrData);
-        return $arrRet;
+        return Dao_Wrpc_General::call($strAppId, $strNamespace, $strService, $arrMeta, $callableFunc, $arrData);
     }
 
     /**

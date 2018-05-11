@@ -29,5 +29,4 @@ class Service_Data_Ens_Result
         }
         return true;
     }
-
 }
