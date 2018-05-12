@@ -1,7 +1,7 @@
 namespace php orderui
 namespace java me.ele.orderui
 #创建业态订单返回异常
-exception OrderUserException {
+exception OrderuiUserException {
     1: string cl, #错误分类
     2: string msg, #错误原因
     3: map<string, string> fields, #包含错误信息
@@ -55,16 +55,12 @@ struct StockoutPickupAmountInfo {
 service ShopService {
     #服务定义 - 门店修正销退入库单计划入库数传入服务
     Data updateStockInOrderSkuPlanAmount(1:required StockinPlanInAmountInfo objStockinPlanInAmountInfo)
-        throws(1: OrderUserException userException)
+        throws(1: OrderuiUserException userException)
     #服务定义 - OMS接收NWMS出库单拣货信息传入服务
     Data updateStockoutOrderSkuPickupInfo(1:required StockoutPickupAmountInfo objStockoutPickupAmountInfo)
-        throws(1: OrderUserException userException)
-}
-
-#服务定义
-service ShopService {
+        throws(1: OrderuiUserException userException),
     Data signup(1:required SignupInfo objSignupInfo)
-        throws (1: OrderUserException userException),
+        throws (1: OrderuiUserException userException),
     Data createShopReturnOrder(1:required ReturnOrderInfo objReturnOrderInfo)
-        throws (1: OrderUserException userException)
+        throws (1: OrderuiUserException userException)
 }

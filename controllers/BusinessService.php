@@ -14,6 +14,8 @@ class Controller_BusinessService extends Orderui_Base_ServiceController {
         'Action_Service_CreateBusinessFormOrder' => 'actions/service/CreateBusinessFormOrder.php',
         'Action_Service_CancelLogisticsOrder' => 'actions/service/CancelLogisticsOrder.php',
         'Action_Service_RecallShelf' => 'actions/service/RecallShelf.php',
+        'Action_Service_CancelLogisticsReturnOrder' => 'actions/service/CancelLogisticsReturnOrder.php',
+        'Action_Service_CheckReverseBusinessFormOrder' => 'actions/service/CheckReverseBusinessFormOrder.php',
     ];
 
     /**
@@ -49,6 +51,26 @@ class Controller_BusinessService extends Orderui_Base_ServiceController {
     {
         $arrRequest = $arrRequest['shelf_recallorder_info'];
         $objAction = new Action_Service_RecallShelf($arrRequest);
+        return $objAction->execute();
+    }
+
+    /**
+     * 取消撤点单
+     * @param $arrRequest
+     * @return array
+     */
+    public function cancelLogisticsBackOrder($arrRequest) {
+        $objAction = new Action_Service_CancelLogisticsReturnOrder($arrRequest);
+        return $objAction->execute();
+    }
+
+    /**
+     * 盘点创建销退入库单
+     * @param $arrRequest
+     * @return array
+     */
+    public function checkReverseBusinessFormOrder($arrRequest) {
+        $objAction = new Action_Service_CheckReverseBusinessFormOrder($arrRequest['objBusinessFormOrderInfo']);
         return $objAction->execute();
     }
 }

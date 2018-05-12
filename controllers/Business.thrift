@@ -1,7 +1,7 @@
 namespace php orderui
 namespace java me.ele.orderui
 #创建业态订单返回异常
-exception OrderUserException {
+exception OrderuiUserException {
     1: string cl, #错误分类
     2: string msg, #错误原因
     3: map<string, string> fields, #包含错误信息
@@ -69,6 +69,12 @@ struct ShelfRecallSkuInfo {
     3:required i32 display_y,
     4:required i32 return_amount
 }
+
+#货架撤点sku信息
+struct ReverseBusinessFormOrderSkus {
+    1:required i32 sku_id,
+    4:required i32 return_amount
+}
 #货架设备信息
 struct ShelfDeviceInfo {
     1:required string device_no,
@@ -109,25 +115,25 @@ struct ShelfRecallOrderInfo {
 #业态订单盘点信息
 struct BusinessFormBackOrderCheckInfo {
     1:required string logistics_order_id,
-    2:required ShelfDeviceInfo shelf_info,
-    3:required list<ShelfRecallSkuInfo> skus
+    2:required list<ShelfDeviceInfo> shelf_infos,
+    3:required list<ReverseBusinessFormOrderSkus> skus,
 }
 
 #服务定义
 service BusinessService {
     #创建正向业态订单
     Data createBusinessFormOrder(1:required BusinessFormOrderInfo objBusinessFormOrderInfo)
-        throws (1: OrderUserException userException),
+        throws (1: OrderuiUserException userException),
     #取消物流单
     i32 cancelLogisticsOrder(1:required string logistics_order_id, 2:required string cancelRemark)
-        throws (1: OrderUserException userException),
+        throws (1: OrderuiUserException userException),
     #取消撤点单
     i32 cancelLogisticsBackOrder(1:required string logistics_order_id, 2:required string cancelRemark)
-        throws (1: OrderUserException userException),
+        throws (1: OrderuiUserException userException),
     #创建撤点单
     i32 recallShelf(1:required ShelfRecallOrderInfo shelf_recallorder_info)
-        throws (1: OrderUserException userException),
+        throws (1: OrderuiUserException userException),
     #业态订单盘点
     i32 checkReverseBusinessFormOrder(1:required BusinessFormBackOrderCheckInfo objBusinessFormOrderInfo)
-        throws (1: OrderUserException userException)
+        throws (1: OrderuiUserException userException)
 }

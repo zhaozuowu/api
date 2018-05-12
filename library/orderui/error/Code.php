@@ -275,4 +275,10 @@ class Orderui_Error_Code extends Wm_Error_Code
      * @var integer
      */
     const OMS_BUSINESS_FORM_ORDER_NOT_FOUNT = 370015;
+
+    /**
+     * 取消销退入库失败
+     * @var integer
+     */
+    const STOCK_IN_ORDER_CANCEL_FAILED = 380001;
 }

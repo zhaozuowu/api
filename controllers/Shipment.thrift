@@ -1,7 +1,7 @@
 namespace php orderui
 namespace java me.ele.orderui
 #创建业态订单返回异常
-exception OrderUserException {
+exception OrderuiUserException {
     1: string cl, #错误分类
     2: string msg, #错误原因
     3: map<string, string> fields, #包含错误信息
@@ -51,13 +51,13 @@ struct ShipmentOrderRejectAllInfo {
 #服务定义
 service ShipmentService {
     Data signupShipmentOrder(1:required SignupInfo objSignupInfo)
-        throws (1: OrderUserException userException),
+        throws (1: OrderuiUserException userException),
     Data rejectShipmentOrder(1:required ShipmentOrderInfo objShipmentOrderInfo)
-        throws (1: OrderUserException userException),
+        throws (1: OrderuiUserException userException),
     Data rejectBusinessBackOrder(1:required i32 shipmentOrderId)
-        throws (1: OrderUserException userException)
+        throws (1: OrderuiUserException userException)
     Data syncDriverInfo(1:required SyncDriverInfo objSyncDriverInfo)
-        throws (1: OrderUserException userException)
+        throws (1: OrderuiUserException userException)
     Data syncRejectAllInfo(1:required ShipmentOrderRejectAllInfo objShipmentOrderRejectAllInfo)
-        throws (1: OrderUserException userException)
+        throws (1: OrderuiUserException userException)
 }

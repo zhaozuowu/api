@@ -20,22 +20,14 @@ class Orderui_Define_OutsideEvent
     const OUTSIDE_EVENT_VALIDATE = [
         self::EVENT_NAME_CONFIRM_STOCKIN_ORDER => [
             'stockin_order_id' => 'int|required',
-            'stockin_order_remark' => 'strutf8',
+            'shipment_order_id' => 'int|required',
+            'biz_type'  => 'int|required',
             'sku_info_list' => [
                 'validate' => 'json|required|decode',
                 'type' => 'array',
                 'params' => [
                     'sku_id' => 'int|required|min[1000000]|max[9999999]',
-                    'real_stockin_info' => [
-                        'validate' => 'arr|required|decode',
-                        'type' => 'array',
-                        'params' => [
-                            'amount' => 'int|required',
-                            'sku_good_amount' => 'int|required',
-                            'sku_defective_amount' => 'int|required',
-                            'expire_date' => 'int|required',
-                        ]
-                    ],
+                    'sku_amount' => 'int|required',
                 ],
             ],
         ],

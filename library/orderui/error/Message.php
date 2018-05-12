@@ -57,6 +57,7 @@ class Orderui_Error_Message extends Wm_Error_Message
         Orderui_Error_Code::OMS_SHELF_INFO_ERROR => '无人货架信息错误',
         Orderui_Error_Code::OMS_SOURCE_ORDER_NOT_FOUNT => '未找到关联的soruce_order单号',
         Orderui_Error_Code::OMS_BUSINESS_FORM_ORDER_NOT_FOUNT => '未找到关联的业态单',
+        Orderui_Error_Code::STOCK_IN_ORDER_CANCEL_FAILED => '取消销退入库失败',
     ];
 
 }

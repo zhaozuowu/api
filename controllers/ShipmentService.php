@@ -60,4 +60,14 @@ class Controller_ShipmentService extends Orderui_Base_ServiceController {
         $objAction = new Action_Service_SyncRejectAllInfo($arrRequest);
         return $objAction->execute();
     }
+
+    /**
+     * 拒收运单
+     * @param $arrRequest
+     * @return mixed
+     */
+    public function rejectBusinessBackOrder($arrRequest) {
+        $objAction = new Action_Service_RejectBusinessBackOrder($arrRequest);
+        return $objAction->execute();
+    }
 }

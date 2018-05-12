@@ -123,6 +123,7 @@ class Service_Data_Ens_Deliver
         // format data
         $mixData = $this->formatData($strEvent, $arrData, $intBranch);
         // call dao deliver
+        Bd_Log::debug('ENS_REQUEST: ' . json_encode($mixData));
         $rawResult = $this->callDaoDeliver($strEvent, $mixData, $intBranch);
         Bd_Log::debug('ENS_RESULT: ' . json_encode($rawResult));
         if (true === $rawResult) {
