@@ -33,6 +33,7 @@ class Orderui_Define_Wrpc
     const APP_ID_TMS = 'scm.tms_core';
     const APP_ID_OMS = 'bdwaimai_earthnet.oms';
     const APP_ID_SHELF = 'minimart.backend_service';
+    const APP_ID_SHELF_DRIVER = 'minimart.driver_service';
     const APP_ID_SHOP = 'bdwaimai_iss.book';
 
     ////////////////////
@@ -44,6 +45,7 @@ class Orderui_Define_Wrpc
     const NAMESPACE_SHELF_BACKEND = 'me.ele.minimart.backend.oms.api.server.service.recycling';
     const NAMESPACE_OMS = 'orderui';
     const NAMESPACE_SHELF = 'minimart-backend-oms-api-server';
+    const NAMESPACE_SHELF_DRIVER = 'me.ele.minimart.driver.oms.api.server.service.recycling';
     const NAMESPACE_SHOP = 'book';
 
 
@@ -55,7 +57,6 @@ class Orderui_Define_Wrpc
     const SERVICE_NAME_TMS = 'ShipmentService';
     const SERVICE_NAME_OMS = 'BusinessService';
     const SERVICE_NAME_SHELF = 'IMiniDistributionService';
-    const SERVICE_NAME_SHELF_RECYCLE = 'IMiniRecyclingService';
     const SERVICE_NAME_SHOP = 'BookService';
     const SERVICE_NAME_TMS_REFER_WMS = 'WmsReferService';
     const SERVICE_NAME_SHELF_BACKEND = 'IMiniRecyclingService';

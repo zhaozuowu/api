@@ -45,7 +45,7 @@ class Controller_ShipmentService extends Orderui_Base_ServiceController {
      * @return mixed
      */
     public function syncDriverInfo($arrRequest) {
-        $arrRequest = $arrRequest['objShipmentDriverInfo'];
+        $arrRequest = $arrRequest['objSyncDriverInfo'];
         $objAction = new Action_Service_SyncDriverInfo($arrRequest);
         return $objAction->execute();
     }

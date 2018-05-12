@@ -27,9 +27,9 @@ class Service_Page_SyncRejectAllInfo
      */
     public function execute($arrInput)
     {
-        $strLogisticOrderId = strval($arrInput['logistic_order_id']);
+        $strShipmentOrderId = strval($arrInput['shipment_order_id']);
         $strRejectRemark = strval($arrInput['reject_remark']);
         $strRejectInfo = strval($arrInput['reject_info']);
-        return $this->objData->SyncRejectAllInfo($strLogisticOrderId, $strRejectRemark, $strRejectInfo);
+        return $this->objData->SyncRejectAllInfo($strShipmentOrderId, $strRejectRemark, $strRejectInfo);
     }
 }

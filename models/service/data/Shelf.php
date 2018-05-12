@@ -21,49 +21,99 @@ class Service_Data_Shelf
 
     /**
      * 通知货架TMS司机信息（配车）
-     * @param $strLogisticOrderId
+     * @param $strShipmentOrderId
+     * @param $intDriverSex
      * @param $strDriverId
      * @param $strDriverName
      * @param $strDriverMobile
-     * @return bool
+     * @return array
      * @throws Orderui_BusinessError
      */
-    public function SyncDriverInfo($strLogisticOrderId, $strDriverId, $strDriverName, $strDriverMobile)
+    public function SyncDriverInfo($strShipmentOrderId, $intDriverSex, $strDriverId, $strDriverName, $strDriverMobile)
     {
+        $boolIsSuccess = false;
+
+        /** 门店不需要sex字段，因此不传入 **/
+
+        $strLogisticOrderId = $this->GetLogisticOrderIdByShipmentOrderId($strShipmentOrderId);
         if (empty($strLogisticOrderId) || empty($strDriverId) || empty($strDriverName) || empty($strDriverMobile)) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR);
         }
-        $arrRet = $this->objDaoWprcShelf->NotifyShelfShipmentDriverInfo($strLogisticOrderId, $strDriverId, $strDriverName, $strDriverMobile);
-        if (empty($arrRet) || $arrRet['error_no'] !== 0) {
+        $arrRet = $this->objDaoWprcShelf->NotifyShelfShipmentDriverInfo($strShipmentOrderId, $strLogisticOrderId, $strDriverId, $strDriverName, $strDriverMobile);
+        if (empty($arrRet) || $arrRet['errno'] !== 0) {
             Bd_Log::warning(sprintf("method[%s] failed sync tms driver info to shop logistic_order_id[%s]", __METHOD__, $strLogisticOrderId));
-            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_NOTIFY_SHELF_DRIVER_INFO_FAIL);
+             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_NOTIFY_SHELF_DRIVER_INFO_FAIL);
+            $boolIsSuccess = false;
+        } else {
+            $boolIsSuccess = true;
         }
-        return true;
+
+        $result = [
+            'shipment_order_id' => $strShipmentOrderId,
+            'result' => $boolIsSuccess,
+        ];
+        return $result;
+    }
+
+    /**
+     * 根据运单号查询对应的物流单号
+     * @param $strShipmentOrderId
+     * @return array
+     * @throws Orderui_BusinessError
+     */
+    public function GetLogisticOrderIdByShipmentOrderId($strShipmentOrderId)
+    {
+        // 物流单号需要从运单查找出来进行转换
+        // 从order_system_detail中拿到运单对应的business_form_order_id
+        $strBusinessFormOrderId = Model_Orm_OrderSystemDetail::getBusinessOrderIdByShipmentId($strShipmentOrderId);
+        if (empty($strBusinessFormOrderId)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_TMS_ORDER_NOT_FOUND);
+        }
+
+        // 再根据business_form_order_id去business_form_order中查找对应的物流单号（source_order_id）
+        $strLogisticOrderId = Model_Orm_BusinessFormOrder::getBusinessFormOrderSourceOrderId($strBusinessFormOrderId);
+        if (empty($strLogisticOrderId)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_SOURCE_ORDER_NOT_FOUNT);
+        }
+
+        return $strLogisticOrderId;
     }
 
     /**
      * 通知货架TMS整单拒收信息
-     * @param $strLogisticOrderId
+     * @param $strShipmentOrderId
      * @param $strRejectRemark
      * @param $strRejectInfo
-     * @return bool
+     * @return array
      * @throws Orderui_BusinessError
      */
-    public function SyncRejectAllInfo($strLogisticOrderId, $strRejectRemark, $strRejectInfo)
+    public function SyncRejectAllInfo($strShipmentOrderId, $strRejectRemark, $strRejectInfo)
     {
-        if (empty($strLogisticOrderId) || empty($strRejectRemark) || empty($strRejectInfo)) {
+        $boolIsSuccess = false;
+
+        if (empty($strShipmentOrderId)) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR);
         }
+        $strLogisticOrderId = $this->GetLogisticOrderIdByShipmentOrderId($strShipmentOrderId);
         $arrRet = $this->objDaoWprcShelf->NotifyShelfShipmentOrderRejectAllInfo(
             $strLogisticOrderId,
             $strRejectRemark,
             $strRejectInfo);
 
-        if (empty($arrRet) || $arrRet['error_no'] !== 0) {
+        if (empty($arrRet) || $arrRet['errno'] !== 0) {
             Bd_Log::warning(sprintf("method[%s] failed sync tms shipment order reject all logistic_order_id[%s]", __METHOD__, $strLogisticOrderId));
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_NOTIFY_SHELF_SHIPMENT_REJECT_ALL_FAIL);
+            $boolIsSuccess = false;
+        } else {
+            $boolIsSuccess = true;
         }
-        return true;
+
+        $result = [
+            'shipment_order_id' => $strShipmentOrderId,
+            'result' => $boolIsSuccess,
+        ];
+
+        return $result;
     }
 
     /**

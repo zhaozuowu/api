@@ -263,4 +263,16 @@ class Orderui_Error_Code extends Wm_Error_Code
      * @var integer
      */
     const OMS_SHELF_INFO_ERROR = 370013;
+
+    /**
+     * 未找到关联的soruce_order单号
+     * @var integer
+     */
+    const OMS_SOURCE_ORDER_NOT_FOUNT = 370014;
+
+    /**
+     * 未找到关联的业态单
+     * @var integer
+     */
+    const OMS_BUSINESS_FORM_ORDER_NOT_FOUNT = 370015;
 }

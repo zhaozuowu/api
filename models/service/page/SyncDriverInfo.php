@@ -27,10 +27,12 @@ class Service_Page_SyncDriverInfo
      */
     public function execute($arrInput)
     {
-        $strLogisticOrderId = strval($arrInput['logistic_order_id']);
-        $strDriverId = $arrInput['driver_info']['driver_id'];
-        $strDriverName = $arrInput['driver_info']['driver_name'];
-        $strDriverMobile = $arrInput['driver_info']['driver_mobile'];
-        return $this->objData->SyncDriverInfo($strLogisticOrderId, $strDriverId, $strDriverName, $strDriverMobile);
+        $strShipmentOrderId = strval($arrInput['shipment_order_id']);
+        $intDriverSex = intval($arrInput['driver_info']['sex']);
+        $strDriverName = $arrInput['driver_info'][0]['name'];
+        $strDriverMobile = $arrInput['driver_info'][0]['contact_phone'];
+        $strDriverId = $arrInput['driver_info'][0]['id'];
+
+        return $this->objData->SyncDriverInfo($strShipmentOrderId, $intDriverSex, $strDriverId, $strDriverName, $strDriverMobile);
     }
 }

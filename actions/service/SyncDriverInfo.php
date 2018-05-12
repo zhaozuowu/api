@@ -13,14 +13,15 @@ class Action_Service_SyncDriverInfo extends Orderui_Base_ServiceAction
     protected $intMethod = Orderui_Define_Const::METHOD_POST;
 
     protected $arrInputParams = [
-        'logistic_order_id' => 'str|required',
+        'shipment_order_id' => 'str|required',
         'driver_info' => [
             'validate' => 'arr|required',
             'type' => 'array',
             'params' => [
-                'driver_id' => 'str|required',
-                'driver_name' => 'str|required',
-                'driver_mobile' => 'str|required',
+                'sex' => 'int|required',
+                'name' => 'str|required',
+                'contact_phone' => 'str|required',
+                'id' => 'str|required',
             ],
         ],
     ];

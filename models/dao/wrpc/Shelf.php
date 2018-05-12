@@ -13,8 +13,7 @@ class Dao_Wrpc_Shelf
      * @var Bd_Wrpc_Client
      */
     private $objWrpcService;
-    private $objWrpcServiceRecycle;
-
+    private $objWrpcServiceDriver;
     /**
      * init
      */
@@ -23,14 +22,14 @@ class Dao_Wrpc_Shelf
         $this->objWrpcService = new Bd_Wrpc_Client(Orderui_Define_Wrpc::APP_ID_SHELF,
             Orderui_Define_Wrpc::NAMESPACE_SHELF,
             Orderui_Define_Wrpc::SERVICE_NAME_SHELF);
-
-        $this->objWrpcServiceRecycle = new Bd_Wrpc_Client(Orderui_Define_Wrpc::APP_ID_SHELF,
-            Orderui_Define_Wrpc::NAMESPACE_SHELF,
-            Orderui_Define_Wrpc::SERVICE_NAME_SHELF_RECYCLE);
+        $this->objWrpcServiceDriver = new Bd_Wrpc_Client(Orderui_Define_Wrpc::APP_ID_SHELF_DRIVER,
+            Orderui_Define_Wrpc::NAMESPACE_SHELF_DRIVER,
+            Orderui_Define_Wrpc::SERVICE_NAME_SHELF_BACKEND);
     }
 
     /**
      * 同步TMS司机信息到货架
+     * @param $strShipmentOrderId
      * @param $strLogisticOrderId
      * @param $strDriverId
      * @param $strDriverName
@@ -38,17 +37,18 @@ class Dao_Wrpc_Shelf
      * @return mixed
      * @throws Orderui_BusinessError
      */
-    public function NotifyShelfShipmentDriverInfo($strLogisticOrderId, $strDriverId, $strDriverName, $strDriverMobile)
+    public function NotifyShelfShipmentDriverInfo($strShipmentOrderId, $strLogisticOrderId, $strDriverId, $strDriverName, $strDriverMobile)
     {
         $arrParams = [];
-        $arrParams['logisticsOrderCode'] = $strLogisticOrderId;
-        $arrParams['driverInfo'] = [
-            'executorId' => $strDriverId,
-            'executorName' => $strDriverName,
-            'executorPhone' => $strDriverMobile,
+        $arrParams['distributeReqDto'] = [
+            'driverInfo' => [
+                'executorPhone' => $strDriverMobile,
+                'executorName' => $strDriverName,
+                'executorId' => $strDriverId,
+            ],
+            'logisticsOrderCode' => $strLogisticOrderId,
         ];
-
-        $arrRet = $this->objWrpcServiceRecycle->updateDistributeNumber($arrParams);
+        $arrRet = $this->objWrpcServiceDriver->updateDistributeNumber($arrParams);
         Bd_Log::trace(sprintf("method[%s] call shelf service update shipment driver info [%s]", __METHOD__, json_encode($arrRet)));
         if (0 != $arrRet['errno']) {
             Bd_Log::warning(sprintf("method[%s] arrRet[%s]", __METHOD__, json_encode($arrRet)));
@@ -68,13 +68,12 @@ class Dao_Wrpc_Shelf
     public function NotifyShelfShipmentOrderRejectAllInfo($strLogisticOrderId, $strRejectRemark, $strRejectInfo)
     {
         $arrParams = [];
-        $arrParams['RevokeLogisticsOrderRequestDto'] = [
+        $arrParams['logisticsOrder'] = [
+            'rejectInfo' => $strRejectInfo,
             'logisticsOrderCode' => $strLogisticOrderId,
             'rejectRemark' => $strRejectRemark,
-            'rejectInfo' => $strRejectInfo,
         ];
-
-        $arrRet = $this->objWrpcServiceRecycle->rejectRevokeLogisticsOrder($arrParams);
+        $arrRet = $this->objWrpcServiceDriver->rejectRevokeLogisticsOrder($arrParams);
         Bd_Log::trace(sprintf("method[%s] call shelf service update shipment order reject all [%s]", __METHOD__, json_encode($arrRet)));
         if (0 != $arrRet['errno']) {
             Bd_Log::warning(sprintf("method[%s] arrRet[%s]", __METHOD__, json_encode($arrRet)));

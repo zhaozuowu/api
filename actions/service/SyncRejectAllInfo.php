@@ -13,8 +13,8 @@ class Action_Service_SyncRejectAllInfo extends Orderui_Base_ServiceAction
     protected $intMethod = Orderui_Define_Const::METHOD_POST;
 
     protected $arrInputParams = [
-        'logistic_order_id' => 'str|required',
-        'reject_remark' => 'str|required',
+        'shipment_order_id' => 'str|required',
+        'reject_remark' => 'str',
         'reject_info' => 'str|required',
     ];
 

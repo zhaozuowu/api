@@ -31,20 +31,21 @@ struct ShipmentOrderInfo {
     3:optional i32 biz_type
 }
 #司机信息
-struct DriverInformation {
-    1:required string driver_id,
-    2:required string driver_name,
-    3:required string driver_mobile
+struct DriverInfo {
+    1:required i8 sex,
+    2:required string name,
+    3:required string contact_phone,
+    4:required string id
 }
 #TMS司机到达信息
-struct ShipmentDriverInfo {
-    1:required string logistic_order_id,
+struct SyncDriverInfo {
+    1:required string shipment_order_id,
     2:required DriverInformation driver_info
 }
 #TMS整单拒收信息
 struct ShipmentOrderRejectAllInfo {
-    1:required string logistic_order_id,
-    2:required string reject_remark,
+    1:required string shipment_order_id,
+    2:optional string reject_remark,
     3:required string reject_info
 }
 #服务定义
@@ -55,7 +56,7 @@ service ShipmentService {
         throws (1: OrderUserException userException),
     Data rejectBusinessBackOrder(1:required i32 shipmentOrderId)
         throws (1: OrderUserException userException)
-    Data syncDriverInfo(1:required ShipmentDriverInfo objShipmentDriverInfo)
+    Data syncDriverInfo(1:required SyncDriverInfo objSyncDriverInfo)
         throws (1: OrderUserException userException)
     Data syncRejectAllInfo(1:required ShipmentOrderRejectAllInfo objShipmentOrderRejectAllInfo)
         throws (1: OrderUserException userException)
