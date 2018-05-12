@@ -41,7 +41,7 @@ class Service_Data_Shelf
         }
         $arrRet = $this->objDaoWprcShelf->NotifyShelfShipmentDriverInfo($strShipmentOrderId, $strLogisticOrderId, $strDriverId, $strDriverName, $strDriverMobile);
         if (empty($arrRet) || $arrRet['errno'] !== 0) {
-            Bd_Log::warning(sprintf("method[%s] failed sync tms driver info to shop logistic_order_id[%s]", __METHOD__, $strLogisticOrderId));
+            Bd_Log::warning(sprintf("method[%s] failed sync tms driver info to shelf logistic_order_id[%s]", __METHOD__, $strLogisticOrderId));
              Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_NOTIFY_SHELF_DRIVER_INFO_FAIL);
             $boolIsSuccess = false;
         } else {
