@@ -350,6 +350,8 @@ class Service_Data_BusinessFormOrder
         $arrBusinessFormExt = $arrInput['shelf_info'];
         $arrBusinessFormExt['customer_location'] = empty($arrInput['customer_location']) ?
                                                     '' : strval($arrInput['customer_location']);
+        $arrBusinessFormExt['customer_info'] = empty($arrInput['customer_info']) ?
+                                                    '' : strval($arrInput['customer_info']);
         $arrBusinessFormExt['customer_location_source'] = empty($arrInput['customer_location_source']) ?
                                                     0 : intval($arrInput['customer_location_source']);
         $arrBusinessFormExt['executor'] = empty($arrInput['executor']) ?
@@ -1005,9 +1007,8 @@ class Service_Data_BusinessFormOrder
         }
         return [
             'supply_type' => $arrInput['order_supply_type'],
-            'devices' => $arrDevices,
-            'shelvesNo' => $arrShelfNos,
-            'customer_info' => $arrInput['customer_info'],
+            'devices' => (object)$arrDevices,
+            'shelvesNo' => (object)$arrShelfNos,
         ];
     }
 
