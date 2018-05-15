@@ -325,6 +325,20 @@ class Service_Data_BusinessFormOrder
                                                         '' : strval($arrInput['customer_address']);
         if (Orderui_Define_BusinessFormOrder::ORDER_SUPPLY_TYPE_RETREAT
             == $arrInput['order_supply_type']) {
+            $arrCreateParams['customer_city_id'] = empty($arrInput['customer_info']['city_id']) ?
+                0 : intval($arrInput['customer_info']['city_id']);
+            $arrCreateParams['customer_city_name'] = empty($arrInput['customer_info']['city_name']) ?
+                '' : strval($arrInput['customer_info']['city_name']);
+            $arrCreateParams['customer_id'] = empty($arrInput['customer_info']['id']) ?
+                '' : strval($arrInput['customer_info']['id']);
+            $arrCreateParams['customer_name'] = empty($arrInput['customer_info']['name']) ?
+                '' : strval($arrInput['customer_info']['name']);
+            $arrCreateParams['customer_contactor'] = empty($arrInput['customer_info']['contactor']) ?
+                '' : strval($arrInput['customer_info']['contactor']);
+            $arrCreateParams['customer_contact'] = empty($arrInput['customer_info']['contact']) ?
+                '' : strval($arrInput['customer_info']['contact']);
+            $arrCreateParams['customer_address'] = empty($arrInput['customer_info']['address']) ?
+                '' : strval($arrInput['customer_info']['address']);
             $arrCreateParams['business_form_ext'] = json_encode($this->getRecallShelfBusinessExt($arrInput));
         } else {
             $arrCreateParams['business_form_ext'] = json_encode($this->getBusinessFormExt($arrInput));
