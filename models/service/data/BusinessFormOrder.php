@@ -52,7 +52,7 @@ class Service_Data_BusinessFormOrder
         $this->objDaoWrpcNwms = new Dao_Wrpc_Nwms();
         $this->objDaoRalWarehouse = new Dao_Ral_Warehouse();
         $this->objDaoRedisBsOrder = new Dao_Redis_BusinessOrder();
-        $this->objDaoWrpcIss = new Dao_Wrpc_Iss();
+//        $this->objDaoWrpcIss = new Dao_Wrpc_Iss();
         $this->objDaoWrpcNwms = new Dao_Wrpc_Nwms();
     }
 
