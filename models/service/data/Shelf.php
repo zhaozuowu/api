@@ -139,16 +139,17 @@ class Service_Data_Shelf
         }
 
         // 组织整理sku商品列表格式
-        $arrSkuInfoList[] = [];
+        $arrSkuInfoList = [];
         foreach ($arrSkuInfo as $skuInfo) {
             $skuLine = [];
-            $skuLine['skuId'] = $skuInfo['sku_id'];
             foreach ($skuInfo['distribute_info'] as $info) {
                 $infoLine = [];
                 $infoLine['expireDate'] = $info['expire_date'];
                 $infoLine['amount'] = $info['amount'];
                 $skuLine['distributeNumber'][] = $infoLine;
             }
+            $skuLine['skuId'] = $skuInfo['sku_id'];
+
             $arrSkuInfoList[] = $skuLine;
         }
 
@@ -158,7 +159,7 @@ class Service_Data_Shelf
             $arrDriverInfo,
             $arrSkuInfoList);
 
-        if (empty($arrRet) || $arrRet['error_no'] !== 0) {
+        if (empty($arrRet) || $arrRet['errno'] !== 0) {
             Bd_Log::warning(sprintf("method[%s] failed sync nwms stockin order accepted skus shipment_order_id[%s]", __METHOD__, $strShipmentOrderId));
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_NOTIFY_SHELF_NWMS_ACCEPT_ORDER_SKUS_FAIL);
         }

@@ -52,6 +52,7 @@ class Orderui_Define_Wrpc
     const NAMESPACE_OMS = 'orderui';
     const NAMESPACE_SHELF = 'minimart-backend-oms-api-server';
     const NAMESPACE_SHELF_DRIVER = 'me.ele.minimart.driver.oms.api.server.service.recycling';
+    const NAMESPACE_SHELF_DRIVER_DISTRIBUTION = 'me.ele.minimart.driver.oms.api.server.service.distribution';
     const NAMESPACE_SHOP = 'book';
 
 
@@ -63,9 +64,9 @@ class Orderui_Define_Wrpc
     const SERVICE_NAME_TMS = 'ShipmentService';
     const SERVICE_NAME_OMS = 'BusinessService';
     const SERVICE_NAME_SHELF = 'IMiniDistributionService';
+    const SERVICE_NAME_SHELF_BACKEND = 'IMiniRecyclingService';
     const SERVICE_NAME_SHOP = 'BookService';
     const SERVICE_NAME_TMS_REFER_WMS = 'WmsReferService';
-    const SERVICE_NAME_SHELF_BACKEND = 'IMiniRecyclingService';
 
     /**
      * tms app id

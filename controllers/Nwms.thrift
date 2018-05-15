@@ -29,7 +29,7 @@ strurct SkuInfo {
 struct AcceptedSkuInfo {
     1:required string logistic_order_id,
     2:required string shipment_order_id,
-    3:required list<SkuQualityInfo> sku_info
+    3:required list<SkuInfo> sku_info
 }
 
 #服务定义

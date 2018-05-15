@@ -12,19 +12,21 @@ class Dao_Wrpc_Shelf
      * wrcp service
      * @var Bd_Wrpc_Client
      */
-    private $objWrpcService;
+    private $objWrpcServiceDistribution;
     private $objWrpcServiceDriver;
     /**
      * init
      */
     public function __construct()
     {
-        $this->objWrpcService = new Bd_Wrpc_Client(Orderui_Define_Wrpc::APP_ID_SHELF,
-            Orderui_Define_Wrpc::NAMESPACE_SHELF,
+        $this->objWrpcServiceDistribution = new Bd_Wrpc_Client(Orderui_Define_Wrpc::APP_ID_SHELF_DRIVER,
+            Orderui_Define_Wrpc::NAMESPACE_SHELF_DRIVER_DISTRIBUTION,
             Orderui_Define_Wrpc::SERVICE_NAME_SHELF);
         $this->objWrpcServiceDriver = new Bd_Wrpc_Client(Orderui_Define_Wrpc::APP_ID_SHELF_DRIVER,
             Orderui_Define_Wrpc::NAMESPACE_SHELF_DRIVER,
             Orderui_Define_Wrpc::SERVICE_NAME_SHELF_BACKEND);
+
+
     }
 
     /**
@@ -98,11 +100,15 @@ class Dao_Wrpc_Shelf
         $arrSkuInfo)
     {
         $arrParams = [];
-        $arrParams['logisticsOrderCode'] = $strLogisticOrderId;
-        $arrParams['shipmentOrderCode'] = $strShipmentOrderId;
-        $arrParams['driverInfo'] = $arrDriverInfo;
+        // 不需要传入司机信息
+        //$arrParams['driverInfo'] = $arrDriverInfo;
         $arrParams['skuList'] = $arrSkuInfo;
-        $arrRet = $this->objWrpcService->shelfSyncAcceptStockinOrderSkuInfo($arrParams);
+        $arrParams['shipmentOrderCode'] = $strShipmentOrderId;
+        $arrParams['logisticsOrderCode'] = $strLogisticOrderId;
+
+        $arrArgs = [];
+        $arrArgs['distributeReqDto'] = $arrParams;
+        $arrRet = $this->objWrpcServiceDistribution->updateDistributeNumber($arrArgs);
         Bd_Log::trace(sprintf("method[%s] call shelf service update nwms accepted skus [%s]", __METHOD__, json_encode($arrRet)));
         if (0 != $arrRet['errno']) {
             Bd_Log::warning(sprintf("method[%s] arrRet[%s]", __METHOD__, json_encode($arrRet)));
