@@ -259,4 +259,34 @@ class Dao_Wrpc_Tms
     public function createBatchShipmentOrders($arrParams) {
         return [12202202,122,3,2,3];
     }
+
+    /**
+     * 撤点订单盘点通知TMS
+     * @param $intShipmentOrderId
+     * @param $strWarehouseLocation
+     * @param $arrBusinessInfo
+     * @param $arrSkuList
+     * @return mixed
+     * @throws Orderui_BusinessError
+     */
+    public function backickingAmount($intShipmentOrderId, $strWarehouseLocation, $arrBusinessInfo, $arrSkuList)
+    {
+        $strRoutingKey = sprintf("loc=%s", $strWarehouseLocation);
+        $this->objWrpcService->setMeta(["routing-key"=>$strRoutingKey]);
+        $arrParams['backReceiptProductsInfo'] = [
+            'shipmentId' => $intShipmentOrderId,
+            'receiptProducts' => $arrSkuList,
+            'businessJson' => json_encode($arrBusinessInfo),
+        ];
+        $arrRet = $this->objWrpcService->processWarehouseRequest($arrParams);
+        Bd_Log::trace(sprintf("method[%s] params[%s] processWarehouseRequest[%s]",
+            __METHOD__, json_encode($arrParams), json_encode($arrRet)));
+        if (empty($arrRet['data']) || 0 != $arrRet['errno']) {
+            Bd_Log::warning(sprintf("method[%s] arrRet[%s] routing-key[%s]",
+                __METHOD__, json_encode($arrRet), $strRoutingKey));
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_RECALL_SHELF_CREATE_SHIPMENT_ORDER_FAILED);
+        }
+        return $arrRet['data'];
+
+    }
 }

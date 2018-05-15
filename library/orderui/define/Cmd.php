@@ -78,6 +78,11 @@ class Orderui_Define_Cmd
      * @var string
      */
     const CMD_CREATE_SHELF_RETURN_ORDER = 'create_shelf_return_order';
+    /**
+     * 通知TMS货架撤点盘点数据
+     * @var string
+     */
+    const CMD_NOTIFY_TMS_SHELF_RETURN_ORDER = 'notify_tms_shelf_return_order';
 
     /**
      * cmd trigger event

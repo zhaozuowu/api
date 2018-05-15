@@ -41,4 +41,22 @@ class Dao_Ral_Warehouse
             $ret[self::API_RALER_GET_WAREHOUSE_LIST]['query_result'] : [];
         return $ret;
     }
+
+    /**
+     * 根据warehouse id 获取仓库信息
+     * @param $intWarehouseId
+     * @return array
+     * @throws Nscm_Exception_Error
+     */
+    public function getWarehouseListByWarehouseId($intWarehouseId) {
+        $ret = [];
+        if (empty($intWarehouseId)) {
+            return $ret;
+        }
+        $req[self::API_RALER_GET_WAREHOUSE_LIST]['warehouse_id'] = $intWarehouseId;
+        $ret = $this->objApiRal->getData($req);
+        $ret = !empty($ret[self::API_RALER_GET_WAREHOUSE_LIST]['query_result']) ?
+            $ret[self::API_RALER_GET_WAREHOUSE_LIST]['query_result'] : [];
+        return $ret;
+    }
 }

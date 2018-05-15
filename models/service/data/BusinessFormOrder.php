@@ -1060,6 +1060,10 @@ class Service_Data_BusinessFormOrder
         if (empty($arrBusinessFromOrderInfo)) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_ORDER_IS_NOT_EXITED);
         }
+        $intBusinessOrderId = intval($arrBusinessFromOrderInfo['business_form_order_id']);
+        //查询运单号
+        $arrShipmentOrderInfo = Model_Orm_OrderSystemDetail::getOrderInfoByBusinessFormOrderIdAndType($intBusinessOrderId, Orderui_Define_Const::NWMS_ORDER_TYPE_SHIPMENT_ORDER);
+        $intShipmentOrderId = $arrShipmentOrderInfo['order_id'];
         //发送WMQ异步创建订单
         $strCmd = Orderui_Define_Cmd::CMD_CREATE_SHELF_RETURN_ORDER;
         $arrSendWmqParams = [
@@ -1068,6 +1072,20 @@ class Service_Data_BusinessFormOrder
             'skus' => $arrSkuList,
         ];
         $ret = Orderui_Wmq_Commit::sendWmqCmd($strCmd , $arrSendWmqParams, strval($intLogisticsOrderId));
+        if (false == $ret) {
+            Bd_Log::warning(sprintf("send cmd to wmq failed,cmd_%s_params_%s", $strCmd, json_encode($arrSendWmqParams)));
+            Orderui_BusinessError::throwException(Orderui_Error_Code::SEND_CMD_FAILED);
+        }
+        //通知TMS盘点数量
+        $strCmd = Orderui_Define_Cmd::CMD_NOTIFY_TMS_SHELF_RETURN_ORDER;
+        $arrSendWmqParams = [
+            'shipment_order_id' => $intShipmentOrderId,
+            'warehouse_id' => $arrBusinessFromOrderInfo['warehouse_id'],
+            'supply_type' => $arrBusinessFromOrderInfo['order_supply_type'],
+            'shelf_infos' => $arrShelfInfoList,
+            'skus' => $arrSkuList,
+        ];
+        $ret = Orderui_Wmq_Commit::sendWmqCmd($strCmd , $arrSendWmqParams, strval($intShipmentOrderId));
         if (false == $ret) {
             Bd_Log::warning(sprintf("send cmd to wmq failed,cmd_%s_params_%s", $strCmd, json_encode($arrSendWmqParams)));
             Orderui_BusinessError::throwException(Orderui_Error_Code::SEND_CMD_FAILED);

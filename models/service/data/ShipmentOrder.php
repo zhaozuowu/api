@@ -211,4 +211,56 @@ class Service_Data_ShipmentOrder
 
         return true;
     }
+
+    /**
+     * 撤点订单盘点通知TMS
+     * @param $intShipmentOrderId
+     * @param $intWarehouseId
+     * @param $intSupplyType
+     * @param $arrShelfInfos
+     * @param $arrSkus
+     * @throws Nscm_Exception_Error
+     * @throws Orderui_BusinessError
+     */
+    public function notifyReserveOrderCheckData($intShipmentOrderId, $intWarehouseId, $intSupplyType, $arrShelfInfos, $arrSkus)
+    {
+        //处理基础信息
+        $arrDevices = [];
+        $arrShelfNos = [];
+        foreach ($arrShelfInfos as $arrShelfInfo) {
+            $intDeviceType = $arrShelfInfo['device_type'];
+            $strDeviceNo = $arrShelfInfo['device_no'];
+            if (isset($arrDevices[$intDeviceType])) {
+                $arrDevices[$intDeviceType]++;
+            } else {
+                $arrDevices[$intDeviceType] = 1;
+            }
+            $arrShelfNos[$intDeviceType][] = $strDeviceNo;
+        }
+        $arrBusinessInfo =  [
+            'supply_type' => $intSupplyType,
+            'collects' => $arrDevices,
+            'shelvesNo' => $arrShelfNos,
+        ];
+        //获取skuinfos
+        $daoRalSku = new Dao_Ral_Sku();
+        $arrSkusMap = $daoRalSku->getSkuInfos(array_column($arrSkus['sku_id']));
+        $arrSkuList = [];
+        foreach ($arrSkus as $arrSku) {
+            $intSkuId = $arrSku['sku_id'];
+            $arrSkuItem['skuId'] = $intSkuId;
+            $arrSkuItem['backReceiptAmount'] = $arrSku['return_amount'];
+            $arrSkuItem['name'] = $arrSkusMap[$intSkuId]['sku_name'];
+            $arrSkuItem['netWeight'] = $arrSkusMap[$intSkuId]['sku_net'];
+            $arrSkuItem['netWeightUnit'] = $arrSkusMap[$intSkuId]['sku_net_unit'];
+            $arrSkuItem['upcUnit'] = $arrSkusMap[$intSkuId]['upc_unit'];
+            $arrSkuItem['specifications'] = $arrSkusMap[$intSkuId]['upc_unit_num'];
+            $arrSkuList[] = $arrSkuItem;
+        }
+        //获取warehouseLocation--支持多活
+        $arrWarehouseInfo = (new Dao_Ral_Warehouse())->getWarehouseListByWarehouseId($intWarehouseId);
+        $strWarehouseLocation = Orderui_Util_Utility::transferBMapToAMap($arrWarehouseInfo[0]['location']);
+
+        $this->objDaoWprcTms->backickingAmount($intShipmentOrderId, $strWarehouseLocation, $arrBusinessInfo, $arrSkuList);
+    }
 }
