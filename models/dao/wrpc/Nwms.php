@@ -62,7 +62,7 @@ class Dao_Wrpc_Nwms
     {
         $objNwmsStockinWrpcService = new Bd_Wrpc_Client(Orderui_Define_Wrpc::NWMS_APP_ID,
             Orderui_Define_Wrpc::NWMS_NAMESPACE,
-            Orderui_Define_Wrpc::SERVICE_NAME_NWMS_STOCKIN);
+            Orderui_Define_Wrpc::NWMS_SERVICE_NAME_STOCKIN);
         $strRoutingKey = sprintf("loc=%s", $arrStockinOrderInfo['stockin_order_id']);
         $arrRet = $objNwmsStockinWrpcService->updateStockInOrderSkuPlanAmount($arrStockinOrderInfo);
         Bd_Log::trace(sprintf("method[%s] update nwms stockin order sku plan amount [%s]", __METHOD__, json_encode($arrRet)));
