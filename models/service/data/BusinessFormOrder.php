@@ -364,8 +364,8 @@ class Service_Data_BusinessFormOrder
         $arrBusinessFormExt = $arrInput['shelf_info'];
         $arrBusinessFormExt['customer_location'] = empty($arrInput['customer_location']) ?
                                                     '' : strval($arrInput['customer_location']);
-        $arrBusinessFormExt['customer_info'] = empty($arrInput['customer_info']) ?
-                                                    '' : strval($arrInput['customer_info']);
+        $arrBusinessFormExt['region_id'] = empty($arrInput['customer_info']['region_id']) ?
+                                                    '' : strval($arrInput['customer_info']['']);
         $arrBusinessFormExt['customer_location_source'] = empty($arrInput['customer_location_source']) ?
                                                     0 : intval($arrInput['customer_location_source']);
         $arrBusinessFormExt['executor'] = empty($arrInput['executor']) ?
@@ -401,6 +401,8 @@ class Service_Data_BusinessFormOrder
             0 : strval($arrInput['customer_info']['executor']);
         $arrBusinessFormExt['executor_contact'] = empty($arrInput['customer_info']['executor_contact']) ?
             '' : strval($arrInput['customer_info']['executor_contact']);
+        $arrBusinessFormExt['region_id'] = empty($arrInput['customer_info']['region_id']) ?
+            '' : strval($arrInput['customer_info']['region_id']);
         $arrBusinessFormExt['expect_arrive_start_time'] = empty($arrInput['expect_arrive_time']['start']) ?
             '' : intval($arrInput['expect_arrive_time']['start']);
         $arrBusinessFormExt['expect_arrive_end_time'] = empty($arrInput['expect_arrive_time']['end']) ?
@@ -1123,8 +1125,8 @@ class Service_Data_BusinessFormOrder
     {
         $arrBusinessFromOrderInfo = Model_Orm_BusinessFormOrder::getOrderInfoBySourceOrderId($intLogisticsOrderId);
         $intBusinessFormOrderId = $arrBusinessFromOrderInfo['business_form_order_id'];
-        $arrBusinessFormExt = $arrBusinessFromOrderInfo['business_form_ext'];
-        $arrCustomerInfo = $arrBusinessFormExt['customer_info'];
+        $arrBusinessFormExt = json_decode($arrBusinessFromOrderInfo['business_form_ext'], true);
+        $strRegionId = $arrBusinessFormExt['region_id'];
 
         //取消tms运单
         $arrShipmentOrderInfo = Model_Orm_OrderSystemDetail::getOrderInfoByBusinessFormOrderIdAndType($intBusinessFormOrderId,
@@ -1133,7 +1135,7 @@ class Service_Data_BusinessFormOrder
         $intShipmentOrderId = $arrShipmentOrderInfo[0]['order_id'];
 
         //拼接创建销退入库单所需参数
-        $arrStockInOrderInfo = $this->assembleStockInOrderInfo($intShipmentOrderId, $arrShelfInfoList, $arrSkuList, $arrCustomerInfo, $strRemark);
+        $arrStockInOrderInfo = $this->assembleStockInOrderInfo($intShipmentOrderId, $arrShelfInfoList, $arrSkuList, $strRegionId, $strRemark);
         //开启事务
         return Model_Orm_BusinessFormOrder::getConnection()->transaction(function () use ($arrStockInOrderInfo,
                             $intShipmentOrderId, $arrShipmentOrderInfo, $arrSkuList) {
@@ -1189,13 +1191,13 @@ class Service_Data_BusinessFormOrder
      * @param $intShipmentOrderId
      * @param $arrShelfInfoList
      * @param $arrSkuList
-     * @param $arrCustomerInfo
+     * @param $strRegionId
      * @param $strRemark
      * @return mixed
      * @throws Nscm_Exception_Error
      * @throws Orderui_BusinessError
      */
-    public function assembleStockInOrderInfo($intShipmentOrderId, $arrShelfInfoList, $arrSkuList, $arrCustomerInfo, $strRemark)
+    public function assembleStockInOrderInfo($intShipmentOrderId, $arrShelfInfoList, $arrSkuList, $strRegionId, $strRemark)
     {
         $arrParams = [
             'shipment_order_id' => $intShipmentOrderId,
@@ -1203,7 +1205,9 @@ class Service_Data_BusinessFormOrder
             'stockin_order_remark' => $strRemark,
             'asset_information' => json_encode($arrShelfInfoList),
             'sku_info_list' => $arrSkuList,
-            'customer_info' => $arrCustomerInfo,
+            'customer_info' => [
+                'region_id' => $strRegionId
+            ],
         ];
         return $this->appendWarehouseInfoToOrder($arrParams);
     }
