@@ -171,7 +171,7 @@ class Service_Data_BusinessFormOrder
                 Model_Orm_OrderSystemDetailSku::batchInsert($arrOrderSysDetailListDb['sku_list']);
             }
         });
-        if (Orderui_Define_Const::NWMS_ORDER_CREATE_STATUS_FAILED == $intBusinessCreateStatus) {
+        if (Orderui_Define_Const::NWMS_ORDER_CREATE_STATUS_SUCCESS != $intBusinessCreateStatus) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_CREATE_ERROR);
         }
         return $arrNwmsResponseList;
