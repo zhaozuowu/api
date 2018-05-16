@@ -25,7 +25,7 @@ class Orderui_Lib_Ordersystemdetail
         foreach ($arrResponseList as $re) {
             $strOrderException = '';
             $strOrderExceptionTime = '';
-            $intOrderSystemDetailId = $re['result']['result']['logistics_order_id'];
+            $intOrderSystemDetailId = Orderui_Util_Utility::generateOmsOrderCode();
             $intOrderSystemDetailIdStockOutOrder = Orderui_Util_Utility::generateOmsOrderCode();
             foreach ((array)$re['result']['exceptions'] as $arrSkuException) {
                 if ($arrSkuException['sku_id'] == 0) {
