@@ -1201,7 +1201,7 @@ class Service_Data_BusinessFormOrder
     {
         $arrReqSkuList = [];
         foreach ($arrSkuList as $arrSku) {
-            $arrReqSkuList = [
+            $arrReqSkuList[] = [
                 'sku_id' => $arrSku['sku_id'],
                 'sku_amount' => $arrSku['return_amount'],
             ];
