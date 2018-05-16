@@ -29,14 +29,14 @@ class Service_Page_Business_RecallShelf
         $arrInput = $this->objDsBusinessFormOrder->assembleExtraRecallShelfData($arrInput);
         $intOrderFlag = $this->objDsBusinessFormOrder->getReverseSourceOrderFlag($arrInput['logistics_order_id']);
         if ($intOrderFlag) {
-            return [];
+            return 1;
         }
         $this->objDsBusinessFormOrder->createOrder($arrInput);
         Orderui_Wmq_Commit::sendWmqCmd(Orderui_Define_Cmd::CMD_CREATE_REVERSE_SHELF_ORDER,
                                         $arrInput, $arrInput['logistics_order_id']);
         //设置悲观锁
         $this->objDsBusinessFormOrder->setReverseSourceOrderFlag($arrInput['logistics_order_id']);
-        return [];
+        return 1;
     }
 
 }
