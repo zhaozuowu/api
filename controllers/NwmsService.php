@@ -11,7 +11,7 @@ class Controller_NwmsService extends Orderui_Base_ServiceController {
      * @var array
      */
     public $arrMap = [
-        'Action_Service_SyncAcceptStockinOrderSkuInfo' => 'actions/service/SyncAcceptStockinOrderSkuInfo.php',
+        'Action_Service_SyncAcceptStockoutOrderSkuInfo' => 'actions/service/SyncAcceptStockoutOrderSkuInfo.php',
     ];
 
     /**
@@ -19,9 +19,9 @@ class Controller_NwmsService extends Orderui_Base_ServiceController {
      * @param $arrRequest
      * @return mixed
      */
-    public function syncAcceptStockinOrderSkuInfo($arrRequest) {
+    public function syncAcceptStockoutOrderSkuInfo($arrRequest) {
         $arrRequest = $arrRequest['objAcceptedSkuInfo'];
-        $objAction = new Action_Service_SyncAcceptStockinOrderSkuInfo($arrRequest);
+        $objAction = new Action_Service_SyncAcceptStockoutOrderSkuInfo($arrRequest);
         return $objAction->execute();
     }
 }

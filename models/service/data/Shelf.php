@@ -125,7 +125,7 @@ class Service_Data_Shelf
      * @return bool
      * @throws Orderui_BusinessError
      */
-    public function SyncAcceptStockinOrderSkuInfo(
+    public function SyncAcceptStockoutOrderSkuInfo(
         $strLogisticOrderId,
         $strShipmentOrderId,
         $arrDriverInfo,
@@ -153,7 +153,7 @@ class Service_Data_Shelf
             $arrSkuInfoList[] = $skuLine;
         }
 
-        $arrRet = $this->objDaoWprcShelf->NotifyShelfSyncAcceptStockinOrderSkuInfo(
+        $arrRet = $this->objDaoWprcShelf->NotifyShelfSyncAcceptStockoutOrderSkuInfo(
             $strLogisticOrderId,
             $strShipmentOrderId,
             $arrDriverInfo,

@@ -1,10 +1,10 @@
 <?php
 /**
- * @name Service_Page_SyncAcceptStockinOrderSkuInfo
+ * @name Service_Page_SyncAcceptStockoutOrderSkuInfo
  * @desc 接收nwms揽收信息，转发货架
  * @author wende.chen@ele.me
  */
-class Service_Page_SyncAcceptStockinOrderSkuInfo
+class Service_Page_SyncAcceptStockoutOrderSkuInfo
 {
     /**
      * @var objData
@@ -39,7 +39,7 @@ class Service_Page_SyncAcceptStockinOrderSkuInfo
 
         $arrSkuInfo = $arrInput['sku_info'];
 
-        return $this->objData->SyncAcceptStockinOrderSkuInfo(
+        return $this->objData->SyncAcceptStockoutOrderSkuInfo(
             $strLogisticOrderId,
             $strShipmentOrderId,
             $arrDriverInfo,

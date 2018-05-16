@@ -34,6 +34,6 @@ struct AcceptedSkuInfo {
 
 #服务定义
 service NwmsService {
-    Data syncAcceptStockinOrderSkuInfo(1:required AcceptedSkuInfo objAcceptedSkuInfo)
+    Data syncAcceptStockoutOrderSkuInfo(1:required AcceptedSkuInfo objAcceptedSkuInfo)
         throws (1: OrderUserException userException)
 }

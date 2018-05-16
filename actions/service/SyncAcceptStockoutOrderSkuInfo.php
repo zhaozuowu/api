@@ -1,10 +1,10 @@
 <?php
 /**
- * @name Action_Service_SyncRejectAllInfo
- * @desc 接收TMS整单拒收信息，转发货架
+ * @name Action_Service_SyncAcceptStockoutOrderSkuInfo
+ * @desc 沧海nwms揽收后，通知货架揽收信息
  * @author wende.chen@ele.me
  */
-class Action_Service_SyncAcceptStockinOrderSkuInfo extends Orderui_Base_ServiceAction
+class Action_Service_SyncAcceptStockoutOrderSkuInfo extends Orderui_Base_ServiceAction
 {
     /**
      * method
@@ -37,7 +37,7 @@ class Action_Service_SyncAcceptStockinOrderSkuInfo extends Orderui_Base_ServiceA
      */
     public function myConstruct()
     {
-        $this->objPage = new Service_Page_SyncAcceptStockinOrderSkuInfo();
+        $this->objPage = new Service_Page_SyncAcceptStockoutOrderSkuInfo();
     }
 
     /**

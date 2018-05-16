@@ -93,7 +93,7 @@ class Dao_Wrpc_Shelf
      * @return mixed
      * @throws Orderui_BusinessError
      */
-    public function NotifyShelfSyncAcceptStockinOrderSkuInfo(
+    public function NotifyShelfSyncAcceptStockoutOrderSkuInfo(
         $strLogisticOrderId,
         $strShipmentOrderId,
         $arrDriverInfo,
