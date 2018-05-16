@@ -32,7 +32,8 @@ class Service_Page_Business_CreateBusinessFormOrder
         $this->objDsBusinessFormOrder->checkCreateParams($arrInput);
         if (Orderui_Define_BusinessFormOrder::BUSINESS_FORM_ORDER_TYPE_SHELF
             == $arrInput['business_form_order_type']) {
-            return $this->objDsBusinessFormOrder->createOrder($arrInput);
+            $arrRet = $this->objDsBusinessFormOrder->createOrder($arrInput);
+            return $arrRet[0]['result']['result'];
         }
         Orderui_Wmq_Commit::sendWmqCmd(Orderui_Define_Cmd::CMD_CREATE_OMS_ORDER,
             $arrInput, $arrInput['logistics_order_id']);
