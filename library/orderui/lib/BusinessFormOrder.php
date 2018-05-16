@@ -16,7 +16,7 @@ class Orderui_Lib_BusinessFormOrder
     public static function formatBusinessInfo($arrNwmsResponseList, $arrInput) {
         $arrBusinessOrderInfo = Orderui_Lib_Nwmsorder::formatNwmsOrderException($arrNwmsResponseList, $arrInput);
         $arrOrderSysListDb = Orderui_Lib_Omssys::formatOmsSysInfo($arrNwmsResponseList);
-        $arrOrderSysDetailListDb = Orderui_Lib_Ordersystemdetail::formatOrderSystemDetailInfo($arrNwmsResponseList, $arrBusinessOrderInfo['skus']);
+        $arrOrderSysDetailListDb = Orderui_Lib_Ordersystemdetail::formatOrderSystemDetailInfo($arrNwmsResponseList, $arrBusinessOrderInfo['skus'], $arrInput['business_form_order_type']);
         return [$arrBusinessOrderInfo, $arrOrderSysListDb, $arrOrderSysDetailListDb];
     }
 

@@ -11,10 +11,11 @@ class Orderui_Lib_Ordersystemdetail
      * 格式化子单数据
      * @param $arrSkuInfoList
      * @param $arrResponseList
+     * @param $intBusinessFormOrderType
      * @return array
      * @throws Wm_Error
      */
-    public static function formatOrderSystemDetailInfo($arrResponseList, $arrSkuInfoList)
+    public static function formatOrderSystemDetailInfo($arrResponseList, $arrSkuInfoList, $intBusinessFormOrderType)
     {
         $arrOrderSysDetailListDb = [];
         $arrOrderSysDetailSkuListDb = [];
@@ -58,15 +59,17 @@ class Orderui_Lib_Ordersystemdetail
                         'sku_exception' => '',
                     ];
                     //沧海出库单
-                    $arrStockoutOrderSkuItem = [
-                        'order_system_detail_id' => $intOrderSystemDetailIdStockOutOrder,
-                        'order_id' => $re['result']['result']['stockout_order_id'],
-                        'sku_id' => $arrSku['sku_id'],
-                        'sku_amount' => $arrSkuInfoMap[$arrSku['sku_id']],
-                        'sku_exception' => '',
-                    ];
+                    if (Orderui_Define_BusinessFormOrder::BUSINESS_FORM_ORDER_TYPE_SHOP == $intBusinessFormOrderType) {
+                        $arrStockoutOrderSkuItem = [
+                            'order_system_detail_id' => $intOrderSystemDetailIdStockOutOrder,
+                            'order_id' => $re['result']['result']['stockout_order_id'],
+                            'sku_id' => $arrSku['sku_id'],
+                            'sku_amount' => $arrSkuInfoMap[$arrSku['sku_id']],
+                            'sku_exception' => '',
+                        ];
+                        $arrOrderSysDetailSkuListDb[] = $arrStockoutOrderSkuItem;
+                    }
                     $arrOrderSysDetailSkuListDb[] = $arrBusinessFormOrderSkuItem;
-                    $arrOrderSysDetailSkuListDb[] = $arrStockoutOrderSkuItem;
                 }
             }
 
@@ -81,7 +84,7 @@ class Orderui_Lib_Ordersystemdetail
                     'order_exception' => $strOrderException,
                 ];
             }
-            if (!empty($re['result']['result']['stockout_order_id'])) {
+            if (!empty($re['result']['result']['stockout_order_id']) && Orderui_Define_BusinessFormOrder::BUSINESS_FORM_ORDER_TYPE_SHOP == $arrBusinessFormOrderSkuItem) {
                 $arrOrderSysDetailListDb[] = [
                     'order_system_detail_id' => $intOrderSystemDetailIdStockOutOrder,
                     'order_system_id' => $re['order_system_id'],
