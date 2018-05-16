@@ -26,7 +26,7 @@ class Action_Service_CheckReverseBusinessFormOrder extends Orderui_Base_ServiceA
             'type' => 'array',
             'params' => [
                 'sku_id' => 'int|required',
-                'return_amount' => 'int|required|min[1]',
+                'return_amount' => 'int|required',
             ],
         ],
     ];
