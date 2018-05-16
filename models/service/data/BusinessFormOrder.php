@@ -1199,12 +1199,19 @@ class Service_Data_BusinessFormOrder
      */
     public function assembleStockInOrderInfo($intShipmentOrderId, $arrShelfInfoList, $arrSkuList, $strRegionId, $strRemark)
     {
+        $arrReqSkuList = [];
+        foreach ($arrSkuList as $arrSku) {
+            $arrReqSkuList = [
+                'sku_id' => $arrSku['sku_id'],
+                'sku_amount' => $arrSku['return_amount'],
+            ];
+        }
         $arrParams = [
             'shipment_order_id' => $intShipmentOrderId,
             'stockin_order_source' => Orderui_Define_BusinessFormOrder::BUSINESS_FORM_ORDER_TYPE_SHELF,
             'stockin_order_remark' => $strRemark,
             'asset_information' => json_encode($arrShelfInfoList),
-            'sku_info_list' => $arrSkuList,
+            'sku_info_list' => $arrReqSkuList,
             'customer_info' => [
                 'region_id' => $strRegionId
             ],
