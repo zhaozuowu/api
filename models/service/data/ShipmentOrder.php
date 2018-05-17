@@ -240,7 +240,6 @@ class Service_Data_ShipmentOrder
         $arrBusinessInfo =  [
             'supply_type' => $intSupplyType,
             'collects' => (object)$arrDevices,
-            'shelvesNo' => $arrShelfNos,
         ];
         //获取skuinfos
         $daoRalSku = new Dao_Ral_Sku();

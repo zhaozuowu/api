@@ -284,7 +284,7 @@ class Dao_Wrpc_Tms
         if (empty($arrRet['data']) || 0 != $arrRet['errno']) {
             Bd_Log::warning(sprintf("method[%s] arrRet[%s] routing-key[%s]",
                 __METHOD__, json_encode($arrRet), $strRoutingKey));
-            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_RECALL_SHELF_CREATE_SHIPMENT_ORDER_FAILED);
+            Orderui_BusinessError::throwException(Orderui_Error_Code::BACK_ORDER_NOTIFY_TMS_FAIL);
         }
         return $arrRet['data'];
 

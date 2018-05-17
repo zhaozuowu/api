@@ -58,6 +58,7 @@ class Orderui_Error_Message extends Wm_Error_Message
         Orderui_Error_Code::OMS_SOURCE_ORDER_NOT_FOUNT => '未找到关联的soruce_order单号',
         Orderui_Error_Code::OMS_BUSINESS_FORM_ORDER_NOT_FOUNT => '未找到关联的业态单',
         Orderui_Error_Code::STOCK_IN_ORDER_CANCEL_FAILED => '取消销退入库失败',
+        Orderui_Error_Code::BACK_ORDER_NOTIFY_TMS_FAIL => '盘点通知TMS失败',
     ];
 
 }

@@ -281,4 +281,9 @@ class Orderui_Error_Code extends Wm_Error_Code
      * @var integer
      */
     const STOCK_IN_ORDER_CANCEL_FAILED = 380001;
+    /**
+     * 盘点通知TMS失败
+     * @var integer
+     */
+    const BACK_ORDER_NOTIFY_TMS_FAIL = 390001;
 }
