@@ -32,7 +32,7 @@ class Dao_Ral_NWmsOrder
      * create withdraw stockin order
      * @var string
      */
-    const API_CREATE_WITHDRAW_STOCKIN_ORDER = 'createwithdrawstockinorderapi';
+    const API_CREATE_WITHDRAW_STOCKIN_ORDER = 'createremovesitestockinorderapi';
 
     /**
      * pre cancel stockout order
@@ -167,9 +167,9 @@ class Dao_Ral_NWmsOrder
     public function createBusinessReturnStockinOrder($arrData)
     {
         $req[self::API_CREATE_WITHDRAW_STOCKIN_ORDER] = $arrData;
-        Bd_Log::trace(sprintf("create withdraw stockin order request params %s", json_encode($req)));
+        Bd_Log::trace(sprintf("create remove site stock in order request params %s", json_encode($req)));
         $ret = $this->objApiRal->getData($req);
-        Bd_Log::trace(sprintf("create withdraw stockin order response %s", json_encode($ret)));
+        Bd_Log::trace(sprintf("create remove site stock in order response %s", json_encode($ret)));
         $ret = !empty($ret[self::API_CREATE_WITHDRAW_STOCKIN_ORDER]) ? $ret[self::API_CREATE_WITHDRAW_STOCKIN_ORDER] : [];
         return $ret;
     }

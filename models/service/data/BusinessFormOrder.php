@@ -385,6 +385,8 @@ class Service_Data_BusinessFormOrder
                                                     '' : strval($arrInput['customer_location']);
         $arrBusinessFormExt['region_id'] = empty($arrInput['customer_info']['region_id']) ?
                                                     '' : strval($arrInput['customer_info']['region_id']);
+        $arrBusinessFormExt['customer_info'] = empty($arrInput['customer_info']) ?
+                                                    '' : strval($arrInput['customer_info']);
         $arrBusinessFormExt['customer_location_source'] = empty($arrInput['customer_location_source']) ?
                                                     0 : intval($arrInput['customer_location_source']);
         $arrBusinessFormExt['executor'] = empty($arrInput['executor']) ?
@@ -416,6 +418,8 @@ class Service_Data_BusinessFormOrder
             '' : strval($arrInput['customer_info']['location']);
         $arrBusinessFormExt['customer_location_source'] = empty($arrInput['customer_info']['location_source']) ?
             0 : intval($arrInput['customer_info']['location_source']);
+        $arrBusinessFormExt['customer_info'] = empty($arrInput['customer_info']) ?
+            '' : strval($arrInput['customer_info']);
         $arrBusinessFormExt['executor'] = empty($arrInput['customer_info']['executor']) ?
             0 : strval($arrInput['customer_info']['executor']);
         $arrBusinessFormExt['executor_contact'] = empty($arrInput['customer_info']['executor_contact']) ?
@@ -1150,7 +1154,7 @@ class Service_Data_BusinessFormOrder
         $arrBusinessFromOrderInfo = Model_Orm_BusinessFormOrder::getOrderInfoBySourceOrderId($intLogisticsOrderId);
         $intBusinessFormOrderId = $arrBusinessFromOrderInfo['business_form_order_id'];
         $arrBusinessFormExt = json_decode($arrBusinessFromOrderInfo['business_form_ext'], true);
-        $strRegionId = $arrBusinessFormExt['region_id'];
+        $arrCustomerInfo = $arrBusinessFormExt['customer_info'];
 
         //取消tms运单
         $arrShipmentOrderInfo = Model_Orm_OrderSystemDetail::getOrderInfoByBusinessFormOrderIdAndType($intBusinessFormOrderId,
@@ -1159,7 +1163,7 @@ class Service_Data_BusinessFormOrder
         $intShipmentOrderId = $arrShipmentOrderInfo[0]['order_id'];
 
         //拼接创建销退入库单所需参数
-        $arrStockInOrderInfo = $this->assembleStockInOrderInfo($intShipmentOrderId, $arrShelfInfoList, $arrSkuList, $strRegionId, $strRemark);
+        $arrStockInOrderInfo = $this->assembleStockInOrderInfo($intShipmentOrderId, $arrShelfInfoList, $arrSkuList, $arrCustomerInfo, $strRemark);
         //开启事务
         return Model_Orm_BusinessFormOrder::getConnection()->transaction(function () use ($arrStockInOrderInfo,
                             $intShipmentOrderId, $arrShipmentOrderInfo, $arrSkuList) {
@@ -1215,13 +1219,13 @@ class Service_Data_BusinessFormOrder
      * @param $intShipmentOrderId
      * @param $arrShelfInfoList
      * @param $arrSkuList
-     * @param $strRegionId
+     * @param $arrCustomerInfo
      * @param $strRemark
      * @return mixed
      * @throws Nscm_Exception_Error
      * @throws Orderui_BusinessError
      */
-    public function assembleStockInOrderInfo($intShipmentOrderId, $arrShelfInfoList, $arrSkuList, $strRegionId, $strRemark)
+    public function assembleStockInOrderInfo($intShipmentOrderId, $arrShelfInfoList, $arrSkuList, $arrCustomerInfo, $strRemark)
     {
         $arrReqSkuList = [];
         foreach ($arrSkuList as $arrSku) {
@@ -1236,9 +1240,7 @@ class Service_Data_BusinessFormOrder
             'stockin_order_remark' => $strRemark,
             'asset_information' => json_encode($arrShelfInfoList),
             'sku_info_list' => $arrReqSkuList,
-            'customer_info' => [
-                'region_id' => $strRegionId
-            ],
+            'customer_info' => $arrCustomerInfo,
         ];
         return $this->appendWarehouseInfoToOrder($arrParams);
     }
