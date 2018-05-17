@@ -1175,7 +1175,7 @@ class Service_Data_BusinessFormOrder
                 return false;
             }
             //拼接OMS相关表信息
-            $intBusinessFormOrderId = intval($arrShipmentOrderInfo['business_form_order_id']);
+            $intBusinessFormOrderId = intval($arrShipmentOrderInfo[0]['business_form_order_id']);
             $intOrderSystemId = Orderui_Util_Utility::generateOmsOrderCode();
             $intOrderSystemDetailId = Orderui_Util_Utility::generateOmsOrderCode();
             $arrOrderSysDetail = [
