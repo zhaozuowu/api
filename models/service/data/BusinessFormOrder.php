@@ -89,6 +89,25 @@ class Service_Data_BusinessFormOrder
     }
 
     /**
+     * 通过区域id获取仓库信息
+     * @param $intRegionId
+     * @return mixed
+     * @throws Nscm_Exception_Error
+     * @throws Orderui_BusinessError
+     */
+    public function getWarehouseInfo($intRegionId)
+    {
+        $arrRet = $this->objDaoRalWarehouse->getWarehouseListByDistrictId($intRegionId);
+        if (empty($arrRet)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_GET_WAREHOUSE_INFO_FAILED);
+        }
+        $arrWarehouseInfo['warehouse_id'] = $arrRet[0]['warehouse_id'];
+        $arrWarehouseInfo['warehouse_name'] = $arrRet[0]['warehouse_name'];
+        $arrWarehouseInfo['warehouse_location'] = Orderui_Util_Utility::transferBMapToAMap($arrRet[0]['location']);
+        return $arrWarehouseInfo;
+    }
+
+    /**
      * 拼接sku信息
      * @param $arrBatchSkuParams
      * @return array
@@ -365,7 +384,7 @@ class Service_Data_BusinessFormOrder
         $arrBusinessFormExt['customer_location'] = empty($arrInput['customer_location']) ?
                                                     '' : strval($arrInput['customer_location']);
         $arrBusinessFormExt['region_id'] = empty($arrInput['customer_info']['region_id']) ?
-                                                    '' : strval($arrInput['customer_info']['']);
+                                                    '' : strval($arrInput['customer_info']['region_id']);
         $arrBusinessFormExt['customer_location_source'] = empty($arrInput['customer_location_source']) ?
                                                     0 : intval($arrInput['customer_location_source']);
         $arrBusinessFormExt['executor'] = empty($arrInput['executor']) ?
@@ -1060,6 +1079,7 @@ class Service_Data_BusinessFormOrder
      * @param array $arrSkuList
      * @return int
      * @throws Orderui_BusinessError
+     * @throws Nscm_Exception_Error
      */
     public function checkReverseBusinessFormOrder($intLogisticsOrderId, $arrShelfInfoList, $arrSkuList)
     {
@@ -1077,10 +1097,12 @@ class Service_Data_BusinessFormOrder
         if (empty($arrBusinessFromOrderInfo)) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_ORDER_IS_NOT_EXITED);
         }
+        $strRegionId = json_decode($arrBusinessFromOrderInfo['business_form_ext'], true)['region_id'];
+        $arrWarehouseInfo = $this->getWarehouseInfo(intval($strRegionId));
         $intBusinessOrderId = intval($arrBusinessFromOrderInfo['business_form_order_id']);
         //查询运单号
         $arrShipmentOrderInfo = Model_Orm_OrderSystemDetail::getOrderInfoByBusinessFormOrderIdAndType($intBusinessOrderId, Orderui_Define_Const::NWMS_ORDER_TYPE_SHIPMENT_ORDER);
-        $intShipmentOrderId = $arrShipmentOrderInfo['order_id'];
+        $intShipmentOrderId = $arrShipmentOrderInfo[0]['order_id'];
         //发送WMQ异步创建订单
         $strCmd = Orderui_Define_Cmd::CMD_CREATE_SHELF_RETURN_ORDER;
         $arrSendWmqParams = [
@@ -1097,8 +1119,8 @@ class Service_Data_BusinessFormOrder
         $strCmd = Orderui_Define_Cmd::CMD_NOTIFY_TMS_SHELF_RETURN_ORDER;
         $arrSendWmqParams = [
             'shipment_order_id' => $intShipmentOrderId,
-            'warehouse_id' => $arrBusinessFromOrderInfo['warehouse_id'],
-            'supply_type' => $arrBusinessFromOrderInfo['order_supply_type'],
+            'warehouse_id' => $arrWarehouseInfo['warehouse_id'],
+            'supply_type' => $arrBusinessFromOrderInfo['supply_type'],
             'shelf_infos' => $arrShelfInfoList,
             'skus' => $arrSkuList,
         ];
