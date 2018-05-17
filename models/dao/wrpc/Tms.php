@@ -278,7 +278,7 @@ class Dao_Wrpc_Tms
             'receiptProducts' => $arrSkuList,
             'businessJson' => json_encode($arrBusinessInfo),
         ];
-        $arrRet = $this->objWrpcService->processWarehouseRequest($arrParams);
+        $arrRet = $this->objWrpcService->backickingAmount($arrParams);
         Bd_Log::trace(sprintf("method[%s] params[%s] processWarehouseRequest[%s]",
             __METHOD__, json_encode($arrParams), json_encode($arrRet)));
         if (empty($arrRet['data']) || 0 != $arrRet['errno']) {
