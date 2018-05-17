@@ -1092,6 +1092,8 @@ class Service_Data_BusinessFormOrder
         if (empty($arrSkuList)) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR, 'sku list is invalid');
         }
+        //校验参数
+        $this->validateShelfSkuList($arrSkuList);
         //查询是否有相关订单
         $arrBusinessFromOrderInfo = Model_Orm_BusinessFormOrder::getOrderInfoBySourceOrderId($intLogisticsOrderId);
         if (empty($arrBusinessFromOrderInfo)) {
@@ -1239,5 +1241,22 @@ class Service_Data_BusinessFormOrder
             ],
         ];
         return $this->appendWarehouseInfoToOrder($arrParams);
+    }
+
+    /**
+     * 校验货架商品返回数量
+     * @param $arrShelfSkuList
+     * @throws Orderui_BusinessError
+     */
+    private function validateShelfSkuList($arrShelfSkuList)
+    {
+        foreach ($arrShelfSkuList as $arrShelfSku) {
+            if (empty($arrShelfSku['sku_id'])) {
+                Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR);
+            }
+            if (0 > $arrShelfSku['return_amount']) {
+                Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR);
+            }
+        }
     }
 }
