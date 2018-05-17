@@ -279,7 +279,7 @@ class Dao_Wrpc_Tms
             'businessJson' => json_encode($arrBusinessInfo),
         ];
         $arrRet = $this->objWrpcService->backickingAmount($arrParams);
-        Bd_Log::trace(sprintf("method[%s] params[%s] processWarehouseRequest[%s]",
+        Bd_Log::trace(sprintf("method[%s] params[%s] backickingAmount[%s]",
             __METHOD__, json_encode($arrParams), json_encode($arrRet)));
         if (empty($arrRet['data']) || 0 != $arrRet['errno']) {
             Bd_Log::warning(sprintf("method[%s] arrRet[%s] routing-key[%s]",

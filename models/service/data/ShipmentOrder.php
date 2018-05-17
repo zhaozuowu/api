@@ -239,12 +239,12 @@ class Service_Data_ShipmentOrder
         }
         $arrBusinessInfo =  [
             'supply_type' => $intSupplyType,
-            'collects' => $arrDevices,
+            'collects' => (object)$arrDevices,
             'shelvesNo' => $arrShelfNos,
         ];
         //获取skuinfos
         $daoRalSku = new Dao_Ral_Sku();
-        $arrSkusMap = $daoRalSku->getSkuInfos(array_column($arrSkus['sku_id']));
+        $arrSkusMap = $daoRalSku->getSkuInfos(array_column($arrSkus,'sku_id'));
         $arrSkuList = [];
         foreach ($arrSkus as $arrSku) {
             $intSkuId = $arrSku['sku_id'];
