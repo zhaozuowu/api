@@ -386,7 +386,7 @@ class Service_Data_BusinessFormOrder
         $arrBusinessFormExt['region_id'] = empty($arrInput['customer_info']['region_id']) ?
                                                     '' : strval($arrInput['customer_info']['region_id']);
         $arrBusinessFormExt['customer_info'] = empty($arrInput['customer_info']) ?
-                                                    '' : strval($arrInput['customer_info']);
+                                                    [] : $arrInput['customer_info'];
         $arrBusinessFormExt['customer_location_source'] = empty($arrInput['customer_location_source']) ?
                                                     0 : intval($arrInput['customer_location_source']);
         $arrBusinessFormExt['executor'] = empty($arrInput['executor']) ?
@@ -419,7 +419,7 @@ class Service_Data_BusinessFormOrder
         $arrBusinessFormExt['customer_location_source'] = empty($arrInput['customer_info']['location_source']) ?
             0 : intval($arrInput['customer_info']['location_source']);
         $arrBusinessFormExt['customer_info'] = empty($arrInput['customer_info']) ?
-            '' : strval($arrInput['customer_info']);
+            [] : $arrInput['customer_info'];
         $arrBusinessFormExt['executor'] = empty($arrInput['customer_info']['executor']) ?
             0 : strval($arrInput['customer_info']['executor']);
         $arrBusinessFormExt['executor_contact'] = empty($arrInput['customer_info']['executor_contact']) ?
