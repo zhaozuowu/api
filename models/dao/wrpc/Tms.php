@@ -189,7 +189,7 @@ class Dao_Wrpc_Tms
     protected function getCancelRequest($intShipmentOrderId, $strRemark)
     {
         $arrCancelRequest = [];
-        $arrCancelRequest['shipmentId'] = $intShipmentOrderId;
+        $arrCancelRequest['shipmentIds'][] = $intShipmentOrderId;
         $arrCancelRequest['reasonCode'] = 0;
         $arrCancelRequest['reasonLabel'] = '';
         $arrCancelRequest['reasonDesc'] = $strRemark;
