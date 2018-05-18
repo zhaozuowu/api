@@ -14,14 +14,15 @@ class Dao_Wrpc_Tms
     private $objWrpcService;
 
     /**
+     * @param $strNamespace
      * @param $strServiceName
      * init
      */
-    public function __construct($strServiceName = Orderui_Define_Wrpc::SERVICE_NAME_TMS_REFER_WMS)
+    public function __construct(
+        $strNamespace = Orderui_Define_Wrpc::NAMESPACE_TMS_REFER_WMS,
+        $strServiceName = Orderui_Define_Wrpc::SERVICE_NAME_TMS_REFER_WMS)
     {
-        $this->objWrpcService = new Bd_Wrpc_Client(Orderui_Define_Wrpc::TMS_APP_ID,
-            Orderui_Define_Wrpc::NAMESPACE_TMS_REFER_WMS,
-            $strServiceName);
+        $this->objWrpcService = new Bd_Wrpc_Client(Orderui_Define_Wrpc::TMS_APP_ID, $strNamespace, $strServiceName);
     }
 
     /**
