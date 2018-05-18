@@ -14,13 +14,14 @@ class Dao_Wrpc_Tms
     private $objWrpcService;
 
     /**
+     * @param $strServiceName
      * init
      */
-    public function __construct()
+    public function __construct($strServiceName = Orderui_Define_Wrpc::SERVICE_NAME_TMS_REFER_WMS)
     {
         $this->objWrpcService = new Bd_Wrpc_Client(Orderui_Define_Wrpc::TMS_APP_ID,
             Orderui_Define_Wrpc::NAMESPACE_TMS_REFER_WMS,
-            Orderui_Define_Wrpc::SERVICE_NAME_TMS_REFER_WMS);
+            $strServiceName);
     }
 
     /**
@@ -188,7 +189,7 @@ class Dao_Wrpc_Tms
     protected function getCancelRequest($intShipmentOrderId, $strRemark)
     {
         $arrCancelRequest = [];
-        $arrCancelRequest['shipmentIds'][] = $intShipmentOrderId;
+        $arrCancelRequest['shipmentId'] = $intShipmentOrderId;
         $arrCancelRequest['reasonCode'] = 0;
         $arrCancelRequest['reasonLabel'] = '';
         $arrCancelRequest['reasonDesc'] = $strRemark;

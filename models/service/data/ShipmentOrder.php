@@ -41,8 +41,9 @@ class Service_Data_ShipmentOrder
         if (empty($intShipmentOrderId)) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_MAP_ORDER_NOT_FOUND);
         }
+        $objDaoWprcTms = new Dao_Wrpc_Tms(Orderui_Define_Wrpc::SERVICE_NAME_TMS);
         //调用tms接口进行运单签收
-        $arrRet = $this->objDaoWprcTms->signupShipmentOrder($intShipmentOrderId,$intBizType, $arrSignupSkus);
+        $arrRet = $objDaoWprcTms->signupShipmentOrder($intShipmentOrderId,$intBizType, $arrSignupSkus);
         Bd_Log::trace(sprintf("method[%s] signup arrRet[%s]", __METHOD__, json_encode($arrRet)));
         if (!empty($arrRet['errno']) || 0 != $arrRet['errno']) {
             Bd_Log::warning(sprintf("method[%s] signup tms shipmentorder failed shipmentid[%s]",
