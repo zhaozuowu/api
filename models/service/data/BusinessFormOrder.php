@@ -1238,7 +1238,7 @@ class Service_Data_BusinessFormOrder
             'shipment_order_id' => $intShipmentOrderId,
             'stockin_order_source' => Orderui_Define_BusinessFormOrder::BUSINESS_FORM_ORDER_TYPE_SHELF,
             'stockin_order_remark' => $strRemark,
-            'asset_information' => json_encode($arrShelfInfoList),
+            'asset_information' => $arrShelfInfoList,
             'sku_info_list' => $arrReqSkuList,
             'customer_info' => $arrCustomerInfo,
         ];
