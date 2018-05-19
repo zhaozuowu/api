@@ -253,8 +253,8 @@ class Service_Data_ShipmentOrder
             $arrSkuItem['name'] = $arrSkusMap[$intSkuId]['sku_name'];
             $arrSkuItem['netWeight'] = $arrSkusMap[$intSkuId]['sku_net'];
             $arrSkuItem['netWeightUnit'] = $arrSkusMap[$intSkuId]['sku_net_unit'];
-            $arrSkuItem['upcUnit'] = $arrSkusMap[$intSkuId]['upc_unit'];
-            $arrSkuItem['specifications'] = $arrSkusMap[$intSkuId]['upc_unit_num'];
+            $arrSkuItem['upcUnit'] = empty($arrSkusMap[$intSkuId]['min_upc']['upc_unit']) ? 0 : $arrSkusMap[$intSkuId]['min_upc']['upc_unit'];
+            $arrSkuItem['specifications'] = empty($arrSkusMap[$intSkuId]['upc_unit_num']['upc_unit_num']) ? 0 : $arrSkusMap[$intSkuId]['upc_unit_num']['upc_unit_num'];
             $arrSkuList[] = $arrSkuItem;
         }
         //获取warehouseLocation--支持多活
