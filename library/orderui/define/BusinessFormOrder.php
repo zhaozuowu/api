@@ -208,4 +208,9 @@ class Orderui_Define_BusinessFormOrder
      * @var string
      */
     const OMS_CANCEL_SHIPMENT_ORDER_FAILED = '取消运单失败，如需取消请线下联系沧海及轻舟人员使用手动取消功能';
+    /**
+     * 取消运单失败文案
+     * @var string
+     */
+    const OMS_CANCEL_BACK_SHIPMENT_ORDER_FAILED = '运单已排线不可取消，如需取消请线下联系轻舟人员使用手动取消功能';
 }

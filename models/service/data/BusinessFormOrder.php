@@ -1072,7 +1072,7 @@ class Service_Data_BusinessFormOrder
             Bd_Log::warning(sprintf("method[%s] order_id[%s] arrRet[%s] cancel shipment failed",
                 __METHOD__, $intShipmentOrderId, json_encode($arrRet)));
             Orderui_BusinessError::throwException($arrRet['errno'],
-                Orderui_Define_BusinessFormOrder::OMS_CANCEL_SHIPMENT_ORDER_FAILED);
+                Orderui_Define_BusinessFormOrder::OMS_CANCEL_BACK_SHIPMENT_ORDER_FAILED);
         }
         return Orderui_Define_Const::CANCEL_SUCCESS;
     }
