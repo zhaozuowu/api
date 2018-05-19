@@ -250,9 +250,9 @@ class Service_Data_ShipmentOrder
             $intSkuId = $arrSku['sku_id'];
             $arrSkuItem['skuId'] = $intSkuId;
             $arrSkuItem['backReceiptAmount'] = $arrSku['return_amount'];
-            $arrSkuItem['name'] = $arrSkusMap[$intSkuId]['sku_name'];
-            $arrSkuItem['netWeight'] = $arrSkusMap[$intSkuId]['sku_net'];
-            $arrSkuItem['netWeightUnit'] = $arrSkusMap[$intSkuId]['sku_net_unit'];
+            $arrSkuItem['name'] = empty($arrSkusMap[$intSkuId]['sku_name']) ? ' ' : strval($arrSkusMap[$intSkuId]['sku_name']);
+            $arrSkuItem['netWeight'] = empty($arrSkusMap[$intSkuId]['sku_net']) ? ' ' : strval($arrSkusMap[$intSkuId]['sku_net']);
+            $arrSkuItem['netWeightUnit'] = empty($arrSkusMap[$intSkuId]['sku_net_unit']) ? 0 : $arrSkusMap[$intSkuId]['sku_net_unit'];
             $arrSkuItem['upcUnit'] = empty($arrSkusMap[$intSkuId]['min_upc']['upc_unit']) ? 0 : $arrSkusMap[$intSkuId]['min_upc']['upc_unit'];
             $arrSkuItem['specifications'] = empty($arrSkusMap[$intSkuId]['upc_unit_num']['upc_unit_num']) ? 0 : $arrSkusMap[$intSkuId]['upc_unit_num']['upc_unit_num'];
             $arrSkuList[] = $arrSkuItem;
