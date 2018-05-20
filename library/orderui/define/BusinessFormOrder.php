@@ -213,4 +213,10 @@ class Orderui_Define_BusinessFormOrder
      * @var string
      */
     const OMS_CANCEL_BACK_SHIPMENT_ORDER_FAILED = '运单已排线不可取消，如需取消请线下联系轻舟人员使用手动取消功能';
+
+    /**
+     * 仓库分配失败文案
+     * @var string
+     */
+    const OMS_WAREHOUSE_DISTRIBUTE_FAILED = '【仓库信息异常】网点没有对应的仓库';
 }

@@ -42,6 +42,11 @@ class Service_Data_BusinessFormOrder
     protected $objDaoWrpcIss;
 
     /**
+     * @var Dao_Wrpc_MiniMart
+     */
+    protected $objDaoWrpcMiniMart;
+
+    /**
      * init object
      */
     public function __construct()
@@ -54,6 +59,7 @@ class Service_Data_BusinessFormOrder
         $this->objDaoRedisBsOrder = new Dao_Redis_BusinessOrder();
 //        $this->objDaoWrpcIss = new Dao_Wrpc_Iss();
         $this->objDaoWrpcNwms = new Dao_Wrpc_Nwms();
+        $this->objDaoWrpcMiniMart = new Dao_Wrpc_MiniMart();
     }
 
     /**
@@ -79,11 +85,8 @@ class Service_Data_BusinessFormOrder
      */
     public function appendWarehouseInfoToOrder($arrInput) {
         $arrRet = $this->objDaoRalWarehouse->getWarehouseListByDistrictId($arrInput['customer_info']['region_id']);
-        if (empty($arrRet)) {
-            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_GET_WAREHOUSE_INFO_FAILED);
-        }
-        $arrInput['warehouse_id'] = $arrRet[0]['warehouse_id'];
-        $arrInput['warehouse_name'] = $arrRet[0]['warehouse_name'];
+        $arrInput['warehouse_id'] = empty($arrRet[0]['warehouse_id']) ? 0 : $arrRet[0]['warehouse_id'];
+        $arrInput['warehouse_name'] = empty($arrRet[0]['warehouse_name']) ? '' : $arrRet[0]['warehouse_name'];
         $arrInput['warehouse_location'] = Orderui_Util_Utility::transferBMapToAMap($arrRet[0]['location']);
         return $arrInput;
     }
@@ -163,7 +166,9 @@ class Service_Data_BusinessFormOrder
      */
     public function createOrder($arrBusinessFormOrderInfo)
     {
-        $arrBusinessFormOrderInfo['business_form_order_id'] = Orderui_Util_Utility::generateBusinessFormOrderId();
+        if (!empty($arrBusinessFormOrderInfo['business_form_order_id'])) {
+            $arrBusinessFormOrderInfo['business_form_order_id'] = Orderui_Util_Utility::generateBusinessFormOrderId();
+        }
         //进行拆单转发处理
         $arrNwmsResponseList = Service_Data_OrderRouter::execute($arrBusinessFormOrderInfo);
         //校验是否已经创建
@@ -1242,7 +1247,11 @@ class Service_Data_BusinessFormOrder
             'sku_info_list' => $arrReqSkuList,
             'customer_info' => $arrCustomerInfo,
         ];
-        return $this->appendWarehouseInfoToOrder($arrParams);
+        $arrInput = $this->appendWarehouseInfoToOrder($arrParams);
+        if (empty($arrInput['warehouse_id'])) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_GET_WAREHOUSE_INFO_FAILED);
+        }
+        return $arrInput;
     }
 
     /**
@@ -1260,5 +1269,16 @@ class Service_Data_BusinessFormOrder
                 Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR);
             }
         }
+    }
+
+    /**
+     * 通知货架撤点运单创建结果
+     * @param $intLogisticsOrderId
+     * @param $intShipmentOrderId
+     * @throws Orderui_BusinessError
+     */
+    public function notifyMiniMartReverseOrderCreate($intLogisticsOrderId, $intShipmentOrderId)
+    {
+        $this->objDaoWrpcMiniMart->notifyMiniMartRecallShipmentOrderCreate($intLogisticsOrderId, $intShipmentOrderId);
     }
 }

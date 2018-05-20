@@ -33,6 +33,9 @@ class Dao_Wrpc_Tms
      */
     public function createShipmentOrder($arrInput)
     {
+        if (empty($arrInput['warehouse_id'])) {
+            return 0;
+        }
         $strRoutingKey = sprintf("loc=%s", $arrInput['warehouse_location']);
         $this->objWrpcService->setMeta(["routing-key"=>$strRoutingKey]);
         $arrParams = $this->getCreateShipmentParams($arrInput);

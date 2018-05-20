@@ -78,11 +78,18 @@ class Orderui_Define_Cmd
      * @var string
      */
     const CMD_CREATE_SHELF_RETURN_ORDER = 'create_shelf_return_order';
+
     /**
      * 通知TMS货架撤点盘点数据
      * @var string
      */
     const CMD_NOTIFY_TMS_SHELF_RETURN_ORDER = 'notify_tms_shelf_return_order';
+
+    /**
+     * 通知货架逆向业态单创建结果
+     * @var string
+     */
+    const CMD_NOTIFY_MINIMART_REVERSE_ORDER_CREATE = 'notify_minimart_reverse_order_create';
 
     /**
      * cmd trigger event

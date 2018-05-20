@@ -74,7 +74,10 @@ class Service_Data_Router_ShelfReverse extends Orderui_Base_OrderRouter
         foreach ((array)$ret as $retItem) {
             $intSourceOrderId = $retItem['logistics_order_id'];
             $intShipmentOrderId = $retItem['result']['shipment_order_id'];
-            $this->objDaoWrpcMiniMart->notifyMiniMartRecallShipmentOrderCreate($intSourceOrderId, $intShipmentOrderId);
+            $arrInput['logistics_order_id'] = $intSourceOrderId;
+            $arrInput['shipment_order_id'] = $intShipmentOrderId;
+            Orderui_Wmq_Commit::sendWmqCmd(Orderui_Define_Cmd::CMD_NOTIFY_MINIMART_REVERSE_ORDER_CREATE,
+                $arrInput, $arrInput['logistics_order_id']);
         }
         return $ret;
     }

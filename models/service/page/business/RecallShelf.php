@@ -31,7 +31,7 @@ class Service_Page_Business_RecallShelf
         if ($intOrderFlag) {
             return 1;
         }
-        $this->objDsBusinessFormOrder->createOrder($arrInput);
+        $arrInput['business_form_order_id'] = Orderui_Util_Utility::generateBusinessFormOrderId();
         Orderui_Wmq_Commit::sendWmqCmd(Orderui_Define_Cmd::CMD_CREATE_REVERSE_SHELF_ORDER,
                                         $arrInput, $arrInput['logistics_order_id']);
         //设置悲观锁
