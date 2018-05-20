@@ -27,6 +27,7 @@ class Service_Page_Orderui_Commit_Notifyminimartreverseordercreate extends Wm_Li
      */
     public function myExecute($arrRequest)
     {
+        Bd_Log::trace(sprintf("method[%s] params[%s]", __METHOD__, json_encode($arrRequest)));
         $intLogisticsOrderId = $arrRequest['logistics_order_id'];
         $intShipmentOrderId = $arrRequest['shipment_order_id'];
         $this->objDsBusinessFormOrder->notifyMiniMartReverseOrderCreate($intLogisticsOrderId, $intShipmentOrderId);
