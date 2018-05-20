@@ -31,7 +31,13 @@ class Service_Page_Business_RecallShelf
         if ($intOrderFlag) {
             return 1;
         }
+        if (Orderui_Define_BusinessFormOrder::BUSINESS_FORM_ORDER_TYPE_SHELF
+            == $arrInput['business_form_order_type']) {
+            $arrInput['supply_type'] = Orderui_Define_BusinessFormOrder::ORDER_SUPPLY_TYPE_SHELF_RETURN;
+        }
+        $arrInput['business_form_order_way'] = Orderui_Define_BusinessFormOrder::ORDER_WAY_REVERSE;
         $arrInput['business_form_order_id'] = Orderui_Util_Utility::generateBusinessFormOrderId();
+        $this->objDsBusinessFormOrder->createOrder($arrInput);
         Orderui_Wmq_Commit::sendWmqCmd(Orderui_Define_Cmd::CMD_CREATE_REVERSE_SHELF_ORDER,
                                         $arrInput, $arrInput['logistics_order_id']);
         //设置悲观锁

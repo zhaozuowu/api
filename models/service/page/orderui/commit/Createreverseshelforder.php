@@ -27,12 +27,6 @@ class Service_Page_Orderui_Commit_Createreverseshelforder extends Wm_Lib_Wmq_Com
     public function myExecute($arrInput)
     {
         Bd_Log::trace(sprintf("method[%s] params[%s]", __METHOD__, json_encode($arrInput)));
-        //根据业态设置补货类型
-        if (Orderui_Define_BusinessFormOrder::BUSINESS_FORM_ORDER_TYPE_SHELF
-            == $arrInput['business_form_order_type']) {
-            $arrInput['supply_type'] = Orderui_Define_BusinessFormOrder::ORDER_SUPPLY_TYPE_SHELF_RETURN;
-        }
-        $arrInput['business_form_order_way'] = Orderui_Define_BusinessFormOrder::ORDER_WAY_REVERSE;
         //创建逆向业态单
         $this->objDsBusinessFormOrder->createOrder($arrInput);
     }
