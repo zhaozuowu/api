@@ -21,7 +21,12 @@ class Orderui_Lib_Ordersystemdetail
         $arrOrderSysDetailSkuListDb = [];
         $arrSkuInfoMap = [];
         foreach ($arrSkuInfoList as $arrSkuInfo) {
-            $arrSkuInfoMap[$arrSkuInfo['sku_id']] = $arrSkuInfo['order_amount'];
+            if (isset($arrSkuInfo['order_amount'])) {
+                $arrSkuInfoMap[$arrSkuInfo['sku_id']] = $arrSkuInfo['order_amount'];
+            }
+            if (isset($arrSkuInfo['return_amount'])) {
+                $arrSkuInfoMap[$arrSkuInfo['sku_id']] = $arrSkuInfo['return_amount'];
+            }
         }
         foreach ($arrResponseList as $re) {
             $strOrderException = '';
