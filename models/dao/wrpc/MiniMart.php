@@ -41,6 +41,8 @@ class Dao_Wrpc_MiniMart
                                 __METHOD__, json_encode($arrParams), json_encode($arrRet)));
         if (!empty($arrRet['errno'])) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_NOTIFY_MINIMART_RECALL_SHELF_ORDER_FAILED);
+            Bd_Log::warning(sprintf("method[%s] params[%s] ret[%s]",
+                __METHOD__, json_encode($arrParams), json_encode($arrRet)));
         }
     }
 }
