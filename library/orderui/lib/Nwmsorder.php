@@ -26,10 +26,6 @@ class Orderui_Lib_Nwmsorder
                     ];
                 }
             }
-            if (empty($arrResponse['warehouse_id'])) {
-                $arrBusinessOrderInfo['business_form_order_exception'] = Orderui_Define_BusinessFormOrder::OMS_WAREHOUSE_DISTRIBUTE_FAILED;
-                $arrBusinessOrderInfo['business_form_order_create_status'] = Orderui_Define_Const::OMS_ORDER_DEAL_FAILED;
-            }
             if (0 != $arrResponse['result']['error_no']) {
                 //存储business_form_order_info
                 $strException = empty($strOrderException) ? $arrResponse['result']['error_msg'] : $strOrderException;
@@ -38,6 +34,10 @@ class Orderui_Lib_Nwmsorder
                 $arrBusinessOrderInfo['business_form_order_create_status'] = Orderui_Define_Const::OMS_ORDER_DEAL_FAILED;
             } else {
                 $arrBusinessOrderInfo['business_form_order_create_status'] = Orderui_Define_Const::OMS_ORDER_DEAL_SUCCESS;
+            }
+            if (empty($arrResponse['warehouse_id'])) {
+                $arrBusinessOrderInfo['business_form_order_exception'] = Orderui_Define_BusinessFormOrder::OMS_WAREHOUSE_DISTRIBUTE_FAILED;
+                $arrBusinessOrderInfo['business_form_order_create_status'] = Orderui_Define_Const::OMS_ORDER_DEAL_FAILED;
             }
             $arrBusinessOrderInfo['skus'] = self::formatNwmsOrderSkuException($arrBusinessOrderInfo['skus'], $arrSkuExceptionMap);
         }
