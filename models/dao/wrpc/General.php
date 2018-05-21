@@ -27,7 +27,7 @@ class Dao_Wrpc_General
             $objWrpcClient->setMeta($arrMeta);
         }
         $result = $objWrpcClient->$strFunction($mixData);
-        Bd_Log::debug(sprintf('wrpc call response: %s' . json_encode($result)));
+        Bd_Log::debug(sprintf('wrpc call response: %s', json_encode($result)));
         return $result;
     }
 }
