@@ -35,7 +35,7 @@ class Orderui_Lib_Nwmsorder
             } else {
                 $arrBusinessOrderInfo['business_form_order_create_status'] = Orderui_Define_Const::OMS_ORDER_DEAL_SUCCESS;
             }
-            if (empty($arrResponse['warehouse_id'])) {
+            if (empty($arrResponse['warehouse_id']) && $arrBusinessOrderInfo['business_form_order_way'] ==  Orderui_Define_BusinessFormOrder::ORDER_WAY_REVERSE) {
                 $arrBusinessOrderInfo['business_form_order_exception'] = Orderui_Define_BusinessFormOrder::OMS_WAREHOUSE_DISTRIBUTE_FAILED;
                 $arrBusinessOrderInfo['business_form_order_create_status'] = Orderui_Define_Const::OMS_ORDER_DEAL_FAILED;
             }
