@@ -33,7 +33,7 @@ class Service_Page_Business_RecallShelf
         }
         if (Orderui_Define_BusinessFormOrder::BUSINESS_FORM_ORDER_TYPE_SHELF
             == $arrInput['business_form_order_type']) {
-            $arrInput['supply_type'] = Orderui_Define_BusinessFormOrder::ORDER_SUPPLY_TYPE_RETREAT;
+            $arrInput['order_supply_type'] = Orderui_Define_BusinessFormOrder::ORDER_SUPPLY_TYPE_RETREAT;
         }
         $arrInput['business_form_order_way'] = Orderui_Define_BusinessFormOrder::ORDER_WAY_REVERSE;
         $arrInput['business_form_order_id'] = Orderui_Util_Utility::generateBusinessFormOrderId();
