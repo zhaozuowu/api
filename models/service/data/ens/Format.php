@@ -81,6 +81,6 @@ class Service_Data_Ens_Format
             'request'    => $arrSignRequest,
             'user'       => (object)[],
         ];
-        return Orderui_Struct_WrpcInfo::build([], $arrParams);
+        return Orderui_Struct_WrpcInfo::build(['shardid' => $arrInput['shipment_order_id'] % 100], $arrParams);
     }
 }
