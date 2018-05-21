@@ -62,8 +62,28 @@ class Service_Data_Ens_Format
         ]);
     }
 
+    public static function getWarehouseInfo($intRegionId)
+    {
+        $objDaoRalWarehouse = new Dao_Ral_Warehouse();
+        $arrRet = $objDaoRalWarehouse->getWarehouseListByDistrictId($intRegionId);
+        if (empty($arrRet)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_GET_WAREHOUSE_INFO_FAILED);
+        }
+        $arrWarehouseInfo['warehouse_id'] = $arrRet[0]['warehouse_id'];
+        $arrWarehouseInfo['warehouse_name'] = $arrRet[0]['warehouse_name'];
+        $arrWarehouseInfo['warehouse_location'] = Orderui_Util_Utility::transferBMapToAMap($arrRet[0]['location']);
+        return $arrWarehouseInfo;
+    }
+
     public static function formatStockinConfirmData($arrInput)
     {
+        $intShipmentOrderId = $arrInput['shipment_order_id'];
+        $arrShipmentOrder = Model_Orm_OrderSystemDetail::getOrderInfoByOrderIdAndType($intShipmentOrderId,
+            Nscm_Define_OmsOrder::TMS_ORDER_TYPE_SHIPMENT);
+        $intBusinessFormOrderId = intval($arrShipmentOrder['business_form_order_id']);
+        $objBusinessFormOrder = Model_Orm_BusinessFormOrder::getBusinessFormOrderByBusinessOrderId($intBusinessFormOrderId);
+        $strRegionId = json_decode($objBusinessFormOrder['business_form_ext'], true)['region_id'];
+        $arrWarehouseInfo = self::getWarehouseInfo(intval($strRegionId));
         $arrSkuInfoList = $arrInput['sku_info_list'];
         foreach ($arrSkuInfoList as $arrSkuInfo) {
             $arrSkus[] = [
@@ -81,6 +101,7 @@ class Service_Data_Ens_Format
             'request'    => $arrSignRequest,
             'user'       => (object)[],
         ];
-        return Orderui_Struct_WrpcInfo::build(['shardid' => $arrInput['shipment_order_id'] % 100], $arrParams);
+        $strRoutingKey = sprintf("loc=%s", $arrWarehouseInfo['warehouse_location']);
+        return Orderui_Struct_WrpcInfo::build(['routing-key' => $strRoutingKey, 'shardid' => $arrInput['shipment_order_id'] % 100], $arrParams);
     }
 }
