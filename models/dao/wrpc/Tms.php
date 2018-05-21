@@ -71,6 +71,7 @@ class Dao_Wrpc_Tms
         $arrWarehouseRequest = [];
         $arrShelfSkuList = $arrInput['new_shelf_info'];
         $arrShelfSkuList['devices'] = (object)$arrShelfSkuList['devices'];
+        $arrShelfSkuList['shelvesNo'] = (object)$arrShelfSkuList['shelvesNo'];
         $arrExpectArriveTime = $arrInput['expect_arrive_time'];
         $arrWarehouseRequest['warehouseId'] = empty($arrInput['warehouse_id']) ? '' : intval($arrInput['warehouse_id']);
         $arrWarehouseRequest['businessType'] = empty($arrInput['business_form_order_type']) ? 0 : strval($arrInput['business_form_order_type']);
@@ -288,8 +289,8 @@ class Dao_Wrpc_Tms
         Bd_Log::trace(sprintf("method[%s] params[%s] backickingAmount[%s]",
             __METHOD__, json_encode($arrParams), json_encode($arrRet)));
         if (empty($arrRet['data']) || 0 != $arrRet['errno']) {
-            Bd_Log::warning(sprintf("method[%s] arrRet[%s] routing-key[%s]",
-                __METHOD__, json_encode($arrRet), $strRoutingKey));
+            Bd_Log::warning(sprintf("method[%s] arrRet[%s] routing-key[%s], shipment-order-id[%s]",
+                __METHOD__, json_encode($arrRet), $strRoutingKey, strval($intShipmentOrderId)));
             Orderui_BusinessError::throwException(Orderui_Error_Code::BACK_ORDER_NOTIFY_TMS_FAIL);
         }
         return $arrRet['data'];
