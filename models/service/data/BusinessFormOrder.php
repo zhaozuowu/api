@@ -1098,9 +1098,9 @@ class Service_Data_BusinessFormOrder
         if (empty($arrShelfInfoList)) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR, 'shelf list is invalid');
         }
-        if (empty($arrSkuList)) {
-            Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR, 'sku list is invalid');
-        }
+//        if (empty($arrSkuList)) {
+//            Orderui_BusinessError::throwException(Orderui_Error_Code::PARAM_ERROR, 'sku list is invalid');
+//        }
         //校验参数
         $this->validateShelfSkuList($arrSkuList);
         //查询是否有相关订单
