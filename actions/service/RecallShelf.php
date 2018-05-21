@@ -8,7 +8,7 @@ class Action_Service_RecallShelf extends Orderui_Base_ServiceAction
     protected $arrInputParams = [
         'logistics_order_id' => 'str|required',
         'business_form_order_type' => 'int|required',
-        'business_form_order_remark' => 'str|required',
+        'business_form_order_remark' => 'str|required|len[255]',
         'shelf_sku_list' => 'arr|required',
         'customer_info' => 'arr|required',
         'expect_arrive_time' => 'arr|required',
