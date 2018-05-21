@@ -23,11 +23,11 @@ class Orderui_Define_OutsideEvent
             'shipment_order_id' => 'int|required',
             'biz_type'  => 'int|required',
             'sku_info_list' => [
-                'validate' => 'json|required|decode',
+                'validate' => 'json|decode',
                 'type' => 'array',
                 'params' => [
-                    'sku_id' => 'int|required|min[1000000]|max[9999999]',
-                    'sku_amount' => 'int|required',
+                    'sku_id' => 'int',
+                    'sku_amount' => 'int',
                 ],
             ],
         ],

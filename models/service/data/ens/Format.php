@@ -85,7 +85,8 @@ class Service_Data_Ens_Format
         $strRegionId = json_decode($objBusinessFormOrder['business_form_ext'], true)['region_id'];
         $arrWarehouseInfo = self::getWarehouseInfo(intval($strRegionId));
         $arrSkuInfoList = $arrInput['sku_info_list'];
-        foreach ($arrSkuInfoList as $arrSkuInfo) {
+        $arrSkus = [];
+        foreach ((array)$arrSkuInfoList as $arrSkuInfo) {
             $arrSkus[] = [
                 'id' => intval($arrSkuInfo['sku_id']),
                 'count' => $arrSkuInfo['sku_amount'],
