@@ -166,7 +166,7 @@ class Service_Data_BusinessFormOrder
      */
     public function createOrder($arrBusinessFormOrderInfo)
     {
-        if (!empty($arrBusinessFormOrderInfo['business_form_order_id'])) {
+        if (empty($arrBusinessFormOrderInfo['business_form_order_id'])) {
             $arrBusinessFormOrderInfo['business_form_order_id'] = Orderui_Util_Utility::generateBusinessFormOrderId();
         }
         //进行拆单转发处理
