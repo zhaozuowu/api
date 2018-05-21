@@ -70,6 +70,7 @@ class Dao_Wrpc_Tms
     protected function getWarehouseRequest($arrInput) {
         $arrWarehouseRequest = [];
         $arrShelfSkuList = $arrInput['new_shelf_info'];
+        $arrShelfSkuList['devices'] = (object)$arrShelfSkuList['devices'];
         $arrExpectArriveTime = $arrInput['expect_arrive_time'];
         $arrWarehouseRequest['warehouseId'] = empty($arrInput['warehouse_id']) ? '' : intval($arrInput['warehouse_id']);
         $arrWarehouseRequest['businessType'] = empty($arrInput['business_form_order_type']) ? 0 : strval($arrInput['business_form_order_type']);
