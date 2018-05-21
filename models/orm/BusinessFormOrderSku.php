@@ -51,4 +51,24 @@ class Model_Orm_BusinessFormOrderSku extends Orderui_Base_Orm
         }
         return self::findRows($arrColumns, $arrConditions, ['create_time' => 'desc'], $intOffset, $intLimit);
     }
+
+    /**
+     * 更新业态订单商品信息
+     * @param array $arrSkuList
+     * @param int   $intBusinessOrderId
+     */
+    public static function updateSkuListInfo($arrSkuList, $intBusinessOrderId)
+    {
+        foreach ($arrSkuList as $arrSkuInfo) {
+            $objBusinessOrderSkuInfo = self::findOne([
+                'sku_id' => $arrSkuInfo['sku_id'],
+                'business_form_order_id' => $intBusinessOrderId,
+            ]);
+            if (!empty($objBusinessOrderSkuInfo)) {
+                $objBusinessOrderSkuInfo->update([
+                    'sku_amount' => $arrSkuInfo['return_amount'],
+                ]);
+            }
+        }
+    }
 }

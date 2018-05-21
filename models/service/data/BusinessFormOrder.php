@@ -1089,6 +1089,7 @@ class Service_Data_BusinessFormOrder
      * @return int
      * @throws Orderui_BusinessError
      * @throws Nscm_Exception_Error
+     * @throws Exception
      */
     public function checkReverseBusinessFormOrder($intLogisticsOrderId, $arrShelfInfoList, $arrSkuList)
     {
@@ -1114,20 +1115,12 @@ class Service_Data_BusinessFormOrder
         //查询运单号
         $arrShipmentOrderInfo = Model_Orm_OrderSystemDetail::getOrderInfoByBusinessFormOrderIdAndType($intBusinessOrderId, Orderui_Define_Const::NWMS_ORDER_TYPE_SHIPMENT_ORDER);
         $intShipmentOrderId = $arrShipmentOrderInfo[0]['order_id'];
-        //发送WMQ异步创建订单
-        $strCmd = Orderui_Define_Cmd::CMD_CREATE_SHELF_RETURN_ORDER;
-        $arrSendWmqParams = [
+        $arrSendNWMSWmqParams = [
             'logistics_order_id' => $intLogisticsOrderId,
             'shelf_infos' => $arrShelfInfoList,
             'skus' => $arrSkuList,
         ];
-        $ret = Orderui_Wmq_Commit::sendWmqCmd($strCmd , $arrSendWmqParams, strval($intLogisticsOrderId));
-        if (false == $ret) {
-            Bd_Log::warning(sprintf("send cmd to wmq failed,cmd_%s_params_%s", $strCmd, json_encode($arrSendWmqParams)));
-            Orderui_BusinessError::throwException(Orderui_Error_Code::SEND_CMD_FAILED);
-        }
-        //通知TMS盘点数量
-        $strCmd = Orderui_Define_Cmd::CMD_NOTIFY_TMS_SHELF_RETURN_ORDER;
+
         $arrSendWmqParams = [
             'shipment_order_id' => $intShipmentOrderId,
             'warehouse_id' => $arrWarehouseInfo['warehouse_id'],
@@ -1135,11 +1128,27 @@ class Service_Data_BusinessFormOrder
             'shelf_infos' => $arrShelfInfoList,
             'skus' => $arrSkuList,
         ];
-        $ret = Orderui_Wmq_Commit::sendWmqCmd($strCmd , $arrSendWmqParams, strval($intShipmentOrderId));
-        if (false == $ret) {
-            Bd_Log::warning(sprintf("send cmd to wmq failed,cmd_%s_params_%s", $strCmd, json_encode($arrSendWmqParams)));
-            Orderui_BusinessError::throwException(Orderui_Error_Code::SEND_CMD_FAILED);
-        }
+
+        //更新数量
+        Model_Orm_OrderSystemDetailSku::getConnection()->transaction(function () use ($arrSendNWMSWmqParams,  $intLogisticsOrderId,
+            $intShipmentOrderId, $arrSendWmqParams, $arrSkuList, $intBusinessOrderId) {
+            Model_Orm_BusinessFormOrderSku::updateSkuListInfo($arrSkuList, $intBusinessOrderId);
+            //发送WMQ异步创建订单
+            $strCmd = Orderui_Define_Cmd::CMD_CREATE_SHELF_RETURN_ORDER;
+            $ret = Orderui_Wmq_Commit::sendWmqCmd($strCmd , $arrSendNWMSWmqParams, strval($intLogisticsOrderId));
+            if (false == $ret) {
+                Bd_Log::warning(sprintf("send cmd to wmq failed,cmd_%s_params_%s", $strCmd, json_encode($arrSendWmqParams)));
+                Orderui_BusinessError::throwException(Orderui_Error_Code::SEND_CMD_FAILED);
+            }
+
+            //通知TMS盘点数量
+            $strCmd = Orderui_Define_Cmd::CMD_NOTIFY_TMS_SHELF_RETURN_ORDER;
+            $ret = Orderui_Wmq_Commit::sendWmqCmd($strCmd , $arrSendWmqParams, strval($intShipmentOrderId));
+            if (false == $ret) {
+                Bd_Log::warning(sprintf("send cmd to wmq failed,cmd_%s_params_%s", $strCmd, json_encode($arrSendWmqParams)));
+                Orderui_BusinessError::throwException(Orderui_Error_Code::SEND_CMD_FAILED);
+            }
+        });
         return 1;
     }
 
