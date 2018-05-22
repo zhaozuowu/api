@@ -23,7 +23,8 @@ class Service_Data_TriggerEvent
             'data'       => $arrData,
         ];
         $strCmd = Orderui_Define_Cmd::CMD_EVENT_SYSTEM;
-        $ret = Orderui_Wmq_Commit::sendWmqCmd($strCmd, $arrParam, strval($strEventKey), Orderui_Define_Cmd::OMS_ENS_TOPIC);
+        $strKey = md5(json_encode($arrData));
+        $ret = Orderui_Wmq_Commit::sendWmqCmd($strCmd, $arrParam, $strKey, Orderui_Define_Cmd::OMS_ENS_TOPIC);
         if (false == $ret) {
             Bd_Log::warning(sprintf("method[%s] cmd[%s] error", __METHOD__, $strCmd));
             Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_TRIGGER_EVENT_FAIL);
