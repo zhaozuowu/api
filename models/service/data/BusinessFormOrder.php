@@ -261,8 +261,8 @@ class Service_Data_BusinessFormOrder
         //无人货架信息校验
         if (Orderui_Define_BusinessFormOrder::BUSINESS_FORM_ORDER_TYPE_SHELF
             == $arrInput['business_form_order_type'] &&
-            Orderui_Define_BusinessFormOrder::ORDER_SUPPLY_TYPE_RETREAT
-            != $arrInput['order_supply_type']) {
+            Orderui_Define_BusinessFormOrder::ORDER_SUPPLY_TYPE_ORDER
+            == $arrInput['order_supply_type']) {
             $this->checkShelfInfo($arrInput['shelf_info']);
         }
         //校验预计送达时间
