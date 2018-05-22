@@ -12,20 +12,22 @@ class Dao_Wrpc_General
      * @param string $strAppId
      * @param string $strNamespace
      * @param string $strServiceName
-     * @param string $strRoutingKey
+     * @param string $arrMeta
      * @param string $strFunction
      * @param mixed $mixData
      * @return mixed
      */
-    public static function call($strAppId, $strNamespace, $strServiceName, $strRoutingKey, $strFunction, $mixData)
+    public static function call($strAppId, $strNamespace, $strServiceName, $arrMeta, $strFunction, $mixData)
     {
-        Bd_Log::debug(sprintf('wrpc call, app_id[%s], namespace[%s], service_name[%s], routing_key[%s],' .
-            ' function[%s], data[%s]', $strAppId, $strNamespace, $strServiceName, $strRoutingKey, $strFunction,
+        Bd_Log::debug(sprintf('wrpc call, app_id[%s], namespace[%s], service_name[%s], meta[%s],' .
+            ' function[%s], data[%s]', $strAppId, $strNamespace, $strServiceName, json_encode($arrMeta), $strFunction,
             json_encode($mixData)));
         $objWrpcClient = new Bd_Wrpc_Client($strAppId, $strNamespace, $strServiceName);
-        $objWrpcClient->setMeta(['routing-key' => $strRoutingKey]);
+        if (is_array($arrMeta) && !empty($arrMeta)) {
+            $objWrpcClient->setMeta($arrMeta);
+        }
         $result = $objWrpcClient->$strFunction($mixData);
-        Bd_Log::debug(sprintf('wrpc call response: %s' . json_encode($result)));
+        Bd_Log::debug(sprintf('wrpc call response: %s', json_encode($result)));
         return $result;
     }
 }

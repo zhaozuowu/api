@@ -58,6 +58,22 @@ class Model_Orm_OrderSystemDetail extends Orderui_Base_Orm
     }
 
     /**
+     * 根据给定的TMS运单号查找对应的OMS系统的business_form_order_id
+     * @param $strShipmentOrderId
+     * @return mixed
+     */
+    public static function getBusinessOrderIdByShipmentId($strShipmentOrderId)
+    {
+        $arrCondition = [
+            'order_type' => Orderui_Define_Const::NWMS_ORDER_TYPE_SHIPMENT_ORDER,
+            'order_id' => $strShipmentOrderId,
+            'is_delete' => Orderui_Define_Const::NOT_DELETE,
+        ];
+        $arrColumns = ['business_form_order_id'];
+        return self::findRow($arrColumns, $arrCondition)['business_form_order_id'];
+    }
+
+    /**
      * 通过下游系统订单号和订单类型获取订单信息
      * @param  integer $intOrderId
      * @param  integer $intOrderType

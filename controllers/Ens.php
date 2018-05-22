@@ -10,7 +10,7 @@ class Controller_Ens extends Ap_Controller_Abstract
      * action name
      * @var string
      */
-    const ACTION_NAME = 'Action_Recv';
+    const ACTION_NAME = 'Action_Ens_Recv';
 
     /**
      * action path

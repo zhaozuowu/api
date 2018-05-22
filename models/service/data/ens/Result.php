@@ -19,13 +19,12 @@ class Service_Data_Ens_Result
 
     /**
      * default json result
-     * @param string $strInput
+     * @param array $arrResult
      * @return bool
      */
-    public static function defaultJsonResult($strInput)
+    public static function defaultJsonResult($arrResult)
     {
-        $result = json_decode(strval($strInput), true);
-        if ($result !== false && !empty($result['error_no'])) {
+        if ($arrResult !== false && !empty($arrResult['errno'])) {
             return false;
         }
         return true;
