@@ -195,8 +195,19 @@ class Service_Data_BusinessFormOrder
                 Model_Orm_OrderSystemDetailSku::batchInsert($arrOrderSysDetailListDb['sku_list']);
             }
         });
+        //错误处理
         if (Orderui_Define_Const::NWMS_ORDER_CREATE_STATUS_SUCCESS != $intBusinessCreateStatus) {
-            Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_CREATE_ERROR);
+            if (Orderui_Define_BusinessFormOrder::ORDER_SUPPLY_TYPE_RETREAT
+                == $arrBusinessFormOrderInfo['order_supply_type']) {
+                $arrCmdParams['logistics_order_id'] = $arrBusinessFormOrderInfo['logistics_order_id'];
+                $arrCmdParams['shipment_order_id'] = 0;
+                Orderui_Wmq_Commit::sendWmqCmd(Orderui_Define_Cmd::CMD_NOTIFY_MINIMART_REVERSE_ORDER_CREATE,
+                    $arrCmdParams, $arrCmdParams['logistics_order_id']);
+            }
+            if (Orderui_Define_BusinessFormOrder::ORDER_SUPPLY_TYPE_ORDER
+                == $arrBusinessFormOrderInfo['order_supply_type']) {
+                Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_CREATE_ERROR);
+            }
         }
         return $arrNwmsResponseList;
     }
