@@ -272,6 +272,10 @@ class Service_Data_BusinessFormOrder
         }
         //校验位置信息
         $arrLocation = explode(',', $arrInput['customer_location']);
+        if ($arrInput['order_supply_type']
+            == Orderui_Define_BusinessFormOrder::ORDER_SUPPLY_TYPE_RETREAT) {
+            $arrLocation = explode(',', $arrInput['customer_info']['location']);
+        }
         if (floatval($arrLocation[1]) >= Orderui_Define_BusinessFormOrder::MAX_LATITUDE
             || floatval($arrLocation[1]) <= Orderui_Define_BusinessFormOrder::MIN_LATITUDE) {
             Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_STOCKOUT_LATITUDE_ERROR);
