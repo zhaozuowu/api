@@ -35,13 +35,31 @@ class Orderui_Define_BusinessFormOrder
     ];
 
     /**
+     * 无人货架
+     * @var integer
+     */
+    const BUSINESS_FORM_ORDER_TYPE_SHELF = 1;
+
+    /**
+     * 前置仓
+     * @var integer
+     */
+    const BUSINESS_FORM_ORDER_TYPE_PREPOSITION = 2;
+
+    /**
+     * 门店
+     * @var integer
+     */
+    const BUSINESS_FORM_ORDER_TYPE_SHOP = 3;
+
+    /**
      * 业态订单类型列表
      * @var array
      */
     const BUSINESS_FORM_ORDER_TYPE_LIST = [
-        '1' => '无人货架',
-        '2' => '前置仓',
-        '3' => '便利店',
+        self::BUSINESS_FORM_ORDER_TYPE_SHELF => '无人货架',
+        self::BUSINESS_FORM_ORDER_TYPE_PREPOSITION => '前置仓',
+        self::BUSINESS_FORM_ORDER_TYPE_SHOP => '便利店',
     ];
 
     /**
@@ -55,6 +73,9 @@ class Orderui_Define_BusinessFormOrder
      * @var integer
      */
     const ORDER_SUPPLY_TYPE_SUPPLY = 2;
+    const ORDER_SUPPLY_TYPE_ORDER   = 4;    // 订货
+    const ORDER_SUPPLY_TYPE_REJECT  = 3;    // 退货
+    const ORDER_SUPPLY_TYPE_RETREAT = 5;    // 撤点
 
     /**
      * 补货类型
@@ -63,6 +84,9 @@ class Orderui_Define_BusinessFormOrder
     const ORDER_SUPPLY_TYPE = [
         self::ORDER_SUPPLY_TYPE_CREATE => '铺货',
         self::ORDER_SUPPLY_TYPE_SUPPLY => '补货',
+        self::ORDER_SUPPLY_TYPE_RETREAT => '撤点',
+        self::ORDER_SUPPLY_TYPE_ORDER   => '订货',
+        self::ORDER_SUPPLY_TYPE_REJECT  => '退货',
     ];
 
     /**
@@ -161,6 +185,19 @@ class Orderui_Define_BusinessFormOrder
     ];
 
     /**
+     * 正向的
+     * @var integer
+     */
+    const ORDER_WAY_OBVERSE = 1;
+
+    /**
+     * 反向的
+     * @var integer
+     */
+    const ORDER_WAY_REVERSE = 2;
+
+
+    /**
      * 取消失败文案
      * @var string
      */
@@ -171,4 +208,15 @@ class Orderui_Define_BusinessFormOrder
      * @var string
      */
     const OMS_CANCEL_SHIPMENT_ORDER_FAILED = '取消运单失败，如需取消请线下联系沧海及轻舟人员使用手动取消功能';
+    /**
+     * 取消运单失败文案
+     * @var string
+     */
+    const OMS_CANCEL_BACK_SHIPMENT_ORDER_FAILED = '运单已排线不可取消，如需取消请线下联系轻舟人员使用手动取消功能';
+
+    /**
+     * 仓库分配失败文案
+     * @var string
+     */
+    const OMS_WAREHOUSE_DISTRIBUTE_FAILED = '【仓库信息异常】网点没有对应的仓库';
 }

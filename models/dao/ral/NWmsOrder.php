@@ -28,6 +28,11 @@ class Dao_Ral_NWmsOrder
      * @var string
      */
     const API_CREATE_SALES_RETURN_STOCKIN_ORDER = 'createsalereturnstockinorder';
+    /*
+     * create withdraw stockin order
+     * @var string
+     */
+    const API_CREATE_WITHDRAW_STOCKIN_ORDER = 'createremovesitestockinorderapi';
 
     /**
      * pre cancel stockout order
@@ -150,6 +155,22 @@ class Dao_Ral_NWmsOrder
         $ret = $this->objApiRal->getData($req);
         Bd_Log::trace(sprintf("create sales return stockin order response %s", json_encode($ret)));
         $ret = !empty($ret[self::API_CREATE_SALES_RETURN_STOCKIN_ORDER]) ? $ret[self::API_CREATE_SALES_RETURN_STOCKIN_ORDER] : [];
+        return $ret;
+    }
+
+    /**
+     * 创建货架撤点销退入库单
+     * @param $arrData
+     * @return array
+     * @throws Nscm_Exception_Error
+     */
+    public function createBusinessReturnStockinOrder($arrData)
+    {
+        $req[self::API_CREATE_WITHDRAW_STOCKIN_ORDER] = $arrData;
+        Bd_Log::trace(sprintf("create remove site stock in order request params %s", json_encode($req)));
+        $ret = $this->objApiRal->getData($req);
+        Bd_Log::trace(sprintf("create remove site stock in order response %s", json_encode($ret)));
+        $ret = !empty($ret[self::API_CREATE_WITHDRAW_STOCKIN_ORDER]) ? $ret[self::API_CREATE_WITHDRAW_STOCKIN_ORDER] : [];
         return $ret;
     }
 }

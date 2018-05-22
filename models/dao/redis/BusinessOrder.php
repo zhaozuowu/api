@@ -13,6 +13,35 @@ class Dao_Redis_BusinessOrder extends Orderui_Base_Redis
     const KEY_PREFIX = 'oms:order:businessinfo:';
 
     /**
+     * reverse businessformorder
+     * @var string
+     */
+    const REVERSE_SOURCE_ORDER_KEY_PREFIX = 'oms:order:reverse:sourceorderid:';
+
+    /**
+     * shop return order
+     * @var string
+     */
+    const SHOP_RETURN_ORDER_KEY_PREFIX = 'oms:order:shop:return:sourceorderid:';
+
+    /**
+     * batch create order params key
+     * @var string
+     */
+    const BATCH_CREATE_ORDER_PARAMS_KEY_PREFIX = 'oms:order:batchcreate:nwmsorder:';
+
+    /**
+     * reverse source order过期时间
+     * @var integer
+     */
+    const REVERSE_SOURCE_ORDER_KEY_EXPIRE_TIME = 3600;
+
+    /**
+     * 批量nwmsorder参数过期时间
+     * @var integer
+     */
+    const BATCH_CREATE_ORDER_PARAMS_KEY_EXPIRE_TIME = 3600;
+    /**
      * set business order info
      * @param  array $arrBusinessOrderInfo
      * @return string
@@ -55,5 +84,71 @@ class Dao_Redis_BusinessOrder extends Orderui_Base_Redis
         $intRet = $this->objRedisConn->del($strRedisKey);
         Bd_Log::debug(sprintf('drop from redis, result: `%s`', $intRet));
         return $intRet;
+    }
+
+    /**
+     * set reverse source order
+     * @param integer $intSourceOrderId
+     * @return void
+     */
+    public function setReverseSourceOrderKey($intSourceOrderId) {
+        $strKey = self::REVERSE_SOURCE_ORDER_KEY_PREFIX . $intSourceOrderId;
+        $this->objRedisConn->incr($strKey);
+        $this->objRedisConn->expire($strKey, self::REVERSE_SOURCE_ORDER_KEY_EXPIRE_TIME);
+    }
+
+    /**
+     * get reverse source order
+     * @param integer $intSourceOrderId
+     * @return mixed
+     */
+    public function getReverseSourceOrder($intSourceOrderId) {
+        $strKey = self::REVERSE_SOURCE_ORDER_KEY_PREFIX . $intSourceOrderId;
+        return $this->objRedisConn->get($strKey);
+    }
+
+    /**
+     * set reverse source order
+     * @param integer $intSourceOrderId
+     * @return void
+     */
+    public function setShopReturnOrderKey($intSourceOrderId) {
+        $strKey = self::SHOP_RETURN_ORDER_KEY_PREFIX . $intSourceOrderId;
+        $this->objRedisConn->incr($strKey);
+        $this->objRedisConn->expire($strKey, self::REVERSE_SOURCE_ORDER_KEY_EXPIRE_TIME);
+    }
+
+    /**
+     * get reverse source order
+     * @param integer $intSourceOrderId
+     * @return mixed
+     */
+    public function getShopReturnOrderKey($intSourceOrderId) {
+        $strKey = self::SHOP_RETURN_ORDER_KEY_PREFIX . $intSourceOrderId;
+        return $this->objRedisConn->get($strKey);
+    }
+
+    /**
+     * 缓存每次批量创建nwmsorder的参数
+     * @param $intSourceOrderId
+     * @param $arrOrderList
+     */
+    public function setBatchCreateOrderParams($intSourceOrderId, $arrOrderList)
+    {
+        $strKey = self::BATCH_CREATE_ORDER_PARAMS_KEY_PREFIX . $intSourceOrderId;
+        $strOrderList = json_encode($arrOrderList);
+        $this->objRedisConn->set($strKey, $strOrderList);
+    }
+
+    /**
+     * 获取每次批量创建nwmsorder的参数缓存
+     * @param $intSourceOrderId
+     * @return mixed
+     */
+    public function getBatchCreateOrderParams($intSourceOrderId)
+    {
+        $strKey = self::BATCH_CREATE_ORDER_PARAMS_KEY_PREFIX . $intSourceOrderId;
+        $strOrderList = $this->objRedisConn->get($strKey);
+        return json_decode($strOrderList, true);
     }
 }

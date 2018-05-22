@@ -102,6 +102,12 @@ class Orderui_Error_Code extends Wm_Error_Code
     const ORDER_SYS_DETAIL_IS_EXITED = 350034;
 
     /**
+     * order system detail订单不存在
+     * @var integer
+     */
+    const ORDER_SYS_DETAIL_NOT_EXITED = 350035;
+
+    /**
      * oms权限校验失败
      * @var integer
      */
@@ -170,9 +176,114 @@ class Orderui_Error_Code extends Wm_Error_Code
      * 创建销退入库单失败
      */
     const OMS_CREATE_SALE_RETURN_STOCKIN_ORDER_FAIL = 360006;
-
+    /**
+     * OMS调用NWMS更新销退入库单计划入库商品数失败
+     */
+    const OMS_UPDATE_NWMS_STOCKIN_ORDER_SKU_PLAN_AMOUNT_FAIL = 360007;
+    /**
+     * OMS调用SHOP更新出库单拣货商品数失败
+     */
+    const OMS_UPDATE_SHOP_STOCKOUT_SKU_PICKUP_AMOUNT_FAIL = 360008;
+    /**
+     * 批量创建销退入库单失败
+     */
+    const OMS_BATCH_CREATE_SALE_RETURN_STOCKIN_ORDER_FAIL = 360009;
+    /**
+     * 通知门店退货单创建结果失败
+     */
+    const OMS_NOTIFY_CREATE_SHOP_RETURN_ORDER_FAIL = 360010;
     /**
      * 找不到关联订单
      */
     const OMS_MAP_ORDER_NOT_FOUND = 370001;
+
+    /**
+     * OMS通知货架更新司机信息失败
+     */
+    const OMS_NOTIFY_SHELF_DRIVER_INFO_FAIL = 370002;
+
+    /**
+     * OMS通知货架更新运单状态失败
+     */
+    const OMS_NOTIFY_SHELF_SHIPMENT_STATUS_FAIL = 370003;
+
+    /**
+     * OMS通知货架整单拒收消息失败
+     */
+    const OMS_NOTIFY_SHELF_SHIPMENT_REJECT_ALL_FAIL = 370004;
+
+    /**
+     * OMS通知货架沧海揽收信息失败
+     */
+    const OMS_NOTIFY_SHELF_NWMS_ACCEPT_ORDER_SKUS_FAIL = 370005;
+
+    /**
+     * OMS通知TMS取消运单失败
+     */
+    const OMS_NOTIFY_TMS_CANCEL_SHIPMENT_ORDER_FAIL = 370006;
+
+    /**
+     * sku参数错误
+     * @var integer
+     */
+    const OMS_SKU_INFO_PARAMS_ERROR = 370007;
+
+    /**
+     * 无效的sku信息
+     * @var integer
+     */
+    const OMS_SKU_INFO_INVALID = 370008;
+
+    /**
+     * 通知门店创建信息失败
+     * @var integer
+     */
+    const OMS_NOTIFY_ISS_CREATE_RESULT_FAILED = 370009;
+
+    /**
+     * 通知门店失败
+     * @var integer
+     */
+    const OMS_RECALL_SHELF_CREATE_SHIPMENT_ORDER_FAILED = 370010;
+
+    /**
+     * 获取仓库信息失败
+     * @var integer
+     */
+    const OMS_GET_WAREHOUSE_INFO_FAILED = 370011;
+
+    /**
+     * 通知货架撤点运单创建失败
+     * @var integer
+     */
+    const OMS_NOTIFY_MINIMART_RECALL_SHELF_ORDER_FAILED = 370012;
+
+    /**
+     * 无人货架信息错误
+     * @var integer
+     */
+    const OMS_SHELF_INFO_ERROR = 370013;
+
+    /**
+     * 未找到关联的soruce_order单号
+     * @var integer
+     */
+    const OMS_SOURCE_ORDER_NOT_FOUNT = 370014;
+
+    /**
+     * 未找到关联的业态单
+     * @var integer
+     */
+    const OMS_BUSINESS_FORM_ORDER_NOT_FOUNT = 370015;
+
+    /**
+     * 取消销退入库失败
+     * @var integer
+     */
+    const STOCK_IN_ORDER_CANCEL_FAILED = 380001;
+    /**
+     * 盘点通知TMS失败
+     * @var integer
+     */
+    const BACK_ORDER_NOTIFY_TMS_FAIL = 390001;
 }

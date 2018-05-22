@@ -1,15 +1,15 @@
 namespace php orderui
 namespace java me.ele.orderui
-#创建业态订单返回异常
-exception OrderUserException {
-    1: string cl, #错误分类
-    2: string msg, #错误原因
-    3: map<string, string> fields, #包含错误信息
+#OMS 异常
+exception OrderuiUserException {
+    1: string cl,
+    2: string msg,
+    3: map<string, string> fields,
     4: string type
 }
 
 #返回值
-struct Data {
+struct EventData {
     1:required bool result
 }
 
@@ -19,8 +19,21 @@ struct EventInfo {
     2:required string event_key,
     3:required string data
 }
+
+#确认入库事件参数
+struct ConfirmStockinOrderInfo {
+    1:required i32 stockin_order_id,
+    2:optional string stockin_order_remark,
+    3:required string sku_info_list
+}
+
 #服务定义
 service EventService {
-    Data triggerEvent(1:required EventInfo objEventInfo)
-        throws (1: OrderUserException userException)
+    EventData triggerEvent(1:required EventInfo objEventInfo)
+        throws (1: OrderuiUserException OrderuiUserException),
+    EventData confirmStockinOrder(1:required ConfirmStockinOrderInfo objData)
+        throws (1: OrderuiUserException OrderuiUserException),
+    EventData deliveryOrder(1:string stockout_order_id)
+        throws (1: OrderuiUserException OrderuiUserException),
 }
+

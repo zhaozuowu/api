@@ -63,6 +63,26 @@ class Model_Orm_BusinessFormOrder extends Orderui_Base_Orm
 
 
     /**
+     * 根据系统业态单号(business_form_order_id)获取关联的物流单号（source_order_id)
+     * @param $strBusinessFormOrderId
+     * @return array
+     * @throws Orderui_BusinessError
+     */
+    public static function getBusinessFormOrderSourceOrderId($strBusinessFormOrderId)
+    {
+        // 查询未软删除的数据字段
+        $arrCond = [
+            'business_form_order_id' => $strBusinessFormOrderId,
+            'is_delete' => Orderui_Define_Const::NOT_DELETE,
+        ];
+        $arrBusinessOrderInfo = Model_Orm_BusinessFormOrder::findRow(self::getAllColumns(), $arrCond);
+        if (empty($arrBusinessOrderInfo)) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::OMS_BUSINESS_FORM_ORDER_NOT_FOUNT);
+        }
+        return $arrBusinessOrderInfo['source_order_id'];
+    }
+
+    /**
      * 根据出库单号获取出库单信息
      * @param $strOrderId 业态订单号
      * @return array
@@ -112,6 +132,22 @@ class Model_Orm_BusinessFormOrder extends Orderui_Base_Orm
     {
         $arrCondition = [
             'source_order_id' => $intSourceOrderId,
+            'is_delete' => Orderui_Define_Const::NOT_DELETE,
+        ];
+        return self::findRow(self::getAllColumns(), $arrCondition);
+    }
+
+    /**
+     * 通过上游订单号获取业态订单信息
+     * @param  integer $intSourceOrderId
+     * @return Model_Orm_BusinessFormOrder
+     */
+    public static function getOrderInfoBySourceOrderIdAndType($intSourceOrderId, $intOrderType, $intSupplyType)
+    {
+        $arrCondition = [
+            'source_order_id' => $intSourceOrderId,
+            'business_form_order_type' => $intOrderType,
+            'supply_type' => $intSupplyType,
             'is_delete' => Orderui_Define_Const::NOT_DELETE,
         ];
         return self::findRow(self::getAllColumns(), $arrCondition);
