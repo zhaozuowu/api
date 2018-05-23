@@ -59,6 +59,7 @@ class Service_Data_Ens_Deliver
     {
         if (!($objData instanceof Orderui_Struct_WrpcInfo)) {
             trigger_error('ens wrpc call use Orderui_Struct_WrpcInfo');
+            return true;
         }
         $arrConf = Orderui_Define_EventCall::BRANCH[$strEvent][$intBranch];
         $strAppId = $arrConf['app_id'];
