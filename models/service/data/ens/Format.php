@@ -82,7 +82,14 @@ class Service_Data_Ens_Format
             Nscm_Define_OmsOrder::TMS_ORDER_TYPE_SHIPMENT);
         $intBusinessFormOrderId = intval($arrShipmentOrder['business_form_order_id']);
         $objBusinessFormOrder = Model_Orm_BusinessFormOrder::getBusinessFormOrderByBusinessOrderId($intBusinessFormOrderId);
+        //非撤点单不发确认入库事件
+        if ($objBusinessFormOrder['supply_type'] != Orderui_Define_BusinessFormOrder::ORDER_SUPPLY_TYPE_RETREAT) {
+            return true;
+        }
         $strRegionId = json_decode($objBusinessFormOrder['business_form_ext'], true)['region_id'];
+        if (empty($strRegionId)) {
+            Bd_Log::warning(sprintf('this_business_form_order_has_not_region_id, business_form_order_id:[%s]', $intBusinessFormOrderId));
+        }
         $arrWarehouseInfo = self::getWarehouseInfo(intval($strRegionId));
         $arrSkuInfoList = $arrInput['sku_info_list'];
         $arrSkus = [];
