@@ -28,7 +28,12 @@ class Service_Page_Business_CreateBusinessFormOrder
      */
     public function execute($arrInput) {
         $arrInput['business_form_order_way'] = Orderui_Define_BusinessFormOrder::ORDER_WAY_OBVERSE;
-        $arrInput['order_supply_type'] = Orderui_Define_BusinessFormOrder::ORDER_SUPPLY_TYPE_ORDER;
+        $arrInput['order_supply_type'] = intval($arrInput['shelf_info']['supply_type']);
+        if (!in_array($arrInput['order_supply_type'],
+            [Orderui_Define_BusinessFormOrder::ORDER_SUPPLY_TYPE_CREATE
+                , Orderui_Define_BusinessFormOrder::ORDER_SUPPLY_TYPE_SUPPLY])) {
+            Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_BUSINESS_FORM_ORDER_SUPPLY_TYPE_ERROR);
+        }
         $this->objDsBusinessFormOrder->checkCreateParams($arrInput);
         if (Orderui_Define_BusinessFormOrder::BUSINESS_FORM_ORDER_TYPE_SHELF
             == $arrInput['business_form_order_type']) {
