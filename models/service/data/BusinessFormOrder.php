@@ -204,8 +204,8 @@ class Service_Data_BusinessFormOrder
                 Orderui_Wmq_Commit::sendWmqCmd(Orderui_Define_Cmd::CMD_NOTIFY_MINIMART_REVERSE_ORDER_CREATE,
                     $arrCmdParams, $arrCmdParams['logistics_order_id']);
             }
-            if (Orderui_Define_BusinessFormOrder::ORDER_SUPPLY_TYPE_ORDER
-                == $arrBusinessFormOrderInfo['order_supply_type']) {
+            if (Orderui_Define_BusinessFormOrder::BUSINESS_FORM_ORDER_TYPE_SHELF
+                == $arrBusinessFormOrderInfo['business_form_order_type']) {
                 Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_CREATE_ERROR);
             }
         }
