@@ -63,7 +63,7 @@ class Orderui_Define_BusinessFormOrder
     ];
 
     /**
-     * 补货类型为铺货
+     * 补货类型
      * @var integer
      */
     const ORDER_SUPPLY_TYPE_CREATE = 1;  //货架铺货
