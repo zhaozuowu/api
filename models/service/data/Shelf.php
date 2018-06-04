@@ -142,17 +142,26 @@ class Service_Data_Shelf
         $arrSkuInfoList = [];
         foreach ($arrSkuInfo as $skuInfo) {
             // 对于未传入分配信息的商品直接跳过(传入商品数为0)
-            if (empty($skuInfo['distribute_info'])
-                || empty($skuInfo['distribute_info']['amount'])) {
+            if (empty($skuInfo['distribute_info'])) {
                 continue;
             }
 
             $skuLine = [];
             foreach ($skuInfo['distribute_info'] as $info) {
+                // 对于对应效期的数量为0项，直接跳过
+                if (empty($info['amount'])) {
+                    continue;
+                }
+
                 $infoLine = [];
                 $infoLine['expireDate'] = $info['expire_date'];
                 $infoLine['amount'] = $info['amount'];
                 $skuLine['distributeNumber'][] = $infoLine;
+            }
+
+            // 如果所有效期商品都为空，则跳过
+            if (empty($skuLine)) {
+                continue;
             }
 
             $skuLine['skuId'] = $skuInfo['sku_id'];
