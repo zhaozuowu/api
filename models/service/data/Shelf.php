@@ -141,6 +141,12 @@ class Service_Data_Shelf
         // 组织整理sku商品列表格式
         $arrSkuInfoList = [];
         foreach ($arrSkuInfo as $skuInfo) {
+            // 对于未传入分配信息的商品直接跳过(传入商品数为0)
+            if (empty($skuInfo['distribute_info'])
+                || empty($skuInfo['distribute_info']['amount'])) {
+                continue;
+            }
+
             $skuLine = [];
             foreach ($skuInfo['distribute_info'] as $info) {
                 $infoLine = [];
@@ -148,6 +154,7 @@ class Service_Data_Shelf
                 $infoLine['amount'] = $info['amount'];
                 $skuLine['distributeNumber'][] = $infoLine;
             }
+
             $skuLine['skuId'] = $skuInfo['sku_id'];
 
             $arrSkuInfoList[] = $skuLine;
