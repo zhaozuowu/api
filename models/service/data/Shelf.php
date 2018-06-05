@@ -141,6 +141,12 @@ class Service_Data_Shelf
         // 组织整理sku商品列表格式
         $arrSkuInfoList = [];
         foreach ($arrSkuInfo as $skuInfo) {
+            // 对于未传入分配信息的商品直接跳过(传入商品数为0)
+            if (empty($skuInfo['distribute_info'])) {
+                Bd_Log::trace('distribute_info_empty, continue, sku_id: ' . $skuInfo['sku_id']);
+                continue;
+            }
+
             $skuLine = [];
             foreach ($skuInfo['distribute_info'] as $info) {
                 $infoLine = [];
@@ -148,11 +154,11 @@ class Service_Data_Shelf
                 $infoLine['amount'] = $info['amount'];
                 $skuLine['distributeNumber'][] = $infoLine;
             }
+
             $skuLine['skuId'] = $skuInfo['sku_id'];
 
             $arrSkuInfoList[] = $skuLine;
         }
-
         $arrRet = $this->objDaoWprcShelf->NotifyShelfSyncAcceptStockoutOrderSkuInfo(
             $strLogisticOrderId,
             $strShipmentOrderId,
