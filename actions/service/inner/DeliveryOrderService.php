@@ -14,7 +14,7 @@ class Action_Service_DeliveryOrderService extends Orderui_Base_ServiceAction
     protected $arrInputParams = [
         'stockout_order_id' => 'int|required',
         'sku_info' => [
-            'validate' => 'json|decode|required',
+            'validate' => 'arr|decode|required',
             'type' => 'array',
             'params' => [
                 'sku_id'             => 'int|required',
@@ -24,7 +24,7 @@ class Action_Service_DeliveryOrderService extends Orderui_Base_ServiceAction
                     'params' => [
                         'expire_time'             => 'int|required',
                         'product_time'     =>  'int|required',
-            ],
+                    ],
                 ],
             ],
         ],
