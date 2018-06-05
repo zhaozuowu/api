@@ -143,7 +143,6 @@ class Service_Data_Shelf
         foreach ($arrSkuInfo as $skuInfo) {
             // 对于未传入分配信息的商品直接跳过(传入商品数为0)
             if (empty($skuInfo['distribute_info'])) {
-                var_dump('SKIPPED');
                 continue;
             }
 
