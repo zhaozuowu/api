@@ -143,6 +143,7 @@ class Service_Data_Shelf
         foreach ($arrSkuInfo as $skuInfo) {
             // 对于未传入分配信息的商品直接跳过(传入商品数为0)
             if (empty($skuInfo['distribute_info'])) {
+                Bd_Log::trace('distribute_info_empty, continue, sku_id: ' . $skuInfo['sku_id']);
                 continue;
             }
 
