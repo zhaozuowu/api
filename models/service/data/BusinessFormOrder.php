@@ -858,7 +858,8 @@ class Service_Data_BusinessFormOrder
      */
     public function cancelLogisticsOrder($intLogisticsOrderId, $strRemark)
     {
-        $arrBusinessOrderInfo = Model_Orm_BusinessFormOrder::getOrderInfoBySourceOrderId($intLogisticsOrderId);
+        $arrSupplyTypes = Orderui_Define_BusinessFormOrder::SHELF_ORDER_OBVESER_SUPPLY_TYPE;
+        $arrBusinessOrderInfo = Model_Orm_BusinessFormOrder::getOrderInfoBySourceOrderIdAndSupplyType($intLogisticsOrderId, $arrSupplyTypes);
         $intBusinessFormOrderId = $arrBusinessOrderInfo['business_form_order_id'];
         //预取消沧海出库单
         usleep(Orderui_Define_Const::CANCEL_DELAY_MICRO_SECONDS);
@@ -1086,9 +1087,9 @@ class Service_Data_BusinessFormOrder
      */
     public function cancelLogisticsReturnOrder($intLogisticsOrderId, $strRemark)
     {
-        $arrBusinessOrderInfo = Model_Orm_BusinessFormOrder::getOrderInfoBySourceOrderId($intLogisticsOrderId);
+        $arrSupplyTypes = [Orderui_Define_BusinessFormOrder::ORDER_SUPPLY_TYPE_RETREAT];
+        $arrBusinessOrderInfo = Model_Orm_BusinessFormOrder::getOrderInfoBySourceOrderIdAndSupplyType($intLogisticsOrderId, $arrSupplyTypes);
         $intBusinessFormOrderId = $arrBusinessOrderInfo['business_form_order_id'];
-
         //取消tms运单
         $arrShipmentOrderInfo = Model_Orm_OrderSystemDetail::getOrderInfoByBusinessFormOrderIdAndType($intBusinessFormOrderId,
             Orderui_Define_Const::NWMS_ORDER_TYPE_SHIPMENT_ORDER);
