@@ -63,19 +63,23 @@ class Orderui_Define_BusinessFormOrder
     ];
 
     /**
-     * 补货类型为铺货
+     * 补货类型
      * @var integer
      */
-    const ORDER_SUPPLY_TYPE_CREATE = 1;
+    const ORDER_SUPPLY_TYPE_CREATE = 1;  //货架铺货
+    const ORDER_SUPPLY_TYPE_SUPPLY = 2;  //货架补货
+    const ORDER_SUPPLY_TYPE_ORDER   = 4; //门店订货
+    const ORDER_SUPPLY_TYPE_REJECT  = 3; //门店退货
+    const ORDER_SUPPLY_TYPE_RETREAT = 5; //货架撤点
 
     /**
-     * 补货类型为补货
+     * 货架正向补货类型
      * @var integer
      */
-    const ORDER_SUPPLY_TYPE_SUPPLY = 2;
-    const ORDER_SUPPLY_TYPE_ORDER   = 4;    // 订货
-    const ORDER_SUPPLY_TYPE_REJECT  = 3;    // 退货
-    const ORDER_SUPPLY_TYPE_RETREAT = 5;    // 撤点
+    const SHELF_ORDER_OBVESER_SUPPLY_TYPE = [
+        self::ORDER_SUPPLY_TYPE_CREATE,
+        self::ORDER_SUPPLY_TYPE_SUPPLY,
+    ];
 
     /**
      * 补货类型

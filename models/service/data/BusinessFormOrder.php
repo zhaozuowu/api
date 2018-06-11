@@ -173,7 +173,7 @@ class Service_Data_BusinessFormOrder
         $arrNwmsResponseList = Service_Data_OrderRouter::execute($arrBusinessFormOrderInfo);
         //校验是否已经创建
         $boolWhetherExisted = $this->checkBusinessFormOrderIsExisted($arrBusinessFormOrderInfo['logistics_order_id']
-            , $arrBusinessFormOrderInfo['business_form_order_type'], $arrBusinessFormOrderInfo['supply_type']);
+            , $arrBusinessFormOrderInfo['business_form_order_type'], $arrBusinessFormOrderInfo['order_supply_type']);
         if ($boolWhetherExisted) {
             return $arrNwmsResponseList;
         }
@@ -204,8 +204,8 @@ class Service_Data_BusinessFormOrder
                 Orderui_Wmq_Commit::sendWmqCmd(Orderui_Define_Cmd::CMD_NOTIFY_MINIMART_REVERSE_ORDER_CREATE,
                     $arrCmdParams, $arrCmdParams['logistics_order_id']);
             }
-            if (Orderui_Define_BusinessFormOrder::BUSINESS_FORM_ORDER_TYPE_SHELF
-                == $arrBusinessFormOrderInfo['business_form_order_type']) {
+            if (in_array($arrBusinessFormOrderInfo['order_supply_type'],
+                Orderui_Define_BusinessFormOrder::SHELF_ORDER_OBVESER_SUPPLY_TYPE)) {
                 Orderui_BusinessError::throwException(Orderui_Error_Code::NWMS_ORDER_CREATE_ERROR);
             }
         }
