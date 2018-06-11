@@ -122,7 +122,7 @@ class Dao_Ral_NWmsOrder
         Bd_Log::trace(sprintf("method[%s] req[%s]", __METHOD__, json_encode($req)));
         $ret = $this->objApiRal->getData($req);
         Bd_Log::trace(sprintf("method[%s] ret[%s]", __METHOD__, json_encode($ret)));
-        $ret = !empty($ret[self::API_RALER_CONFIRM_CANCEL_STOCKOUT_ORDER]) ? $ret[self::API_RALER_CONFIRM_CANCEL_STOCKOUT_ORDER] : [];
+        $ret = !empty($ret[self::API_RALER_ROLLBACK_CANCEL_STOCKOUT_ORDER]) ? $ret[self::API_RALER_ROLLBACK_CANCEL_STOCKOUT_ORDER] : [];
         return $ret;
     }
 
