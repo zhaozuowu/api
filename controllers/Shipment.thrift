@@ -40,7 +40,7 @@ struct DriverInfo {
 #TMS司机到达信息
 struct SyncDriverInfo {
     1:required string shipment_order_id,
-    2:required DriverInformation driver_info
+    2:required DriverInfo driver_info
 }
 #TMS整单拒收信息
 struct ShipmentOrderRejectAllInfo {
